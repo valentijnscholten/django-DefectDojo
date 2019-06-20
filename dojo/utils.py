@@ -1089,10 +1089,13 @@ def add_issue(find, push_to_jira):
                             jira, issue,
                             settings.MEDIA_ROOT + pic.image_large.name)
 
-                        # if jpkey.enable_engagement_epic_mapping:
-                        #      epic = JIRA_Issue.objects.get(engagement=eng)
-                        #      issue_list = [j_issue.jira_id,]
-                        #      jira.add_issues_to_epic(epic_id=epic.jira_id, issue_keys=[str(j_issue.jira_id)], ignore_epics=True)
+                        try:
+                            if jpkey.enable_engagement_epic_mapping:
+                                epic = JIRA_Issue.objects.get(engagement=eng)
+                                issue_keys = [j_issue.jira_id]
+                                jira.add_issues_to_epic(epic_id=epic.jira_id, issue_keys=issue_keys, ignore_epics=True)
+                        except JIRAError as e:
+                            log_jira_alert(e.text, find)
                 except JIRAError as e:
                     log_jira_alert(e.text, find)
         else:
