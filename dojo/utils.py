@@ -1254,7 +1254,7 @@ def add_epic(eng, push_to_jira):
                 'key': jpkey.project_key
             },
             'summary': engagement.name,
-            'description': engagement.name,
+            'description': engagement.name + "\nthis epic is created by Defect Dojo, please don't delete/close unless you know what you're doing",
             'issuetype': {
                 'name': 'Epic'
             },
