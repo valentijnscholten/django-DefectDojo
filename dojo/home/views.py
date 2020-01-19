@@ -69,11 +69,20 @@ def dashboard(request):
     
 
     # order_by is needed due to ordering being present in Meta of Finding
-    severities = Finding.objects.filter(verified=True, duplicate=False).values('severity').annotate(count=Count('severity')).order_by()
-    
+    severities = findings.values('severity').annotate(count=Count('severity')).order_by()
+
+
+# <QuerySet [{'count': 5483, 'severity': 'High'}, {'count': 2952, 'severity': 'Low'}, {'count': 13440, 'severity': 'Medium'}, {'count': 1248, 'severity': 'Info'}, {'count': 18, 'severity': 'Critical'}]>
+
+
+
+
     logger.error('severities valentijn')
     logger.error(severities)
     
+    for s in severities:
+        logger.error(s)
+        
     sev_counts = {'Critical': 0,
                   'High': 0,
                   'Medium': 0,
