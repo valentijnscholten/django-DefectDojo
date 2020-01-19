@@ -1321,7 +1321,7 @@ class Finding(models.Model):
     class Meta:
         ordering = ('numerical_severity', '-date', 'title')
         indexes = [
-            models.Index(fields=('cve',))
+            models.Index(fields=('cve',)),
             models.Index(fields=['out_of_scope']),
             models.Index(fields=['false_p']),
             models.Index(fields=['verified']),
