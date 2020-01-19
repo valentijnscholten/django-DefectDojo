@@ -68,7 +68,7 @@ def dashboard(request):
     
     
 
-    severities = findings.values('severity').annotate(count=Count('severity'))
+    severities = Finding.objects.filter(verified=True, duplicate=False).values('severity').annotate(count=Count('severity'))
     
     logger.error('severities valentijn')
     logger.error(severities)
