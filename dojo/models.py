@@ -573,14 +573,6 @@ class Product(models.Model):
 
     class Meta:
         ordering = ('name',)
-        indexes = [
-            models.Index(fields=['out_of_scope']),
-            models.Index(fields=['false_p']),
-            models.Index(fields=['verified']),
-            models.Index(fields=['mitigated']),
-            models.Index(fields=['active']),
-            models.Index(fields=['date']),
-        ]        
 
     @property
     def findings_count(self):
@@ -1330,6 +1322,12 @@ class Finding(models.Model):
         ordering = ('numerical_severity', '-date', 'title')
         indexes = [
             models.Index(fields=('cve',))
+            models.Index(fields=['out_of_scope']),
+            models.Index(fields=['false_p']),
+            models.Index(fields=['verified']),
+            models.Index(fields=['mitigated']),
+            models.Index(fields=['active']),
+            models.Index(fields=['date']),            
         ]
 
     @property
@@ -1597,8 +1595,8 @@ class Finding(models.Model):
 
             # Run async the tool issue update to update original issue with Defect Dojo updates
             if issue_updater_option:
-                    from dojo.tools import tool_issue_updater
-                    tool_issue_updater.async_tool_issue_update(self)
+                from dojo.tasks import async_tool_issue_updater
+                async_tool_issue_updater.delay(self)
         if (self.file_path is not None) and (self.endpoints.count() == 0):
             self.static_finding = True
             self.dynamic_finding = False
