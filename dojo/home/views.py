@@ -67,7 +67,7 @@ def dashboard(request):
     
     
 
-    severities = severities.values('severity').annotate(count=Count('severity'))
+    severities = findings.values('severity').annotate(count=Count('severity'))
     
     logger.error('severities valentijn')
     logger.error(severities)
