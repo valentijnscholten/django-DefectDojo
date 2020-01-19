@@ -74,11 +74,11 @@ def dashboard(request):
 
 # <QuerySet [{'count': 5483, 'severity': 'High'}, {'count': 2952, 'severity': 'Low'}, {'count': 13440, 'severity': 'Medium'}, {'count': 1248, 'severity': 'Info'}, {'count': 18, 'severity': 'Critical'}]>
 
-{'severity': 'High', 'count': 5483}
-{'severity': 'Low', 'count': 2952}
-{'severity': 'Medium', 'count': 13440}
-{'severity': 'Info', 'count': 1248}
-{'severity': 'Critical', 'count': 18}
+# {'severity': 'High', 'count': 5483}
+# {'severity': 'Low', 'count': 2952}
+# {'severity': 'Medium', 'count': 13440}
+# {'severity': 'Info', 'count': 1248}
+# {'severity': 'Critical', 'count': 18}
 
 
 
