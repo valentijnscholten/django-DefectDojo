@@ -573,6 +573,14 @@ class Product(models.Model):
 
     class Meta:
         ordering = ('name',)
+        indexes = [
+            models.Index(fields=['out_of_scope']),
+            models.Index(fields=['false_p']),
+            models.Index(fields=['verified']),
+            models.Index(fields=['mitigated']),
+            models.Index(fields=['active']),
+            models.Index(fields=['date']),
+        ]        
 
     @property
     def findings_count(self):
