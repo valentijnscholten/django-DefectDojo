@@ -64,15 +64,23 @@ def dashboard(request):
         findings = Finding.objects.filter(reporter=request.user,
                                           verified=True, duplicate=False)
 
+    
+    
+
+    severities = severities.values('severity').annotate(count=Count('severity'))
+    
+    logger.error('severities valentijn')
+    logger.error(severities)
+    
     sev_counts = {'Critical': 0,
                   'High': 0,
                   'Medium': 0,
                   'Low': 0,
                   'Info': 0}
 
-    for finding in findings:
-        if finding.severity:
-            sev_counts[finding.severity.capitalize()] += 1
+    # for finding in findings:
+    #     if finding.severity:
+    #         sev_counts[finding.severity.capitalize()] += 1
 
     by_month = list()
 
