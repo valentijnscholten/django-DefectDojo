@@ -68,7 +68,8 @@ def dashboard(request):
     
     
 
-    severities = Finding.objects.filter(verified=True, duplicate=False).values('severity').annotate(count=Count('severity'))
+    # order_by is needed due to ordering being present in Meta of Finding
+    severities = Finding.objects.filter(verified=True, duplicate=False).values('severity').annotate(count=Count('severity').order_by())
     
     logger.error('severities valentijn')
     logger.error(severities)
