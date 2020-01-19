@@ -1327,9 +1327,9 @@ class Finding(models.Model):
             models.Index(fields=['verified']),
             models.Index(fields=['mitigated']),
             models.Index(fields=['active']),
-            models.Index(fields=['numerical_severity']),     
-            models.Index(fields=['date']),     
-            models.Index(fields=['title']),                 
+            models.Index(fields=['numerical_severity']),
+            models.Index(fields=['date']),
+            models.Index(fields=['title']),
         ]
 
     @property
@@ -1597,8 +1597,8 @@ class Finding(models.Model):
 
             # Run async the tool issue update to update original issue with Defect Dojo updates
             if issue_updater_option:
-                from dojo.tools import tool_issue_updater
-                tool_issue_updater.async_tool_issue_update(self)
+                from dojo.tasks import async_tool_issue_updater
+                async_tool_issue_updater.delay(self)
         if (self.file_path is not None) and (self.endpoints.count() == 0):
             self.static_finding = True
             self.dynamic_finding = False
@@ -2064,9 +2064,9 @@ class JIRA_Details_Cache(models.Model):
 
 class JIRA_PKey(models.Model):
     project_key = models.CharField(max_length=200, blank=True)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='jira_project_key_product')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
     conf = models.ForeignKey(JIRA_Conf, verbose_name="JIRA Configuration",
-                             null=True, blank=True, on_delete=models.CASCADE, related_name='jira_conf')
+                             null=True, blank=True, on_delete=models.CASCADE)
     component = models.CharField(max_length=200, blank=True)
     push_all_issues = models.BooleanField(default=False, blank=True)
     enable_engagement_epic_mapping = models.BooleanField(default=False,
