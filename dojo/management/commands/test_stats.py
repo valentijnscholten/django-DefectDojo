@@ -23,8 +23,6 @@ from defectDojo_engagement_survey.models import Answered_Survey
 from dateutil.relativedelta import relativedelta
 
 
-locale = timezone(get_system_setting('time_zone'))
-
 """
 Author: Aaron Weaver
 This script will update the hashcode and dedupe findings in DefectDojo:
