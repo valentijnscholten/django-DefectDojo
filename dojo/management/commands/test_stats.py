@@ -77,7 +77,7 @@ class Command(BaseCommand):
         results = {}
         for ms in severities_by_month:
                 year = str(ms['created__year'])
-                month = str(ms['created__month'],2).zfill(2)
+                month = str(ms['created__month']).zfill(2)
                 key = year +'-' + month
 
                 if key not in results:
