@@ -34,7 +34,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        locale = timezone(get_system_setting('time_zone'))
+        # locale = timezone(get_system_setting('time_zone'))
 
         findings = Finding.objects.filter(verified=True, duplicate=False)
 
