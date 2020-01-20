@@ -105,15 +105,15 @@ def dashboard(request):
             month_stats = results[key]
 
             if ms['severity'] == 'Critical':
-                sourcedata['a'] = ms['count']
+                month_stats['a'] = ms['count']
             elif ms['severity'] == 'High':
-                sourcedata['b'] = ms['count']
+                month_stats['b'] = ms['count']
             elif ms['severity'] == 'Medium':
-                sourcedata['c'] = ms['count']
+                month_stats['c'] = ms['count']
             elif ms['severity'] == 'Low':
-                sourcedata['d'] = ms['count']
+                month_stats['d'] = ms['count']
             elif ms['severity'] == 'Info':
-                sourcedata['e'] = ms['count']
+                month_stats['e'] = ms['count']
 
 #    print(results)
 
