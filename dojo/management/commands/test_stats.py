@@ -72,11 +72,12 @@ class Command(BaseCommand):
         for ms in severities_by_month:
                 key = str(ms['created__year'])+'-'+str(ms['created__month'])
 
-                month_stats = results[key]
-                if month_stats is None: 
+                if key not in results:
                     sourcedata = {'y': str(ms['created__year'])+'-'+str(ms['created__month']), 'a': 0, 'b': 0,
                             'c': 0, 'd': 0, 'e': 0}
-                    month_stats[key] = sourcedata
+                    result[key] = sourcedata
+
+                month_stats = results[key]
 
                 if ms.severity == 'Critical':
                     sourcedata['a'] = ms['count']
