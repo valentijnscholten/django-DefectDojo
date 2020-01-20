@@ -1,3 +1,7 @@
+from django.core.management.base import BaseCommand
+from pytz import timezone
+
+from dojo.models import Finding
 import logging
 from calendar import monthrange
 from datetime import datetime, timedelta
@@ -18,7 +22,18 @@ from defectDojo_engagement_survey.models import Answered_Survey
 from dateutil.relativedelta import relativedelta
 
 
-def main():
+locale = timezone(get_system_setting('time_zone'))
+
+"""
+Author: Aaron Weaver
+This script will update the hashcode and dedupe findings in DefectDojo:
+"""
+
+
+class Command(BaseCommand):
+
+    def handle(self, *args, **options):
+
     findings = Finding.objects.filter(verified=True, duplicate=False)
 
     # order_by is needed due to ordering being present in Meta of Finding
