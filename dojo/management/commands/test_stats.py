@@ -62,8 +62,8 @@ class Command(BaseCommand):
 
         # order_by is needed due to ordering being present in Meta of Findin
         severities_by_month=findings.filter(created__gte=timezone.now()+relativedelta(months=-6)) \
-                                    .annotate(year=created.year).annotate(month=ExtractMonth('created')) \
-                                    .values('year', 'month', 'severity').annotate(count=Count('severity')).order_by()
+                                    # .annotate(year=created__year')).annotate(month=ExtractMonth('created')) \
+                                    .values('created__year', 'created__month', 'severity').annotate(count=Count('severity')).order_by()
 
         print(severities_by_month)
 
