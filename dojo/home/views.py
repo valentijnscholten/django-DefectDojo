@@ -66,18 +66,19 @@ def dashboard(request):
                                           verified=True, duplicate=False)
 
     # order_by is needed due to ordering being present in Meta of Finding
-    severities = findings.values('severity').annotate(count=Count('severity')).order_by()
+    severities_all = findings.values('severity').annotate(count=Count('severity')).order_by()
 
     # make sure all keys are present
-    sev_counts = {'Critical': 0,
+    sev_counts_all = {'Critical': 0,
                   'High': 0,
                   'Medium': 0,
                   'Low': 0,
                   'Info': 0}
 
-    for s in severities:
+    for s in severities_all:
         logger.error(s)
-        sev_counts[s['severity']] = s['count']
+        sev_counts_all[s['severity']] = s['count']
+
 
     by_month = list()
 
@@ -117,6 +118,8 @@ def dashboard(request):
                 sourcedata['e'] += 1
         by_month.append(sourcedata)
 
+    logger.error("valentijn: bymonth: %s", by_month)
+
     start_date = now - timedelta(days=180)
 
     r = relativedelta(now, start_date)
@@ -128,6 +131,11 @@ def dashboard(request):
         assignee_id__isnull=True, completed__gt=0)
 
     punchcard, ticks, highest_count = get_punchcard_data(findings, weeks_between, start_date)
+
+    logger.error("valentijn2: punchard: %s", punchcard)
+    logger.error("valentijn2: ticks: %s", ticks)
+    logger.error("valentijn2: highest_count: %s", highest_count)
+    
     add_breadcrumb(request=request, clear=True)
     return render(request,
                   'dojo/dashboard.html',
@@ -135,11 +143,11 @@ def dashboard(request):
                    'finding_count': finding_count,
                    'mitigated_count': mitigated_count,
                    'accepted_count': accepted_count,
-                   'critical': sev_counts['Critical'],
-                   'high': sev_counts['High'],
-                   'medium': sev_counts['Medium'],
-                   'low': sev_counts['Low'],
-                   'info': sev_counts['Info'],
+                   'critical': sev_counts_all['Critical'],
+                   'high': sev_counts_all['High'],
+                   'medium': sev_counts_all['Medium'],
+                   'low': sev_counts_all['Low'],
+                   'info': sev_counts_all['Info'],
                    'by_month': by_month,
                    'punchcard': punchcard,
                    'ticks': ticks,
