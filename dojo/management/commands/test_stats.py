@@ -75,7 +75,7 @@ class Command(BaseCommand):
                 if key not in results:
                     sourcedata = {'y': str(ms['created__year'])+'-'+str(ms['created__month']), 'a': 0, 'b': 0,
                             'c': 0, 'd': 0, 'e': 0}
-                    result[key] = sourcedata
+                    results[key] = sourcedata
 
                 month_stats = results[key]
 
