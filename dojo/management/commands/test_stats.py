@@ -79,15 +79,15 @@ class Command(BaseCommand):
 
                 month_stats = results[key]
 
-                if ms.severity == 'Critical':
+                if ms['severity'] == 'Critical':
                     sourcedata['a'] = ms['count']
-                elif ms.severity == 'High':
+                elif ms['severity'] == 'High':
                     sourcedata['b'] = ms['count']
-                elif ms.severity == 'Medium':
+                elif ms['severity'] == 'Medium':
                     sourcedata['c'] = ms['count']
-                elif ms.severity == 'Low':
+                elif ms['severity'] == 'Low':
                     sourcedata['d'] = ms['count']
-                elif ms.severity == 'Info':
+                elif ms['severity'] == 'Info':
                     sourcedata['e'] = ms['count']
 
                 by_month.append(month_stats)
