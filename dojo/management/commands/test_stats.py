@@ -22,8 +22,7 @@ from dojo.utils import add_breadcrumb, get_punchcard_data
 from defectDojo_engagement_survey.models import Answered_Survey
 from dateutil.relativedelta import relativedelta
 from dojo.utils import get_system_setting
-
-locale = timezone(get_system_setting('time_zone'))
+from django.utils.timezone import localdate
 
 """
 Author: Aaron Weaver
@@ -34,6 +33,8 @@ This script will update the hashcode and dedupe findings in DefectDojo:
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
+
+        locale = timezone(get_system_setting('time_zone'))
 
         findings = Finding.objects.filter(verified=True, duplicate=False)
 
@@ -60,7 +61,7 @@ class Command(BaseCommand):
         by_month = list()
 
         # order_by is needed due to ordering being present in Meta of Findin
-        severities_by_month=findings.filter(created__gte=date.today()+relativedelta(months=-6)) \
+        severities_by_month=findings.filter(created__gte=localdate()+relativedelta(months=-6)) \
                                     .annotate(year=ExtractYear('created')).annotate(month=ExtractMonth('created')) \
                                     .values('year', 'month', 'severity').annotate(count=Count('severity')).order_by()
 
