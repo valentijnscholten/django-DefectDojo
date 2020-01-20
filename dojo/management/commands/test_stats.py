@@ -98,7 +98,7 @@ class Command(BaseCommand):
 
         print(results)
  
-        by_month = [ v for v in results.values() ]
+        by_month = [ v for v in sorted(results.values()) ]
 
         print(by_month)
 
