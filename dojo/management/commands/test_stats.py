@@ -53,10 +53,12 @@ class Command(BaseCommand):
 
         print(severities_all)
 
-# valentijn: bymonth: [{'a': 0, 'd': 0, 'b': 0, 'e': 0, 'c': 0, 'y': '2020-01'}, {'a': 0, 'd': 0, 'b': 0, 'e': 0, 'c': 0, 'y': '2019-12'}, {$
-# valentijn2: punchard: [[0, 0, 0.0], [0, 1, 0.14560705143488703], [0, 2, 0.10295973345818704], [0, 3, 0.1879778950992281], [0, 4, 0.1627936$
-# valentijn2: ticks: [[0, "<span class='small'>07/22<br/>2019</span>"], [1, "<span class='small'>07/29<br/>2019</span>"], [2, "<span class='$
-# valentijn2: highest_count: 566
+#valentijn: bymonth: [{'a': 0, 'd': 0, 'b': 0, 'e': 0, 'c': 0, 'y': '2020-01'}, {'a': 0, 'd': 0, 'b': 0, 'e': 0, 'c': 0, 'y': '2019-12'}, {'a': 0, 'd': 0, 'b': 0, 'e': 0, 'c': 0, 'y': '2019-11'}, {'a': 0, 'd': 0, 'b': 0, 'e': 0, 'c': 0, 'y': '2019-10'}, {'a': 0, 'd': 0, 'b': 0, 'e': 0, 'c': 0, 'y': '2019-09'}, {'a': 0, 'd': 0, 'b': 0, 'e': 0, 'c': 0, 'y': '2019-08'}, {'a': 0, 'd': 0, 'b': 0, 'e': 0, 'c': 0, 'y': '2019-07'}]
+
+#<QuerySet [{'count': 22, 'created__year': 2019, 'severity': 'Low', 'created__month': 7}, {'count': 70, 'created__year': 2019, 'severity': 'High', 'created__month': 7}, {'count': 40, 'created__year': 2019, 'severity': 'Medium', 'created__month': 7}, {'count': 560, 'created__year': 2019, 'severity': 'Medium', 'created__month': 8}, {'count': 199, 'created__year': 2019, 'severity': 'High', 'created__month': 8}, {'count': 19, 'created__year': 2019, 'severity': 'Low', 'created__month': 8}, {'count': 7, 'created__year': 2019, 'severity': 'Critical', 'created__month': 8}, {'count': 186, 'created__year': 2019, 'severity': 'High', 'created__month': 9}, {'count': 26, 'created__year': 2019, 'severity': 'Low', 'created__month': 9}, {'count': 4, 'created__year': 2019, 'severity': 'Critical', 'created__month': 9}, {'count': 486, 'created__year': 2019, 'severity': 'Medium', 'created__month': 9}, {'count': 10, 'created__year': 2019, 'severity': 'Info', 'created__month': 9}, {'count': 346, 'created__year': 2019, 'severity': 'High', 'created__month': 10}, {'count': 26, 'created__year': 2019, 'severity': 'Low', 'created__month': 10}, {'count': 423, 'created__year': 2019, 'severity': 'Medium', 'created__month': 10}, {'count': 505, 'created__year': 2019, 'severity': 'Info', 'created__month': 10}, {'count': 667, 'created__year': 2019, 'severity': 'Info', 'created__month': 11}, {'count': 222, 'created__year': 2019, 'severity': 'High', 'created__month': 11}, {'count': 186, 'created__year': 2019, 'severity': 'Medium', 'created__month': 11}, {'count': 22, 'created__year': 2019, 'severity': 'Low', 'created__month': 11}, '...(remaining elements truncated)...']>
+
+
+
 
         by_month = list()
 
@@ -65,4 +67,29 @@ class Command(BaseCommand):
                                     .values('created__year', 'created__month', 'severity').annotate(count=Count('severity')).order_by()
                                     # .annotate(year=created__year')).annotate(month=ExtractMonth('created')) 
         print(severities_by_month)
+
+        results = {}
+        for ms in severities_by_month:
+                key = ms['year']+'-'+ms['month']
+
+                month_stats = results[key]
+                if month_stats is None: 
+                    sourcedata = {'y': ms['year']+'-'+ms['month'], 'a': 0, 'b': 0,
+                            'c': 0, 'd': 0, 'e': 0}
+                    month_stats[key] = sourcedata
+
+                if ms.severity == 'Critical':
+                    sourcedata['a'] = ms['count']
+                elif finding.severity == 'High':
+                    sourcedata['b'] = ms['count']
+                elif finding.severity == 'Medium':
+                    sourcedata['c'] = ms['count']
+                elif finding.severity == 'Low':
+                    sourcedata['d'] = ms['count']
+                elif finding.severity == 'Info':
+                    sourcedata['e'] = ms['count']
+
+                by_month.append(month_stats)
+
+        print(by_month)
 
