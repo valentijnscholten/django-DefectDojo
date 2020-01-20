@@ -17,12 +17,13 @@ from django.utils import timezone
 
 from dojo.models import Finding, Engagement, Risk_Acceptance
 from django.db.models import Count
-from dojo.utils import add_breadcrumb, get_punchcard_data
+from dojo.utils import add_breadcrumb
 
 from defectDojo_engagement_survey.models import Answered_Survey
 from dateutil.relativedelta import relativedelta
 from dojo.utils import get_system_setting
 from django.utils.timezone import localdate
+from math import pi, sqrt
 
 """
 Author: Aaron Weaver
@@ -34,6 +35,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
+        now = timezone.now()
         # locale = timezone(get_system_setting('time_zone'))
 
         findings = Finding.objects.filter(verified=True, duplicate=False)
@@ -53,23 +55,10 @@ class Command(BaseCommand):
 
         #print(severities_all)
 
-#valentijn: bymonth: [{'a': 0, 'd': 0, 'b': 0, 'e': 0, 'c': 0, 'y': '2020-01'}, {'a': 0, 'd': 0, 'b': 0, 'e': 0, 'c': 0, 'y': '2019-12'}, {'a': 0, 'd': 0, 'b': 0, 'e': 0, 'c': 0, 'y': '2019-11'}, {'a': 0, 'd': 0, 'b': 0, 'e': 0, 'c': 0, 'y': '2019-10'}, {'a': 0, 'd': 0, 'b': 0, 'e': 0, 'c': 0, 'y': '2019-09'}, {'a': 0, 'd': 0, 'b': 0, 'e': 0, 'c': 0, 'y': '2019-08'}, {'a': 0, 'd': 0, 'b': 0, 'e': 0, 'c': 0, 'y': '2019-07'}]
-
-#<QuerySet [{'count': 22, 'created__year': 2019, 'severity': 'Low', 'created__month': 7}, {'count': 70, 'created__year': 2019, 'severity': 'High', 'created__month': 7}, {'count': 40, 'created__year': 2019, 'severity': 'Medium', 'created__month': 7}, {'count': 560, 'created__year': 2019, 'severity': 'Medium', 'created__month': 8}, {'count': 199, 'created__year': 2019, 'severity': 'High', 'created__month': 8}, {'count': 19, 'created__year': 2019, 'severity': 'Low', 'created__month': 8}, {'count': 7, 'created__year': 2019, 'severity': 'Critical', 'created__month': 8}, {'count': 186, 'created__year': 2019, 'severity': 'High', 'created__month': 9}, {'count': 26, 'created__year': 2019, 'severity': 'Low', 'created__month': 9}, {'count': 4, 'created__year': 2019, 'severity': 'Critical', 'created__month': 9}, {'count': 486, 'created__year': 2019, 'severity': 'Medium', 'created__month': 9}, {'count': 10, 'created__year': 2019, 'severity': 'Info', 'created__month': 9}, {'count': 346, 'created__year': 2019, 'severity': 'High', 'created__month': 10}, {'count': 26, 'created__year': 2019, 'severity': 'Low', 'created__month': 10}, {'count': 423, 'created__year': 2019, 'severity': 'Medium', 'created__month': 10}, {'count': 505, 'created__year': 2019, 'severity': 'Info', 'created__month': 10}, {'count': 667, 'created__year': 2019, 'severity': 'Info', 'created__month': 11}, {'count': 222, 'created__year': 2019, 'severity': 'High', 'created__month': 11}, {'count': 186, 'created__year': 2019, 'severity': 'Medium', 'created__month': 11}, {'count': 22, 'created__year': 2019, 'severity': 'Low', 'created__month': 11}, '...(remaining elements truncated)...']>
-
-
-#[{'a': 0, 'd': 22, 'e': 0, 'b': 70, 'c': 40, 'y': '2019-7'}, {'a': 0, 'd': 22, 'e': 0, 'b': 70, 'c': 40, 'y': '2019-7'}, {'a': 0, 'd': 22, 'e': 0, 'b': 70, 'c': 40, 'y': '2019-7'}, {'a': 7, 'd': 19, 'e': 0, 'b': 199, 'c': 560, 'y': '2019-8'}, {'a': 7, 'd': 19, 'e': 0, 'b': 199, 'c': 560, 'y': '2019-8'}, {'a': 7, 'd': 19, 'e': 0, 'b': 199, 'c': 560, 'y': '2019-8'}, {'a': 7, 'd': 19, 'e': 0, 'b': 199, 'c': 560, 'y': '2019-8'}, {'a': 4, 'd': 26, 'e': 10, 'b': 186, 'c': 486, 'y': '2019-9'}, {'a': 4, 'd': 26, 'e': 10, 'b': 186, 'c': 486, 'y': '2019-9'}, {'a': 4, 'd': 26, 'e': 10, 'b': 186, 'c': 486, 'y': '2019-9'}, {'a': 4, 'd': 26, 'e': 10, 'b': 186, 'c': 486, 'y': '2019-9'}, {'a': 4, 'd': 26, 'e': 10, 'b': 186, 'c': 486, 'y': '2019-9'}, {'a': 0, 'd': 26, 'e': 505, 'b': 346, 'c': 423, 'y': '2019-10'}, {'a': 0, 'd': 26, 'e': 505, 'b': 346, 'c': 423, 'y': '2019-10'}, {'a': 0, 'd': 26, 'e': 505, 'b': 346, 'c': 423, 'y': '2019-10'}, {'a': 0, 'd': 26, 'e': 505, 'b': 346, 'c': 423, 'y': '2019-10'}, {'a': 1, 'd': 22, 'e': 667, 'b': 222, 'c': 186, 'y': '2019-11'}, {'a': 1, 'd': 22, 'e': 667, 'b': 222, 'c': 186, 'y': '2019-11'}, {'a': 1, 'd': 22, 'e': 667, 'b': 222, 'c': 186, 'y': '2019-11'}, {'a': 1, 'd': 22, 'e': 667, 'b': 222, 'c': 186, 'y': '2019-11'}, {'a': 1, 'd': 22, 'e': 667, 'b': 222, 'c': 186, 'y': '2019-11'}, {'a': 0, 'd': 26, 'e': 7, 'b': 148, 'c': 260, 'y': '2019-12'}, {'a': 0, 'd': 26, 'e': 7, 'b': 148, 'c': 260, 'y': '2019-12'}, {'a': 0, 'd': 26, 'e': 7, 'b': 148, 'c': 260, 'y': '2019-12'}, {'a': 0, 'd': 26, 'e': 7, 'b': 148, 'c': 260, 'y': '2019-12'}, {'a': 4, 'd': 86, 'e': 82, 'b': 122, 'c': 152, 'y': '2020-1'}, {'a': 4, 'd': 86, 'e': 82, 'b': 122, 'c': 152, 'y': '2020-1'}, {'a': 4, 'd': 86, 'e': 82, 'b': 122, 'c': 152, 'y': '2020-1'}, {'a': 4, 'd': 86, 'e': 82, 'b': 122, 'c': 152, 'y': '2020-1'}, {'a': 4, 'd': 86, 'e': 82, 'b': 122, 'c': 152, 'y': '2020-1'}]
-
-#{'2019-8': {'a': 7, 'y': '2019-8', 'b': 199, 'd': 19, 'c': 560, 'e': 0}, '2019-10': {'a': 0, 'y': '2019-10', 'b': 346, 'd': 26, 'c': 423, 'e': 505}, '2019-7': {'a': 0, 'y': '2019-7', 'b': 70, 'd': 22, 'c': 40, 'e': 0}, '2019-12': {'a': 0, 'y': '2019-12', 'b': 148, 'd': 26, 'c': 260, 'e': 7}, '2019-9': {'a': 4, 'y': '2019-9', 'b': 186, 'd': 26, 'c': 486, 'e': 10}, '2019-11': {'a': 1, 'y': '2019-11', 'b': 222, 'd': 22, 'c': 186, 'e': 667}, '2020-1': {'a': 4, 'y': '2020-1', 'b': 122, 'd': 86, 'c': 152, 'e': 82}}
-
-#[{'a': 7, 'y': '2019-8', 'b': 199, 'd': 19, 'c': 560, 'e': 0}, {'a': 0, 'y': '2019-10', 'b': 346, 'd': 26, 'c': 423, 'e': 505}, {'a': 0, 'y': '2019-7', 'b': 70, 'd': 22, 'c': 40, 'e': 0}, {'a': 0, 'y': '2019-12', 'b': 148, 'd': 26, 'c': 260, 'e': 7}, {'a': 4, 'y': '2019-9', 'b': 186, 'd': 26, 'c': 486, 'e': 10}, {'a': 1, 'y': '2019-11', 'b': 222, 'd': 22, 'c': 186, 'e': 667}, {'a': 4, 'y': '2020-1', 'b': 122, 'd': 86, 'c': 152, 'e': 82}]
-
-
-
         by_month = list()
 
         # order_by is needed due to ordering being present in Meta of Findin
-        severities_by_month=findings.filter(created__gte=timezone.now()+relativedelta(months=-6)) \
+        severities_by_month=findings.filter(created__gte=now+relativedelta(months=-6)) \
                                     .values('created__year', 'created__month', 'severity').annotate(count=Count('severity')).order_by()
                                     # .annotate(year=created__year')).annotate(month=ExtractMonth('created')) 
         #print(severities_by_month)
@@ -88,19 +77,90 @@ class Command(BaseCommand):
                 month_stats = results[key]
 
                 if ms['severity'] == 'Critical':
-                    sourcedata['a'] = ms['count']
+                    month_stats['a'] = ms['count']
                 elif ms['severity'] == 'High':
-                    sourcedata['b'] = ms['count']
+                    month_stats['b'] = ms['count']
                 elif ms['severity'] == 'Medium':
-                    sourcedata['c'] = ms['count']
+                    month_stats['c'] = ms['count']
                 elif ms['severity'] == 'Low':
-                    sourcedata['d'] = ms['count']
+                    month_stats['d'] = ms['count']
                 elif ms['severity'] == 'Info':
-                    sourcedata['e'] = ms['count']
+                    month_stats['e'] = ms['count']
 
         #print(results)
  
         by_month = [ v for k, v in sorted(results.items()) ]
 
-        print(by_month)
+#        print(by_month)
 
+
+
+        start_date = now - timedelta(days=180)
+
+        r = relativedelta(now, start_date)
+        weeks_between = int(ceil((((r.years * 12) + r.months) * 4.33) + (r.days / 7)))
+        if weeks_between <= 0:
+            weeks_between += 2
+
+        punchcard, ticks, highest_count = get_punchcard_data(findings, weeks_between, start_date)
+
+        print(punchcard)
+        print(ticks)
+        print(highest_count)
+
+
+
+def get_punchcard_data(findings, weeks_between, start_date):
+    punchcard = list()
+    ticks = list()
+    highest_count = 0
+    tick = 0
+    week_count = 1
+
+    # mon 0, tues 1, wed 2, thurs 3, fri 4, sat 5, sun 6
+    # sat 0, sun 6, mon 5, tue 4, wed 3, thur 2, fri 1
+    day_offset = {0: 5, 1: 4, 2: 3, 3: 2, 4: 1, 5: 0, 6: 6}
+    for x in range(-1, weeks_between):
+        # week starts the monday before
+        new_date = start_date + relativedelta(weeks=x, weekday=MO(1))
+        end_date = new_date + relativedelta(weeks=1)
+        append_tick = True
+        days = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0}
+        for finding in findings:
+            try:
+                if new_date < datetime.combine(finding.date, datetime.min.time(
+                )).replace(tzinfo=timezone.get_current_timezone()) <= end_date:
+                    # [0,0,(20*.02)]
+                    # [week, day, weight]
+                    days[day_offset[finding.date.weekday()]] += 1
+                    if days[day_offset[finding.date.weekday()]] > highest_count:
+                        highest_count = days[day_offset[
+                            finding.date.weekday()]]
+            except:
+                if new_date < finding.date <= end_date:
+                    # [0,0,(20*.02)]
+                    # [week, day, weight]
+                    days[day_offset[finding.date.weekday()]] += 1
+                    if days[day_offset[finding.date.weekday()]] > highest_count:
+                        highest_count = days[day_offset[
+                            finding.date.weekday()]]
+                pass
+
+        if sum(days.values()) > 0:
+            for day, count in list(days.items()):
+                punchcard.append([tick, day, count])
+                if append_tick:
+                    ticks.append([
+                        tick,
+                        new_date.strftime(
+                            "<span class='small'>%m/%d<br/>%Y</span>")
+                    ])
+                    append_tick = False
+            tick += 1
+        week_count += 1
+    # adjust the size
+    ratio = (sqrt(highest_count / pi))
+    for punch in punchcard:
+        punch[2] = (sqrt(punch[2] / pi)) / ratio
+
+    return punchcard, ticks, highest_count
