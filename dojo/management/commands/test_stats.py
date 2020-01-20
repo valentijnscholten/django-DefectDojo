@@ -87,6 +87,7 @@ class Command(BaseCommand):
                 elif ms['severity'] == 'Info':
                     month_stats['e'] = ms['count']
 
+
         #print(results)
  
         by_month = [ v for k, v in sorted(results.items()) ]
@@ -102,11 +103,11 @@ class Command(BaseCommand):
         if weeks_between <= 0:
             weeks_between += 2
 
-        punchcard, ticks, highest_count = get_punchcard_data(findings, weeks_between, start_date)
+        # punchcard, ticks, highest_count = get_punchcard_data(findings, weeks_between, start_date)
 
-        print(punchcard)
-        print(ticks)
-        print(highest_count)
+        # print(punchcard)
+        # print(ticks)
+        # print(highest_count)
 
 
 
