@@ -70,23 +70,23 @@ class Command(BaseCommand):
 
         results = {}
         for ms in severities_by_month:
-                key = ms['year']+'-'+ms['month']
+                key = ms['created__year']+'-'+ms['created__month']
 
                 month_stats = results[key]
                 if month_stats is None: 
-                    sourcedata = {'y': ms['year']+'-'+ms['month'], 'a': 0, 'b': 0,
+                    sourcedata = {'y': ms['created__year']+'-'+ms['created__month'], 'a': 0, 'b': 0,
                             'c': 0, 'd': 0, 'e': 0}
                     month_stats[key] = sourcedata
 
                 if ms.severity == 'Critical':
                     sourcedata['a'] = ms['count']
-                elif finding.severity == 'High':
+                elif ms.severity == 'High':
                     sourcedata['b'] = ms['count']
-                elif finding.severity == 'Medium':
+                elif ms.severity == 'Medium':
                     sourcedata['c'] = ms['count']
-                elif finding.severity == 'Low':
+                elif ms.severity == 'Low':
                     sourcedata['d'] = ms['count']
-                elif finding.severity == 'Info':
+                elif ms.severity == 'Info':
                     sourcedata['e'] = ms['count']
 
                 by_month.append(month_stats)
