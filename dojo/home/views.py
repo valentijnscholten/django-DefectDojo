@@ -88,15 +88,17 @@ def dashboard(request):
     # order_by is needed due to ordering being present in Meta of Findin
     severities_by_month=findings.filter(created__gte=timezone.now()+relativedelta(months=-6)) \
                                 .values('created__year', 'created__month', 'severity').annotate(count=Count('severity')).order_by()
-                                # .annotate(year=created__year')).annotate(month=ExtractMonth('created')) 
-    print(severities_by_month)
+
+#    print(severities_by_month)
 
     results = {}
     for ms in severities_by_month:
-            key = str(ms['created__year'])+'-'+str(ms['created__month'])
+            year = str(ms['created__year'])
+            month = str(ms['created__month']).zfill(2)
+            key = year +'-' + month
 
             if key not in results:
-                sourcedata = {'y': str(ms['created__year'])+'-'+str(ms['created__month']), 'a': 0, 'b': 0,
+                sourcedata = {'y': key, 'a': 0, 'b': 0,
                         'c': 0, 'd': 0, 'e': 0}
                 results[key] = sourcedata
 
@@ -113,11 +115,12 @@ def dashboard(request):
             elif ms['severity'] == 'Info':
                 sourcedata['e'] = ms['count']
 
-    print(results)
+#    print(results)
 
-    by_month = [ v for v in sorted(results.values()) ]
+    by_month = [ v for k, v in sorted(results.items()) ]
 
     print(by_month)
+
 
     start_date = now - timedelta(days=180)
 

@@ -51,7 +51,7 @@ class Command(BaseCommand):
         for s in severities_all:
             sev_counts_all[s['severity']] = s['count']
 
-        print(severities_all)
+        #print(severities_all)
 
 #valentijn: bymonth: [{'a': 0, 'd': 0, 'b': 0, 'e': 0, 'c': 0, 'y': '2020-01'}, {'a': 0, 'd': 0, 'b': 0, 'e': 0, 'c': 0, 'y': '2019-12'}, {'a': 0, 'd': 0, 'b': 0, 'e': 0, 'c': 0, 'y': '2019-11'}, {'a': 0, 'd': 0, 'b': 0, 'e': 0, 'c': 0, 'y': '2019-10'}, {'a': 0, 'd': 0, 'b': 0, 'e': 0, 'c': 0, 'y': '2019-09'}, {'a': 0, 'd': 0, 'b': 0, 'e': 0, 'c': 0, 'y': '2019-08'}, {'a': 0, 'd': 0, 'b': 0, 'e': 0, 'c': 0, 'y': '2019-07'}]
 
@@ -72,7 +72,7 @@ class Command(BaseCommand):
         severities_by_month=findings.filter(created__gte=timezone.now()+relativedelta(months=-6)) \
                                     .values('created__year', 'created__month', 'severity').annotate(count=Count('severity')).order_by()
                                     # .annotate(year=created__year')).annotate(month=ExtractMonth('created')) 
-        print(severities_by_month)
+        #print(severities_by_month)
 
         results = {}
         for ms in severities_by_month:
@@ -98,7 +98,7 @@ class Command(BaseCommand):
                 elif ms['severity'] == 'Info':
                     sourcedata['e'] = ms['count']
 
-        print(results)
+        #print(results)
  
         by_month = [ v for k, v in sorted(results.items()) ]
 
