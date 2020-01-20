@@ -92,7 +92,7 @@ class Command(BaseCommand):
  
         by_month = [ v for k, v in sorted(results.items()) ]
 
-#        print(by_month)
+        print(by_month)
 
 
 
