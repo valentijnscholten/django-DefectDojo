@@ -85,50 +85,39 @@ def dashboard(request):
 # valentijn2: ticks: [[0, "<span class='small'>07/22<br/>2019</span>"], [1, "<span class='small'>07/29<br/>2019</span>"], [2, "<span class='small'>08/05<br/>2019</span>"], [3, "<span class='small'>08/12<br/>2019</span>"], [4, "<span class='small'>08/19<br/>2019</span>"], [5, "<span class='small'>08/26<br/>2019</span>"], [6, "<span class='small'>09/02<br/>2019</span>"], [7, "<span class='small'>09/09<br/>2019</span>"], [8, "<span class='small'>09/16<br/>2019</span>"], [9, "<span class='small'>09/23<br/>2019</span>"], [10, "<span class='small'>09/30<br/>2019</span>"], [11, "<span class='small'>10/07<br/>2019</span>"], [12, "<span class='small'>10/14<br/>2019</span>"], [13, "<span class='small'>10/21<br/>2019</span>"], [14, "<span class='small'>10/28<br/>2019</span>"], [15, "<span class='small'>11/04<br/>2019</span>"], [16, "<span class='small'>11/11<br/>2019</span>"], [17, "<span class='small'>11/18<br/>2019</span>"], [18, "<span class='small'>11/25<br/>2019</span>"], [19, "<span class='small'>12/02<br/>2019</span>"], [20, "<span class='small'>12/09<br/>2019</span>"], [21, "<span class='small'>12/16<br/>2019</span>"], [22, "<span class='small'>12/23<br/>2019</span>"], [23, "<span class='small'>12/30<br/>2019</span>"], [24, "<span class='small'>01/06<br/>2020</span>"], [25, "<span class='small'>01/13<br/>2020</span>"]]
 # valentijn2: highest_count: 566
 
-    by_month = list()
+    # order_by is needed due to ordering being present in Meta of Findin
+    severities_by_month=findings.filter(created__gte=timezone.now()+relativedelta(months=-6)) \
+                                .values('created__year', 'created__month', 'severity').annotate(count=Count('severity')).order_by()
+                                # .annotate(year=created__year')).annotate(month=ExtractMonth('created')) 
+    print(severities_by_month)
 
-    # order_by is needed due to ordering being present in Meta of Finding
-    severities_by_month= findings.filter(created_date__gte=six_months_ago).values('severity').annotate(count=Count('severity')).order_by()
+    results = {}
+    for ms in severities_by_month:
+            key = str(ms['created__year'])+'-'+str(ms['created__month'])
 
+            if key not in results:
+                sourcedata = {'y': str(ms['created__year'])+'-'+str(ms['created__month']), 'a': 0, 'b': 0,
+                        'c': 0, 'd': 0, 'e': 0}
+                results[key] = sourcedata
 
+            month_stats = results[key]
 
-    dates_to_use = [now,
-                    now - relativedelta(months=1),
-                    now - relativedelta(months=2),
-                    now - relativedelta(months=3),
-                    now - relativedelta(months=4),
-                    now - relativedelta(months=5),
-                    now - relativedelta(months=6)]
+            if ms['severity'] == 'Critical':
+                sourcedata['a'] = ms['count']
+            elif ms['severity'] == 'High':
+                sourcedata['b'] = ms['count']
+            elif ms['severity'] == 'Medium':
+                sourcedata['c'] = ms['count']
+            elif ms['severity'] == 'Low':
+                sourcedata['d'] = ms['count']
+            elif ms['severity'] == 'Info':
+                sourcedata['e'] = ms['count']
 
-    for date_to_use in dates_to_use:
-        sourcedata = {'y': date_to_use.strftime("%Y-%m"), 'a': 0, 'b': 0,
-                      'c': 0, 'd': 0, 'e': 0}
+    print(results)
 
-        for finding in Finding.objects.filter(
-                reporter=request.user,
-                verified=True,
-                duplicate=False,
-                date__range=[datetime(date_to_use.year,
-                                      date_to_use.month, 1,
-                                      tzinfo=timezone.get_current_timezone()),
-                             datetime(date_to_use.year,
-                                      date_to_use.month,
-                                      monthrange(date_to_use.year,
-                                                 date_to_use.month)[1],
-                                      tzinfo=timezone.get_current_timezone())]):
-            if finding.severity == 'Critical':
-                sourcedata['a'] += 1
-            elif finding.severity == 'High':
-                sourcedata['b'] += 1
-            elif finding.severity == 'Medium':
-                sourcedata['c'] += 1
-            elif finding.severity == 'Low':
-                sourcedata['d'] += 1
-            elif finding.severity == 'Info':
-                sourcedata['e'] += 1
-        by_month.append(sourcedata)
+    by_month = [ v for v in results.values() ]
 
-    logger.error("valentijn: bymonth: %s", by_month)
+    print(by_month)
 
     start_date = now - timedelta(days=180)
 
