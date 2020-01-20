@@ -21,7 +21,9 @@ from dojo.utils import add_breadcrumb, get_punchcard_data
 
 from defectDojo_engagement_survey.models import Answered_Survey
 from dateutil.relativedelta import relativedelta
+from dojo.utils import get_system_setting
 
+locale = timezone(get_system_setting('time_zone'))
 
 """
 Author: Aaron Weaver
