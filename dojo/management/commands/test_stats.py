@@ -76,10 +76,12 @@ class Command(BaseCommand):
 
         results = {}
         for ms in severities_by_month:
-                key = str(ms['created__year'])+'-'+str(ms['created__month'])
+                year = str(ms['created__year'])
+                month = str(ms['created__month'],2).zfill(2)
+                key = year +'-' + month
 
                 if key not in results:
-                    sourcedata = {'y': str(ms['created__year'])+'-'+str(ms['created__month']), 'a': 0, 'b': 0,
+                    sourcedata = {'y': key, 'a': 0, 'b': 0,
                             'c': 0, 'd': 0, 'e': 0}
                     results[key] = sourcedata
 
