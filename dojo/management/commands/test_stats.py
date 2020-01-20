@@ -41,7 +41,7 @@ class Command(BaseCommand):
         findings = Finding.objects.filter(verified=True, duplicate=False)
 
         # order_by is needed due to ordering being present in Meta of Finding
-        severities_all = findings.values('severity').annotate(count=Count('severity')).order_by()
+        # severities_all = findings.values('severity').annotate(count=Count('severity')).order_by()
 
         # make sure all keys are present
         sev_counts_all = {'Critical': 0,
@@ -50,8 +50,8 @@ class Command(BaseCommand):
                     'Low': 0,
                     'Info': 0}
 
-        for s in severities_all:
-            sev_counts_all[s['severity']] = s['count']
+        # for s in severities_all:
+            # sev_counts_all[s['severity']] = s['count']
 
         #print(severities_all)
 
