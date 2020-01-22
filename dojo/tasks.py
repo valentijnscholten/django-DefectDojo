@@ -28,7 +28,6 @@ logging.basicConfig(format=fmt, level=lvl)
 logger = get_task_logger(__name__)
 deduplicationLogger = logging.getLogger("dojo.specific-loggers.deduplication")
 
-
 # Logs the error to the alerts table, which appears in the notification toolbar
 def log_generic_alert(source, title, description):
     create_notification(event='other', title=title, description=description,
@@ -291,7 +290,13 @@ def async_update_findings_from_source_issues(*args, **kwargs):
 
 @app.task(bind=True)
 def async_dupe_delete(*args, **kwargs):
+<<<<<<< HEAD
     deduplicationLogger.info("delete excess duplicates")
+=======
+    logger.info("delete excess duplicates")
+    deduplicationLogger("delete excess duplicates")
+
+>>>>>>> dedupe-improve-logging
     system_settings = System_Settings.objects.get()
     if system_settings.delete_dupulicates:
         dupe_max = system_settings.max_dupes
