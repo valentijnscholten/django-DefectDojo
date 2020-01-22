@@ -1329,7 +1329,7 @@ class Finding(models.Model):
         filtered = Finding.objects.all()
 
         if self.test.engagement.deduplication_on_engagement:
-            filtered = filtered.filter(test__engagement=test.engagement)
+            filtered = filtered.filter(test__engagement=self.test.engagement)
         else:
             filtered = filtered.filter(test__engagement__product=self.test.engagement.product)
 
@@ -1341,6 +1341,7 @@ class Finding(models.Model):
             filtered = filtered.filter(file_path=self.file_path)
         if self.line:
             filtered = filtered.filter(line=self.line)
+ 
         return filtered.exclude(pk=self.pk)[:10]
 
     def compute_hash_code(self):
