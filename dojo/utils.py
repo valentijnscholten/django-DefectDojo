@@ -266,6 +266,11 @@ def deduplicate_uid_or_hash_code(new_finding):
 
 
 def set_duplicate(new_finding, existing_finding):
+    if is_deduplication_on_engagement_mismatch(new_finding, existing_finding):
+        if existing_finding.test.engagement.deduplication_on_engagement:
+            deduplicationLogger.debug(
+                'deduplication_on_engagement_mismatch, skipping dedupe for new finding {} and existing finding {}.', new_finding.id, existing_finding.id)
+
     deduplicationLogger.debug('New finding ' + str(new_finding.id) + ' is a duplicate of existing finding ' + str(existing_finding.id))
     new_finding.duplicate = True
     new_finding.active = False
