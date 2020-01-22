@@ -3,7 +3,10 @@ from pytz import timezone
 
 from dojo.models import Finding
 from dojo.utils import get_system_setting
+<<<<<<< HEAD
 from dojo.utils import sync_dedupe
+=======
+>>>>>>> dedupe-improve-logging
 import logging
 
 locale = timezone(get_system_setting('time_zone'))
@@ -30,4 +33,3 @@ class Command(BaseCommand):
             finding.save()
         logger.info("######## Done Updating Hashcodes (deduplication is done in background using django signals upon finding save ########")
         deduplicationLogger.info("######## Done Updating Hashcodes (deduplication is done in background using django signals upon finding save ########")
-        
