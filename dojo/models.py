@@ -1334,7 +1334,13 @@ class Finding(models.Model):
 
     @property
     def similar_findings(self):
-        filtered = Finding.objects.filter(test__engagement__product=self.test.engagement.product)
+        filtered = Finding.objects.all()
+
+        if self.test.engagement.deduplication_on_engagement:
+            filtered = filtered.filter(test__engagement=test.engagement)
+        else:
+            filtered = filtered.filter(test__engagement__product=self.test.engagement.product)
+
         if self.cve:
             filtered = filtered.filter(cve=self.cve)
         if self.cwe:
