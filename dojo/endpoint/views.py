@@ -16,8 +16,8 @@ from django.db import DEFAULT_DB_ALIAS
 from dojo.filters import EndpointFilter
 from dojo.forms import EditEndpointForm, \
     DeleteEndpointForm, AddEndpointForm, DojoMetaDataForm
-from dojo.models import Product, Endpoint, Finding, System_Settings, DojoMeta
-from dojo.utils import get_page_items, add_breadcrumb, get_period_counts, get_system_setting, Product_Tab, calculate_grade, create_notification
+from dojo.models import Product, Endpoint, Finding, DojoMeta
+from dojo.utils import get_page_items, add_breadcrumb, get_period_counts, get_system_setting, get_system_settings, Product_Tab, calculate_grade, create_notification
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +48,7 @@ def vulnerable_endpoints(request):
     paged_endpoints = get_page_items(request, endpoints_query, 25)
     add_breadcrumb(title="Vulnerable Endpoints", top_level=not len(request.GET), request=request)
 
-    system_settings = System_Settings.objects.get()
+    system_settings = get_system_settings()
 
     product_tab = None
     view_name = "All Endpoints"

@@ -1622,7 +1622,8 @@ class Finding(models.Model):
         # Assign the numerical severity for correct sorting order
         self.numerical_severity = Finding.get_numerical_severity(self.severity)
         super(Finding, self).save()
-        system_settings = System_Settings.objects.get()
+        from dojo.utils import get_system_settings
+        system_settings = get_system_settings()
         if dedupe_option and self.hash_code is not None:
             if system_settings.enable_deduplication:
                 from dojo.tasks import async_dedupe
@@ -1673,7 +1674,8 @@ class Finding(models.Model):
 
     def severity_display(self):
         try:
-            system_settings = System_Settings.objects.get()
+            from dojo.utils import get_system_settings
+            system_settings = get_system_settings()
             if system_settings.s_finding_severity_naming:
                 return self.numerical_severity
             else:
@@ -2127,6 +2129,7 @@ class Alerts(models.Model):
 
     class Meta:
         ordering = ['-created']
+
 
 
 class Cred_User(models.Model):

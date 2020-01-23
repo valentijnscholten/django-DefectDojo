@@ -27,11 +27,11 @@ from dojo.forms import CheckForm, \
 from dojo.models import Finding, Product, Engagement, Test, \
     Check_List, Test_Type, Notes, \
     Risk_Acceptance, Development_Environment, BurpRawRequestResponse, Endpoint, \
-    JIRA_PKey, JIRA_Issue, Cred_Mapping, Dojo_User, System_Settings
+    JIRA_PKey, JIRA_Issue, Cred_Mapping, Dojo_User
 from dojo.tools import handles_active_verified_statuses
 from dojo.tools.factory import import_parser_factory
 from dojo.utils import get_page_items, add_breadcrumb, handle_uploaded_threat, \
-    FileIterWrapper, get_cal_event, message, get_system_setting, create_notification, Product_Tab
+    FileIterWrapper, get_cal_event, message, get_system_setting, get_system_settings, create_notification, Product_Tab
 from dojo.tasks import update_epic_task, add_epic_task
 from functools import reduce
 
@@ -296,7 +296,7 @@ def view_engagement(request, eid):
     if eng.preset:
         preset_test_type = eng.preset.test_type.all()
         network = eng.preset.network_locations.all()
-    system_settings = System_Settings.objects.get()
+    system_settings = get_system_settings()
     if not auth:
         # will render 403
         raise PermissionDenied

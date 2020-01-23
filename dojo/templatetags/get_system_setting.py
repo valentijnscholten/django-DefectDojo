@@ -7,7 +7,7 @@ register = template.Library()
 @register.filter
 def get_system_setting(system_setting):
     try:
-        system_settings = System_Settings.objects.get()
+        system_settings = get_system_settings()
         if getattr(system_settings, system_setting, None):
             return getattr(system_settings, system_setting, None)
         else:
