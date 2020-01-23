@@ -21,9 +21,9 @@ from dojo.filters import ProductFilter, ProductFindingFilter, EngagementFilter
 from dojo.forms import ProductForm, EngForm, DeleteProductForm, DojoMetaDataForm, JIRAPKeyForm, JIRAFindingForm, AdHocFindingForm, \
                        EngagementPresetsForm, DeleteEngagementPresetsForm, Sonarqube_ProductForm
 from dojo.models import Product_Type, Note_Type, Finding, Product, Engagement, ScanSettings, Risk_Acceptance, Test, JIRA_PKey, Finding_Template, \
-    Tool_Product_Settings, Cred_Mapping, Test_Type, System_Settings, Languages, App_Analysis, Benchmark_Type, Benchmark_Product_Summary, \
+    Tool_Product_Settings, Cred_Mapping, Test_Type, Languages, App_Analysis, Benchmark_Type, Benchmark_Product_Summary, \
     Endpoint, Engagement_Presets, DojoMeta, Sonarqube_Product
-from dojo.utils import get_page_items, add_breadcrumb, get_system_setting, create_notification, Product_Tab, get_punchcard_data
+from dojo.utils import get_page_items, add_breadcrumb, get_system_setting, get_system_settings, create_notification, Product_Tab, get_punchcard_data
 from custom_field.models import CustomFieldValue, CustomField
 from dojo.tasks import add_epic_task, add_issue_task
 from tagging.models import Tag
@@ -88,7 +88,7 @@ def view_product(request, pid):
     for i in range(0, len(benchmarks)):
         benchAndPercent.append([benchmarks[i].benchmark_type, get_level(benchmarks[i])])
 
-    system_settings = System_Settings.objects.get()
+    system_settings = get_system_settings()
 
     product_metadata = dict(prod.product_meta.order_by('name').values_list('name', 'value'))
 
@@ -445,7 +445,7 @@ def view_product_details(request, pid):
     app_analysis = App_Analysis.objects.filter(product=prod).order_by('name')
     benchmark_type = Benchmark_Type.objects.filter(enabled=True).order_by('name')
     benchmarks = Benchmark_Product_Summary.objects.filter(product=prod, publish=True, benchmark_type__enabled=True).order_by('benchmark_type__name')
-    system_settings = System_Settings.objects.get()
+    system_settings = get_system_settings()
 
     if not auth:
         # will render 403
@@ -527,7 +527,7 @@ def new_product(request):
 @user_passes_test(lambda u: u.is_staff)
 def edit_product(request, pid):
     prod = Product.objects.get(pk=pid)
-    system_settings = System_Settings.objects.get()
+    system_settings = get_system_settings()
     jira_enabled = system_settings.enable_jira
     jira_inst = None
     jform = None

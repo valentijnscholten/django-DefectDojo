@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.shortcuts import render
 from dojo.models import System_Settings
 from dojo.utils import (add_breadcrumb,
-                        get_celery_worker_status)
+                        get_celery_worker_status, get_system_settings)
 from dojo.forms import SystemSettingsForm
 from django.conf import settings
 from django.http import HttpResponseRedirect
@@ -16,10 +16,7 @@ logger = logging.getLogger(__name__)
 
 @user_passes_test(lambda u: u.is_superuser)
 def system_settings(request):
-    try:
-        system_settings_obj = System_Settings.objects.get()
-    except:
-        system_settings_obj = System_Settings()
+    system_settings_obj = get_system_settings()
 
     # Celery needs to be set with the setting: CELERY_RESULT_BACKEND = 'db+sqlite:///dojo.celeryresults.sqlite'
     if hasattr(settings, 'CELERY_RESULT_BACKEND'):

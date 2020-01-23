@@ -11,10 +11,11 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.contrib.admin.utils import NestedObjects
 from django.db import DEFAULT_DB_ALIAS
+from dojo.utils import get_system_settings
 
 # Local application/library imports
 from dojo.models import Rule,\
-    System_Settings, Finding, Test, Test_Type, Engagement, \
+    Finding, Test, Test_Type, Engagement, \
     Product, Product_Type, Child_Rule
 from dojo.forms import RuleFormSet, DeleteRuleForm, RuleForm
 from dojo.utils import add_breadcrumb
@@ -155,7 +156,7 @@ def delete_rule(request, tid):
     rels = collector.nested()
 
     add_breadcrumb(parent=rule, title="Delete", top_level=False, request=request)
-    system_settings = System_Settings.objects.get()
+    system_settings = get_system_settings()
     return render(request, 'dojo/delete_rule.html',
                   {'rule': rule,
                    'form': form,

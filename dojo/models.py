@@ -1349,7 +1349,7 @@ class Finding(models.Model):
             filtered = filtered.filter(file_path=self.file_path)
         if self.line:
             filtered = filtered.filter(line=self.line)
- 
+
         return filtered.exclude(pk=self.pk)[:10]
 
     def compute_hash_code(self):
@@ -1637,7 +1637,8 @@ class Finding(models.Model):
         # Assign the numerical severity for correct sorting order
         self.numerical_severity = Finding.get_numerical_severity(self.severity)
         super(Finding, self).save()
-        system_settings = System_Settings.objects.get()
+        from dojo.utils import get_system_settings
+        system_settings = get_system_settings()
         if dedupe_option and self.hash_code is not None:
             if system_settings.enable_deduplication:
                 from dojo.tasks import async_dedupe
@@ -1688,7 +1689,8 @@ class Finding(models.Model):
 
     def severity_display(self):
         try:
-            system_settings = System_Settings.objects.get()
+            from dojo.utils import get_system_settings
+            system_settings = get_system_settings()
             if system_settings.s_finding_severity_naming:
                 return self.numerical_severity
             else:
@@ -2146,6 +2148,7 @@ class Alerts(models.Model):
     def save(self, *args, **kwargs):
         self.title = self.title[:200]
         super(Alerts, self).save(*args, **kwargs)
+
 
 class Cred_User(models.Model):
     name = models.CharField(max_length=200, null=False)

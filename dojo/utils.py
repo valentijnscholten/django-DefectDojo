@@ -1609,26 +1609,43 @@ def prepare_for_view(encrypted_value):
 
 
 def get_system_setting(setting):
-    return getattr(get_system_settings(), setting, None)
+    # print('getting system_setting: %s', setting)
+    result = get_system_settings()
+    # print('gotten system_settings: %s', result)
+    value = getattr(result, setting, None) 
+    # print('value: %s', value)    
+    return value
 
 
 def get_system_settings(force_reload=False):
     dojo_context = caches['dojo_context']
-    system_settings = dojo_context.get('system_settings')
-    if (not system_settings) or force_reload:
+    system_settings = dojo_context.get('system_settings', None)
+    if (system_settings is None) or force_reload:
         try:
-            logger.info("reloading system_settings from db")
-            system_settings = System_Settings().objects.all()
-        except:
+            logger.info("loading system_settings from db")
+            system_settings = System_Settings.objects.get()
+            # logger.info('caching system_settings in memory')
+            # logger.debug('caching system_settings in memory: %s', vars(system_settings))
+            # pprint(vars(system_settings))
+            dojo_context.set('system_settings', system_settings)
+            # logger.error('timezone_valentijn: %s', getattr(system_settings, 'time_zone', None))
+        except Exception as e:
+            # this code was already in place and I've seen this case happening during startup or shortly after. don't cache this.
+            logger.error('creating empty system_settings object because')
+            logger.exception(e)
             system_settings = System_Settings()
-        dojo_context.set('system_settings', system_settings)
+    else:
+        logger.info('returning cached system_settings')
+
     return system_settings
 
 
 @receiver(post_save, sender=System_Settings)
-def reload_system_settings():
-    return get_system_settings(force_reload=True)
-    
+def reload_system_settings(sender, *args, **kwargs):
+    logger.error('clearing dojo_context system_settings')
+    dojo_context = caches['dojo_context']
+    dojo_context.delete('system_settings')
+
 
 def get_slack_user_id(user_email):
     user_id = None
