@@ -1598,8 +1598,8 @@ def get_system_settings(force_reload=False):
             logger.error('creating empty system_settings object because')
             logger.exception(e)
             system_settings = System_Settings()
-    else:
-        logger.info('returning cached system_settings')
+    # else:
+        # logger.info('returning cached system_settings')
 
     return system_settings
 
