@@ -26,12 +26,14 @@ from jira import JIRA
 from jira.exceptions import JIRAError
 from django.dispatch import receiver
 from dojo.signals import dedupe_signal
+from django.db.models.signals import post_save
 
 from dojo.models import Finding, Engagement, Finding_Template, Product, JIRA_PKey, JIRA_Issue, \
     Dojo_User, User, Alerts, System_Settings, Notifications, UserContactInfo, Endpoint, Benchmark_Type, \
     Language_Type, Languages, Rule
 from asteval import Interpreter
 from requests.auth import HTTPBasicAuth
+from django.core.cache import caches
 
 import logging
 logger = logging.getLogger(__name__)
@@ -82,7 +84,7 @@ def is_deduplication_on_engagement_mismatch(new_finding, to_duplicate_finding):
 
 @receiver(dedupe_signal, sender=Finding)
 def sync_dedupe(sender, *args, **kwargs):
-    system_settings = System_Settings.objects.get()
+    system_settings = get_system_settings()
     if system_settings.enable_deduplication:
         new_finding = kwargs['new_finding']
         deduplicationLogger.debug('sync_dedupe for: ' + str(new_finding.id) +
@@ -1144,7 +1146,7 @@ def log_jira_message(text, finding):
 # Adds labels to a Jira issue
 def add_labels(find, issue):
     # Update Label with system setttings label
-    system_settings = System_Settings.objects.get()
+    system_settings = get_system_settings()
     labels = system_settings.jira_labels
     if labels is None:
         return
@@ -1180,7 +1182,7 @@ def add_issue(find, push_to_jira):
     if push_to_jira:
         if 'Active' in find.status() and 'Verified' in find.status():
             if ((jpkey.push_all_issues and Finding.get_number_severity(
-                    System_Settings.objects.get().jira_minimum_severity) >=
+                    get_system_settings().jira_minimum_severity) >=
                  Finding.get_number_severity(find.severity))):
                 log_jira_alert(
                     'Finding below jira_minimum_severity threshold.', find)
@@ -1607,13 +1609,26 @@ def prepare_for_view(encrypted_value):
 
 
 def get_system_setting(setting):
-    try:
-        system_settings = System_Settings.objects.get()
-    except:
-        system_settings = System_Settings()
+    return getattr(get_system_settings(), setting, None)
 
-    return getattr(system_settings, setting, None)
 
+def get_system_settings(force_reload=False):
+    dojo_context = caches['dojo_context']
+    system_settings = dojo_context.get('system_settings')
+    if (not system_settings) or force_reload:
+        try:
+            logger.info("reloading system_settings from db")
+            system_settings = get_system_settings()
+        except:
+            system_settings = System_Settings()
+        dojo_context.set('system_settings', system_settings)
+    return system_settings
+
+
+@receiver(post_save, sender=System_Settings)
+def reload_system_settings():
+    return get_system_settings(force_reload=True)
+    
 
 def get_slack_user_id(user_email):
     user_id = None
@@ -1784,7 +1799,7 @@ def create_notification(event=None, **kwargs):
 
 
 def calculate_grade(product):
-    system_settings = System_Settings.objects.get()
+    system_settings = get_system_settings()
     if system_settings.enable_product_grade:
         severity_values = Finding.objects.filter(
             ~Q(severity='Info'),
@@ -1920,7 +1935,7 @@ def add_language(product, language):
 
 # Apply finding template data by matching CWE + Title or CWE
 def apply_cwe_to_template(finding, override=False):
-    if System_Settings.objects.get().enable_template_match or override:
+    if get_system_settings().enable_template_match or override:
         # Attempt to match on CWE and Title First
         template = Finding_Template.objects.filter(
             cwe=finding.cwe, title__icontains=finding.title, template_match=True).first()
