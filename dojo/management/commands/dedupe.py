@@ -3,10 +3,7 @@ from pytz import timezone
 
 from dojo.models import Finding
 from dojo.utils import get_system_setting
-<<<<<<< HEAD
 from dojo.utils import sync_dedupe
-=======
->>>>>>> dedupe-improve-logging
 import logging
 
 locale = timezone(get_system_setting('time_zone'))
