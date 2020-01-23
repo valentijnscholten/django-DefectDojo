@@ -57,3 +57,4 @@ google-api-python-client==1.7.11
 google-auth==1.6.3
 google-auth-oauthlib==0.3.0
 drf_yasg==1.17.0
+django-lrucache-backend>=2.0.0
