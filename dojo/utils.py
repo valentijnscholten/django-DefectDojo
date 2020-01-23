@@ -1618,7 +1618,7 @@ def get_system_settings(force_reload=False):
     if (not system_settings) or force_reload:
         try:
             logger.info("reloading system_settings from db")
-            system_settings = get_system_settings()
+            system_settings = System_Settings().objects.all()
         except:
             system_settings = System_Settings()
         dojo_context.set('system_settings', system_settings)
