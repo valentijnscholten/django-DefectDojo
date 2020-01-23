@@ -292,7 +292,7 @@ def async_update_findings_from_source_issues(*args, **kwargs):
 @app.task(bind=True)
 def async_dupe_delete(*args, **kwargs):
     logger.info("delete excess duplicates")
-    deduplicationLogger("delete excess duplicates")
+    deduplicationLogger.info("delete excess duplicates")
     system_settings = get_system_settings()
     if system_settings.delete_dupulicates:
         dupe_max = system_settings.max_dupes
