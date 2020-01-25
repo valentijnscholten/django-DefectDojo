@@ -274,6 +274,14 @@ def set_duplicate(new_finding, existing_finding):
                 'deduplication_on_engagement_mismatch, skipping dedupe for new finding {} and existing finding {}.', new_finding.id, existing_finding.id)
 
     deduplicationLogger.debug('New finding ' + str(new_finding.id) + ' is a duplicate of existing finding ' + str(existing_finding.id))
+    if (existing_finding.is_Mitigated or existing_finding.mitigated) and new_finding.active and not new_finding.is_Mitigated:
+        existing_finding.mitigated = new_finding.mitigated
+        existing_finding.is_Mitigated = new_finding.is_Mitigated
+        existing_finding.active = new_finding.active
+        existing_finding.verified = new_finding.verified
+        existing_finding.notes.create(author=existing_finding.reporter,
+                                      entry="This finding has been automatically re-openend as it was found in recent scans.")
+        existing_finding.save()
     new_finding.duplicate = True
     new_finding.active = False
     new_finding.verified = False
