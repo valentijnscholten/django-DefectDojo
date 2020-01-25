@@ -281,7 +281,20 @@ def set_duplicate(new_finding, existing_finding):
         existing_finding.verified = new_finding.verified
         existing_finding.notes.create(author=existing_finding.reporter,
                                       entry="This finding has been automatically re-openend as it was found in recent scans.")
+
         existing_finding.save()
+        title = 'An old finding has reopened "{}", engagement {}.' \
+                .format(test.engagement.product.name, test.engagement.name)
+        url = reverse('view_finding', args=(existing_finding.id, ))
+        description = 'See {}'.format(existing_finding.title)
+        create_notification(event='other',
+                            title=title,
+                            url=url,
+                            description=description,
+                            icon='bullseye',
+                            objowner=none)
+
+
     new_finding.duplicate = True
     new_finding.active = False
     new_finding.verified = False
