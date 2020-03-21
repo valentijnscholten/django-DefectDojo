@@ -568,7 +568,7 @@ class ImportScanSerializer(TaggitSerializer, serializers.Serializer):
 
         test.save()
         # return the id of the created test, can't find a better way because this is not a ModelSerializer....
-        self.fields['id'] = serializers.IntegerField(read_only=True, default=test.id)
+        self.fields['test'] = serializers.IntegerField(read_only=True, default=test.id)
 
         if 'tags' in data:
             test.tags = ' '.join(data['tags'])

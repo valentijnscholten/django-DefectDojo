@@ -500,7 +500,7 @@ class ImportScanTest(BaseClass.RESTEndpointTest):
 
     def test_create(self):
         response = super().test_create()
-        imported_findings = Finding.objects.filter(test=response.data['id']).order_by('id')
+        imported_findings = Finding.objects.filter(test=response.data['test']).order_by('id')
         for i in range(0, len(imported_findings)):
             self.assertEqual(imported_findings[i].hash_code, self.expected_hash_codes[i])
 
