@@ -21,7 +21,7 @@ def skipIfNotSubclass(baseclass_name):
             if baseclass_name not in self.view_mixins:
                 self.skipTest('This view is not %s' % baseclass_name)
             else:
-                f(self, *args, **kwargs)
+                return f(self, *args, **kwargs)
         return wrapper
     return decorate
 
@@ -51,6 +51,7 @@ class BaseClass():
             response = self.client.post(self.url, self.payload)
             self.assertEqual(201, response.status_code, response.data)
             self.assertEqual(self.endpoint_model.objects.count(), length + 1)
+            return response
 
         @skipIfNotSubclass('RetrieveModelMixin')
         def test_detail(self):
@@ -162,7 +163,13 @@ class FindingsTest(BaseClass.RESTEndpointTest):
             "endpoints": [1, 2],
             "images": []}
         self.update_fields = {'active': True}
+        self.expected_hash_code = '219e65805991493c16a984048af4040e83e0701e15f50791ac4410fa0e9be628'
         BaseClass.RESTEndpointTest.__init__(self, *args, **kwargs)
+
+    def test_create(self):
+        response = super().test_create()
+        print(response)
+        self.assertEqual(response.data['hash_code'], self.expected_hash_code)
 
 
 class FindingTemplatesTest(BaseClass.RESTEndpointTest):
@@ -483,11 +490,37 @@ class ImportScanTest(BaseClass.RESTEndpointTest):
             "engagement": 1,
             "lead": 2,
         }
+        self.expected_hash_codes = [
+            '93677120a4be915aee41d358764de4237a82752dcd690b5ddda849824ab9951c',
+            '5201c66dae61342701ad8257474a440511b2fb3759c6b026c861f30ac3c377a8',
+            '1f3d269393d91b0d141d18b67ba68ddab19897f14ed9549def729e2613d50caa',
+            '770698d2c9cd3de781c2ffeb823377c5c925a114f476a2916d33561140a34b8a',
+        ]
         BaseClass.RESTEndpointTest.__init__(self, *args, **kwargs)
+
+    def test_create(self):
+        response = super().test_create()
+        imported_findings = Finding.objects.filter(test=response.data['id']).order_by('id')
+        for i in range(0, len(imported_findings)):
+            self.assertEqual(imported_findings[i].hash_code, self.expected_hash_codes[i])
 
 
 class ReimportScanTest(APITestCase):
     fixtures = ['dojo_testdata.json']
+
+    # hashcode of existing findings should not be changed, and new findings should match
+    expected_hash_codes = [
+        '5b0dead640b58a2b778aa2e8f5cccf67df7dc833b0c3f410985d1237615c86e7',
+        '5b0dead640b58a2b778aa2e8f5cccf67df7dc833b0c3f410985d1237615c86e7',
+        '5b0dead640b58a2b778aa2e8f5cccf67df7dc833b0c3f410985d1237615c86e7',
+        '5b0dead640b58a2b778aa2e8f5cccf67df7dc833b0c3f410985d1237615c86e7',
+        '5b0dead640b58a2b778aa2e8f5cccf67df7dc833b0c3f410985d1237615c86e7',
+        'c89d25e445b088ba339908f68e15e3177b78d22f3039d1bfea51c4be251bf4e0',
+        '93677120a4be915aee41d358764de4237a82752dcd690b5ddda849824ab9951c',
+        '5201c66dae61342701ad8257474a440511b2fb3759c6b026c861f30ac3c377a8',
+        '1f3d269393d91b0d141d18b67ba68ddab19897f14ed9549def729e2613d50caa',
+        '770698d2c9cd3de781c2ffeb823377c5c925a114f476a2916d33561140a34b8a',
+    ]
 
     def setUp(self):
         testuser = User.objects.get(username='admin')
@@ -507,5 +540,11 @@ class ReimportScanTest(APITestCase):
                 "file": open('tests/zap_sample.xml'),
                 "test": 3,
             })
+        print(response.data)
         self.assertEqual(length, Test.objects.all().count())
         self.assertEqual(201, response.status_code)
+
+        imported_findings = Finding.objects.filter(test=response.data['test']).order_by('id')
+        for i in range(0, len(imported_findings)):
+            # print(imported_findings[i].hash_code)
+            self.assertEqual(imported_findings[i].hash_code, self.expected_hash_codes[i])
