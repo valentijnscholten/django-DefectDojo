@@ -40,7 +40,7 @@
                             </td>
                     {% endif %}
                     {% for pk,c in field.field.widget.choices %}
-                        <td class="{{ classes.value }} {% if field|is_multiple_checkbox %}multiple-checkbox{% endif %}">
+                        <td>
                             <input type="checkbox" name="{{ field.name }}" {% if c in field.value %}checked{% endif %} value="{{ c }}"/>
                         </td>
                     {% endfor %}

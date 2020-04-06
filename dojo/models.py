@@ -2235,6 +2235,7 @@ class Notifications(models.Model):
     review_requested = MultiSelectField(choices=NOTIFICATION_CHOICES, default='alert', blank=True)
     other = MultiSelectField(choices=NOTIFICATION_CHOICES, default='alert', blank=True)
     user = models.ForeignKey(Dojo_User, default=None, null=True, editable=False, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, default=None, null=True, editable=False, on_delete=models.CASCADE)
 
 
 class Tool_Product_Settings(models.Model):
