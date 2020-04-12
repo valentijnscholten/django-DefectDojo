@@ -1873,11 +1873,11 @@ class ProductNotificationsForm(forms.ModelForm):
         super(ProductNotificationsForm, self).__init__(*args, **kwargs)
         # self.initial['engagement_added'] = ''
         # self.initial['test_added'] = ''
-        # self.initial['findings_updated'] = ''
+        # self.initial['scan_added'] = ''
 
     class Meta:
         model = Notifications
-        fields = ['engagement_added', 'test_added', 'findings_updated']
+        fields = ['engagement_added', 'test_added', 'scan_added']
 
 
 class AjaxChoiceField(forms.ChoiceField):

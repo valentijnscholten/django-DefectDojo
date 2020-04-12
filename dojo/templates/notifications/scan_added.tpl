@@ -9,17 +9,17 @@ Hello {{ user.get_full_name }},
 <br/>
 {{ description }}<br/>
 <br/>
-{% if finding_count is not None %}
-{{ finding_count }} findings have updated for '{{product}} / {{ engagement.name }} / {{ test }}': <a href="{{ full_url }}">findings</a><br/>
-{% else %}
-findings have updated for '{{product}} / {{ engagement.name }} / {{ test }}': <a href="{{ full_url }}">findings</a><br/>
-{% endif %}
+{% url 'view_product' test.engagement.product.id as product_url %}
+{% url 'view_engagement' test.engagement.id as engagement_url %}
+{% url 'view_test' test.id as test_url %}
+{{ finding_count }} findings have been updated for while a scan was uploaded: 
+<a href="{{product_url|full_url}}">{{product}}</a> / <a href="{{engagement_url|full_url}}">{{ engagement.name }}</a> / <a href="{{ test_url|full_url }}">{{ test }}</a><br/>
 <br/>
 <p>
 New findings:<br/>
 {% for finding in findings_new %}
 {% url 'view_finding' finding.id as finding_url %}
-({{ finding.severity }}) <a href="{{ finding_url|full_url }}">{{ finding.title }}</a><br/>
+<a href="{{ finding_url|full_url }}">{{ finding.title }}</a> ({{ finding.severity }})<br/>
 {% empty %}
 None<br/>
 {% endfor %}
@@ -28,16 +28,25 @@ None<br/>
 Reactivated findings:<br/>
 {% for finding in findings_reactivated %}
 {% url 'view_finding' finding.id as finding_url %}
-({{ finding.severity }}) <a href="{{ finding_url|full_url }}">{{ finding.title }}</a><br/>
-{% empty %}
+<a href="{{ finding_url|full_url }}">{{ finding.title }}</a> ({{ finding.severity }})<br/>
 None<br/>
+{% empty %}
 {% endfor %}
 </p>
 <p>
 Closed findings:<br/>
 {% for finding in findings_mitigated %}
 {% url 'view_finding' finding.id as finding_url %}
-({{ finding.severity }}) <a href="{{ finding_url|full_url }}">{{ finding.title }}</a><br/>
+<a href="{{ finding_url|full_url }}">{{ finding.title }}</a> ({{ finding.severity }})<br/>
+{% empty %}
+None<br/>
+{% endfor %}
+</p>
+<p>
+Untouched findings:<br/>
+{% for finding in findings_untouched %}
+{% url 'view_finding' finding.id as finding_url %}
+<a href="{{ finding_url|full_url }}">{{ finding.title }}</a> ({{ finding.severity }})<br/>
 {% empty %}
 None<br/>
 {% endfor %}

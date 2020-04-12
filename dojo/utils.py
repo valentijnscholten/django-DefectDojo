@@ -1864,9 +1864,6 @@ def create_notification(event=None, **kwargs):
 
     # print(vars(notifications))
 
-    if 'url' in kwargs:
-        kwargs.update({'full_url': get_full_url(kwargs['url'])})
-
     # add some info such as absolute urls to the findings for rendering templates
     # for s in ['findings', 'findings_new', 'findings_mitigated', 'findings_reactivated']:
     #     if s in kwargs:
@@ -2115,3 +2112,12 @@ def set_default_notifications(sender, instance, created, **kwargs):
         notifications = Notifications()
         notifications.user = instance
         notifications.save()
+
+
+@receiver(post_save, sender=Engagement)
+def engagement_post_Save(sender, instance, created, **kwargs):
+    if created:
+        engagement = instance
+        title = 'Engagement created for ' + str(engagement.product) + ': ' + str(engagement.name)
+        create_notification(event='engagement_added', title=title, engagement=engagement, product=engagement.product,
+                            url=reverse('view_engagement', args=(engagement.id,)))
