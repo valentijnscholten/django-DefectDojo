@@ -2237,6 +2237,11 @@ class Notifications(models.Model):
     user = models.ForeignKey(Dojo_User, default=None, null=True, editable=False, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, default=None, null=True, editable=False, on_delete=models.CASCADE)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'product'], name="notifications_user_product")
+        ]
+
 
 class Tool_Product_Settings(models.Model):
     name = models.CharField(max_length=200, null=False)
