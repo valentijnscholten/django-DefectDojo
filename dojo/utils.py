@@ -1759,7 +1759,17 @@ def get_slack_user_id(user_email):
     return user_id
 
 
-def create_notification(event=None, **kwargs):
+def create_notification(initiator=None, event=None, **kwargs):
+    print('block_exec: ', vars(initiator.usercontactinfo))
+    if initiator and initiator.usercontactinfo and not initiator.usercontactinfo.block_execution:
+        from .tasks import async_create_notification
+        print('async nottttttttttttts')
+        async_create_notification.delay(initator=initiator, event=event, **kwargs)
+    else:
+        create_notification_sync(initator=initiator, event=event, **kwargs)
+
+
+def create_notification_sync(event=None, **kwargs):
     def create_description(event):
         if "description" not in kwargs.keys():
             if event == 'product_added':
