@@ -37,7 +37,7 @@ def personal_notifications(request):
 
 
 @user_passes_test(lambda u: u.is_superuser)
-def global_notifications(request):
+def system_notifications(request):
     try:
         notifications_obj = Notifications.objects.get(user=None)
     except:
@@ -53,8 +53,8 @@ def global_notifications(request):
                                  'Settings saved.',
                                  extra_tags='alert-success')
 
-    add_breadcrumb(title="Global notification settings", top_level=False, request=request)
+    add_breadcrumb(title="System notification settings", top_level=False, request=request)
     return render(request, 'dojo/notifications.html',
                   {'form': form,
-                   'scope': 'global',
+                   'scope': 'system',
                    'admin': request.user.is_superuser})

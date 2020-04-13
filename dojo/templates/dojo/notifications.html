@@ -6,14 +6,14 @@
 {% endblock %}
 
 {% block content %}
-    <h3> {% if scope == 'global' %}Global{% else %}Personal{% endif %} Notification Settings </h3>
+    <h3> {% if scope == 'system' %}System{% else %}Personal{% endif %} Notification Settings </h3>
     <form class="form-inline col-sm-10" method="post" id="notform">{% csrf_token %}
         <div class="container" style="width:50%">
             {% if request.user.is_superuser %}
                <div class="col-sm-5">
-                   <label for="notification-scope">Scope <span class="fa fa-question-circle has-popover" data-trigger="hover" data-content="Destinations for global notifications are configured in System Settings. Destinations for personal notifications are taken from your personal contact details (personal Slack notifications will be sent to you as a direct message)."/></label>
+                   <label for="notification-scope">Scope <span class="fa fa-question-circle has-popover" data-trigger="hover" data-content="Destinations for system notifications are configured in System Settings. Destinations for personal notifications are taken from your personal contact details (personal Slack notifications will be sent to you as a direct message)."/></label>
                     <select data-placeholder="Scope" id="notification-scope" class="chosen-select form-control"/>
-                        <option value="global">Global</option>
+                        <option value="system">System</option>
                          <option value="personal">Personal</option>
                      </select>
                 </div>
