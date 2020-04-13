@@ -1005,3 +1005,27 @@ def delete_engagement_presets(request, pid, eid):
                    'product_tab': product_tab,
                    'rels': rels,
                    })
+
+
+def edit_notifications(request, pid):
+    print('editing them notifications')
+    prod = get_object_or_404(Product, id=pid)
+    if request.method == 'POST':
+        product_notifications = Notifications.objects.filter(user=request.user).filter(product=prod).first()
+        if not product_notifications:
+            product_notifications = Notifications(user=request.user, product=prod)
+            print('no existing product notifications found')
+        else:
+            print('existing product notifications found')
+
+        form = ProductNotificationsForm(request.POST, instance=product_notifications)
+        # print(vars(form))
+
+        if form.is_valid():
+            form.save()
+            messages.add_message(request,
+                                    messages.SUCCESS,
+                                    'Notification settings updated.',
+                                    extra_tags='alert-success')
+
+    return HttpResponseRedirect(reverse('view_product', args=(pid,)))
