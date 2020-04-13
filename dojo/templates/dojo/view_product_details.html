@@ -317,12 +317,18 @@
 <!-- Notifications -->
 <div class="panel panel-default panel-default-secondary" id="edit_notifications">
   <div class="panel-heading">
-    <h3 class="panel-title"><span class="fa fa-users fa-fw" aria-hidden="true"></span> Notifications</h3>
+    {% url 'notifications' as notifications_url %}
+    <h3 class="panel-title"><span class="fa fa-users fa-fw" aria-hidden="true"></span> Notifications
+      <i class="fa fa-question-circle has-popover" data-trigger="hover" data-content="These are your personal settings for this product, next to your <a href='{{notifications_url}}'>global notifications</a>." data-placement="right" data-container="body"></i>
+    </h3>
   </div>
   <form id="edit_notifications_form" class="form-horizontal" method="post" action="{% url 'edit_notifications' prod.id %}">{% csrf_token %}
     <div class="table-responsive">
       <table class="table table-striped">
         <tbody>
+          <tr>
+              <td id="saving_notifications">&nbsp;</td><td class="centered">Slack</td><td class="centered">HipChat</td><td class="centered">Mail</td><td class="centered">Alert</td>
+          </tr>
           {% for field in personal_notifications_form.visible_fields %}
           <tr>
             <td><strong>{{ field.label }}&nbsp;</strong>
@@ -330,20 +336,13 @@
               <i class="fa fa-question-circle has-popover" data-trigger="hover" data-content="{{ field.help_text }}" data-placement="right" data-container="body"></i>
               {% endif %}
             </td>
-            <td>
-              {% if field.value or True %}
-              {% for pk,c in field.field.widget.choices %}
-              <label for="{{ field.name }}_{{ c }}" style="font-weight: normal;">{{ pk }}</label><input id="{{ field.name }}_{{ c }}" type="checkbox" name="{{ field.name }}" {% if c in field.value %}checked{% endif %} value="{{ c }}"/>
-              {% endfor %}
-              {% else %}
-              Disabled
-              {% endif %}
-            </td>
-          </tr>
+            {% for pk,c in field.field.widget.choices %}
+            <td class="centered"><input id="{{ field.name }}_{{ c }}" type="checkbox" name="{{ field.name }}" {% if c in field.value %}checked{% endif %} value="{{ c }}"/></td>
+            {% endfor %}
+         </tr>
           {% endfor %}
         </tbody>
       </table>
-    <div style="margin-top: -20px; padding: 8px;"><small>These are your personal settings for this product, next to your <a href="{% url 'notifications' %}">gloal notifications</a></small></div>
   </div>
   </form>
 </div>
@@ -413,9 +412,9 @@
     });
 
     $(function() {
-      $("div#edit_notifications input[type=checkbox]").on('click', function() {
-        $(this).parent().append(' <small>(saving...)</small>')
-        $("#edit_notifications_form").submit()
+      $('div#edit_notifications input[type=checkbox]').on('click', function() {
+        $('#saving_notifications').append(' <small>(saving...)</small>')
+        $('#edit_notifications_form').submit()
       });
     });
 

@@ -38,7 +38,7 @@
             <table class="table table-hover col-sm-5">
                 <thead>
                     <tr>
-                        <th>Event</th><th>Slack</th><th>HipChat</th><th>Mail</th><th>Alert</th>
+                        <th>Event</th><th class="centered">Slack</th><th class="centered">HipChat</th><th class="centered">Mail</th><th class="centered">Alert</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -53,7 +53,7 @@
                             </td>
                     {% endif %}
                     {% for pk,c in field.field.widget.choices %}
-                        <td>
+                        <td class="centered">
                             <input type="checkbox" name="{{ field.name }}" {% if c in field.value %}checked{% endif %} value="{{ c }}"/>
                         </td>
                     {% endfor %}
