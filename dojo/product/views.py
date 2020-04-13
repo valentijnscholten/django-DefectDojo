@@ -103,7 +103,12 @@ def view_product(request, pid):
     prod = get_object_or_404(prod_query, id=pid)
     auth = request.user.is_staff or request.user in prod.authorized_users.all()
 
+    # instance = Notifications.objects.filter(user=request.user).filter(product=prod).first()
+    # print(vars(instance))
+
     personal_notifications_form = ProductNotificationsForm(instance=Notifications.objects.filter(user=request.user).filter(product=prod).first())
+
+    print(vars(personal_notifications_form))
 
     if not auth:
         # will render 403

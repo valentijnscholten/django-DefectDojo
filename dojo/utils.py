@@ -1856,7 +1856,7 @@ def create_notification(event=None, **kwargs):
                 source="Notifications")
             alert.save()
 
-    # Global notifications
+    # System notifications
     try:
         notifications = Notifications.objects.get(user=None)
     except Exception as e:

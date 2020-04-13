@@ -1871,9 +1871,10 @@ class ProductNotificationsForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ProductNotificationsForm, self).__init__(*args, **kwargs)
-        # self.initial['engagement_added'] = ''
-        # self.initial['test_added'] = ''
-        # self.initial['scan_added'] = ''
+        if not self.instance.id:
+            self.initial['engagement_added'] = ''
+            self.initial['test_added'] = ''
+            self.initial['scan_added'] = ''
 
     class Meta:
         model = Notifications
