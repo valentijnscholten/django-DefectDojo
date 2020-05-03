@@ -45,11 +45,175 @@ from dojo.tasks import add_issue_task, update_issue_task, update_external_issue_
     add_external_issue_task, close_external_issue_task, reopen_external_issue_task
 from django.template.defaultfilters import pluralize
 from django.db.models.query import QuerySet
+from django.db.models import Q
 
 logger = logging.getLogger(__name__)
 
+OPEN_FINDINGS_QUERY = Q(active=True)
+VERIFIED_FINDINGS_QUERY = Q(verified=True)
+OUT_OF_SCOPE_FINDINGS_QUERY = Q(active=False, out_of_scope=True)
+FALSE_POSITIVE_FINDINGS_QUERY = Q(active=False, duplicate=False, false_p=True)
+INACTIVE_FINDINGS_QUERY = Q(active=False, duplicate=False, is_Mitigated=False, false_p=False, out_of_scope=False)
+ACCEPTED_FINDINGS_QUERY = Q(risk_acceptance__isnull=False)
+CLOSED_FINDINGS_QUERY = Q(mitigated__isnull=False)
+
+
+def open_findings_filter(request, queryset, user, pid):
+    if user.is_staff:
+        return OpenFindingSuperFilter(request.GET, queryset=queryset, user=user, pid=pid)
+    else:
+        return OpenFindingFilter(request.GET, queryset=queryset, user=user, pid=pid)
+
+
+def accepted_findings_filter(request, queryset, user, pid):
+    assert user.is_staff
+    return AcceptedFindingSuperFilter(request.GET, queryset=queryset)
+
+
+def closed_findings_filter(request, queryset, user, pid):
+    assert user.is_staff
+    return ClosedFindingSuperFilter(request.GET, queryset=queryset)
+
+
+def open_findings(request, pid=None, eid=None, view=None):
+    return findings(request, pid=pid, eid=eid, view=view, filter_name="Open", query_filter=OPEN_FINDINGS_QUERY)
+
 
 def verified_findings(request, pid=None, eid=None, view=None):
+    return findings(request, pid=pid, eid=eid, view=view, filter_name="Verified", query_filter=VERIFIED_FINDINGS_QUERY)
+
+
+def out_of_scope_findings(request, pid=None, eid=None, view=None):
+    return findings(request, pid=pid, eid=eid, view=view, filter_name="Out of Scope", query_filter=OUT_OF_SCOPE_FINDINGS_QUERY)
+
+
+def false_positive_findings(request, pid=None, eid=None, view=None):
+    return findings(request, pid=pid, eid=eid, view=view, filter_name="False Positive", query_filter=FALSE_POSITIVE_FINDINGS_QUERY)
+
+
+def inactive_findings(request, pid=None, eid=None, view=None):
+    return findings(request, pid=pid, eid=eid, view=view, filter_name="Inactive", query_filter=INACTIVE_FINDINGS_QUERY)
+
+
+@user_passes_test(lambda u: u.is_staff)
+def accepted_findings(request, pid=None, eid=None, view=None):
+    return findings(request, pid=pid, eid=eid, view=view, filter_name="Accepted", query_filter=ACCEPTED_FINDINGS_QUERY,
+                    django_filter=accepted_findings_filter)
+
+
+@user_passes_test(lambda u: u.is_staff)
+def closed_findings(request, pid=None, eid=None, view=None):
+    return findings(request, pid=pid, eid=eid, view=view, filter_name="Closed", query_filter=CLOSED_FINDINGS_QUERY, order_by=('-mitigated'),
+                    django_filter=closed_findings_filter)
+
+
+def findings(request, pid=None, eid=None, view=None, filter_name=None, query_filter=None, order_by='numerical_severity',
+django_filter=open_findings_filter):
+    show_product_column = True
+    custom_breadcrumb = None
+    product_tab = None
+    jira_config = None
+    github_config = None
+
+    tags = Tag.objects.usage_for_model(Finding)
+
+    findings = Finding.objects.all()
+    if view == "All":
+        filter_name = "All"
+    else:
+        findings = findings.filter(query_filter)
+
+    findings = findings.order_by(order_by)
+
+    if pid:
+        get_object_or_404(Product, id=pid)
+        findings = findings.filter(test__engagement__product__id=pid)
+
+        show_product_column = False
+        product_tab = Product_Tab(pid, title="Findings", tab="findings")
+        jira_config = JIRA_PKey.objects.filter(product=pid).first()
+        github_config = GITHUB_PKey.objects.filter(product=pid).first()
+
+    elif eid:
+        eng = get_object_or_404(Engagement, id=eid)
+        findings = Finding.objects.filter(test__engagement=eid).order_by('numerical_severity')
+
+        show_product_column = False
+        product_tab = Product_Tab(eng.product_id, title=eng.name, tab="engagements")
+        jira_config = JIRA_PKey.objects.filter(product__engagement=eid).first()
+        github_config = GITHUB_PKey.objects.filter(product__engagement=eid).first()
+    else:
+        add_breadcrumb(title="Findings", top_level=not len(request.GET), request=request)
+
+    if not request.user.is_staff:
+        findings = findings.filter(
+            test__engagement__product__authorized_users__in=[request.user])
+
+    findings_filter = django_filter(request, findings, request.user, pid)
+
+    # if request.user.is_staff:
+    #     findings_filter = OpenFindingSuperFilter(
+    #         request.GET, queryset=findings, user=request.user, pid=pid)
+    # else:
+    #     findings = findings.filter(
+    #         test__engagement__product__authorized_users__in=[request.user])
+    #     findings_filter = OpenFindingFilter(
+    #         request.GET, queryset=findings, user=request.user, pid=pid)
+
+    title_words = [
+        word for word in list(findings_filter.qs.values_list('title', flat=True).distinct()) if len(word) > 2
+    ]
+    title_words = sorted(set(title_words))
+
+    paged_findings = get_page_items(request, prefetch_for_findings(findings_filter.qs), 25)
+
+    # what does this do besides checking for existence?
+    # product_type = None
+    # if 'test__engagement__product__prod_type' in request.GET:
+    #     p = request.GET.getlist('test__engagement__product__prod_type', [])
+    #     if len(p) == 1:
+    #         product_type = get_object_or_404(Product_Type, id=p[0])
+
+    # show custom breadcrumb if user has filtered by exactly 1 endpoint
+    endpoint = None
+    if 'endpoints' in request.GET:
+        endpoints = request.GET.getlist('endpoints', [])
+        if len(endpoints) == 1:
+            endpoint = endpoints[0]
+            endpoint = get_object_or_404(Endpoint, id=endpoint)
+            pid = endpoint.product.id
+            filter_name = "Vulnerable Endpoints"
+            custom_breadcrumb = OrderedDict([("Endpoints", reverse('vulnerable_endpoints')), (endpoint, reverse('view_endpoint', args=(endpoint.id, )))])
+
+    # found by not used anymore in any template. openfindingsfilter has its own query
+    # found_by = None
+    # try:
+    #     found_by = findings_filter.found_by.all().distinct()
+    # except:
+    #     found_by = None
+    #     pass
+
+    if jira_config:
+        jira_config = jira_config.conf_id
+    if github_config:
+        github_config = github_config.conf_id
+
+    # paged_findings.object_list = prefetch_for_findings(paged_findings.object_list)
+    return render(
+        request, 'dojo/findings_list.html', {
+            'show_product_column': show_product_column,
+            "product_tab": product_tab,
+            "findings": paged_findings,
+            "filtered": findings_filter,
+            "title_words": title_words,
+            'custom_breadcrumb': custom_breadcrumb,
+            'filter_name': filter_name,
+            'tag_input': tags,
+            'jira_config': jira_config,
+        })
+
+
+def verified_findings2(request, pid=None, eid=None, view=None):
     show_product_column = True
     title = None
     custom_breadcrumb = None
@@ -155,7 +319,7 @@ def verified_findings(request, pid=None, eid=None, view=None):
         })
 
 
-def out_of_scope_findings(request, pid=None, eid=None, view=None):
+def out_of_scope_findings2(request, pid=None, eid=None, view=None):
     show_product_column = True
     title = None
     custom_breadcrumb = None
@@ -261,7 +425,7 @@ def out_of_scope_findings(request, pid=None, eid=None, view=None):
         })
 
 
-def false_positive_findings(request, pid=None, eid=None, view=None):
+def false_positive_findings2(request, pid=None, eid=None, view=None):
     show_product_column = True
     title = None
     custom_breadcrumb = None
@@ -367,7 +531,7 @@ def false_positive_findings(request, pid=None, eid=None, view=None):
         })
 
 
-def inactive_findings(request, pid=None, eid=None, view=None):
+def inactive_findings2(request, pid=None, eid=None, view=None):
     show_product_column = True
     title = None
     custom_breadcrumb = None
@@ -459,7 +623,7 @@ def inactive_findings(request, pid=None, eid=None, view=None):
         })
 
 
-def open_findings(request, pid=None, eid=None, view=None):
+def open_findings2(request, pid=None, eid=None, view=None):
     show_product_column = True
     title = None
     custom_breadcrumb = None
@@ -504,7 +668,7 @@ def open_findings(request, pid=None, eid=None, view=None):
         findings_filter = OpenFindingFilter(
             request.GET, queryset=findings, user=request.user, pid=pid)
 
-    paged_findings = get_page_items(request, findings_filter.qs, 25)
+    paged_findings = get_page_items(request, prefetch_for_findings(findings_filter.qs), 25)
 
     product_type = None
     if 'test__engagement__product__prod_type' in request.GET:
@@ -521,13 +685,6 @@ def open_findings(request, pid=None, eid=None, view=None):
             pid = endpoint.product.id
             title = "Vulnerable Endpoints"
             custom_breadcrumb = OrderedDict([("Endpoints", reverse('vulnerable_endpoints')), (endpoint, reverse('view_endpoint', args=(endpoint.id, )))])
-
-    found_by = None
-    try:
-        found_by = findings_filter.found_by.all().distinct()
-    except:
-        found_by = None
-        pass
 
     product_tab = None
     active_tab = None
@@ -552,7 +709,7 @@ def open_findings(request, pid=None, eid=None, view=None):
     if github_config:
         github_config = github_config.conf_id
 
-    paged_findings.object_list = prefetch_for_findings(paged_findings.object_list)
+    # paged_findings.object_list = prefetch_for_findings(paged_findings.object_list)
 
     return render(
         request, 'dojo/findings_list.html', {
@@ -561,7 +718,6 @@ def open_findings(request, pid=None, eid=None, view=None):
             "findings": paged_findings,
             "filtered": findings_filter,
             "title_words": title_words,
-            'found_by': found_by,
             'custom_breadcrumb': custom_breadcrumb,
             'filter_name': filter_name,
             'title': title,
@@ -595,7 +751,7 @@ Accepted findings returns all the accepted findings for all products or a specif
 
 
 @user_passes_test(lambda u: u.is_staff)
-def accepted_findings(request, pid=None):
+def accepted_findings2(request, pid=None):
     # user = request.user
 
     findings = Finding.objects.filter(risk_acceptance__isnull=False)
@@ -616,6 +772,7 @@ def accepted_findings(request, pid=None):
 
     return render(
         request, 'dojo/findings_list.html', {
+            'show_product_column': True,
             "findings": paged_findings,
             "product_tab": product_tab,
             "filter_name": "Accepted",
@@ -625,7 +782,7 @@ def accepted_findings(request, pid=None):
 
 
 @user_passes_test(lambda u: u.is_staff)
-def closed_findings(request, pid=None):
+def closed_findings2(request, pid=None):
     findings = Finding.objects.filter(mitigated__isnull=False)
     findings_filter = ClosedFindingSuperFilter(request.GET, queryset=findings)
     title_words = [
@@ -644,6 +801,7 @@ def closed_findings(request, pid=None):
 
     return render(
         request, 'dojo/findings_list.html', {
+            'show_product_column': True,
             "findings": paged_findings,
             "product_tab": product_tab,
             "filtered": findings_filter,
