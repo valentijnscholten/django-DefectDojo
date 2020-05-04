@@ -34,7 +34,7 @@
                     </h3>
                 </div>
                 <div id="the-filters" class="panel-body collapse {% if request.META.QUERY_STRING %}in{% endif %}">
-                    {% include "dojo/filter_snippet.html" with form=prod_filter.form %}
+                    {% include "dojo/filter_snippet_new.html" with filter=prod_filter %}
                 </div>
             </div>
             {% if prod_list %}

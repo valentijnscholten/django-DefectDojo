@@ -60,6 +60,7 @@ CLOSED_FINDINGS_QUERY = Q(mitigated__isnull=False)
 
 def open_findings_filter(request, queryset, user, pid):
     if user.is_staff:
+        # return OpenFindingFilter(request.GET, queryset=queryset, user=user, pid=pid)
         return OpenFindingSuperFilter(request.GET, queryset=queryset, user=user, pid=pid)
     else:
         return OpenFindingFilter(request.GET, queryset=queryset, user=user, pid=pid)

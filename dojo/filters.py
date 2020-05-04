@@ -329,9 +329,25 @@ class ProductFilter(DojoFilter):
 
     class Meta:
         model = Product
-        fields = ['name', 'prod_type', 'business_criticality', 'platform', 'lifecycle', 'origin', 'external_audience',
+        # fields = ['name', 'prod_type', 'business_criticality', 'platform', 'lifecycle', 'origin', 'external_audience',
+        #           'internet_accessible', ]
+        fields = ['name', 'business_criticality', 'platform', 'lifecycle', 'origin', 'external_audience',
                   'internet_accessible', ]
+
         exclude = ['tags']
+
+
+class ProductFilter2(DojoFilter):
+    prod_type = ModelMultipleChoiceFilter(
+        queryset=Product_Type.objects.all().order_by('name'),
+        label="Product Type")
+
+    def __init__(self, *args, **kwargs):
+        self.user = None
+        if 'user' in kwargs:
+            self.user = kwargs.pop('user')
+
+        super(ProductFilter2, self).__init__(*args, **kwargs)
 
 
 class OpenFindingFilter(DojoFilter):
@@ -389,9 +405,9 @@ class OpenFindingFilter(DojoFilter):
         super(OpenFindingFilter, self).__init__(*args, **kwargs)
 
         cwe = dict()
-        cwe = dict([finding.cwe, finding.cwe]
-                   for finding in self.queryset.distinct()
-                   if type(finding.cwe) is int and finding.cwe is not None and finding.cwe > 0 and finding.cwe not in cwe)
+        cwe = dict([cwe, cwe]
+                   for cwe in self.queryset.values_list('cwe', flat=True).distinct()
+                   if type(cwe) is int and cwe is not None and cwe > 0)
         cwe = collections.OrderedDict(sorted(cwe.items()))
         self.form.fields['cwe'].choices = list(cwe.items())
         if self.user is not None and not self.user.is_staff:

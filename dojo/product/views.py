@@ -17,7 +17,7 @@ from django.db.models import Sum, Count, Q, Max
 from django.contrib.admin.utils import NestedObjects
 from django.db import DEFAULT_DB_ALIAS
 from dojo.templatetags.display_tags import get_level
-from dojo.filters import ProductFilter, ProductFindingFilter, EngagementFilter
+from dojo.filters import ProductFilter2, ProductFindingFilter, EngagementFilter
 from dojo.forms import ProductForm, EngForm, DeleteProductForm, DojoMetaDataForm, JIRAPKeyForm, JIRAFindingForm, AdHocFindingForm, \
                        EngagementPresetsForm, DeleteEngagementPresetsForm, Sonarqube_ProductForm, ProductNotificationsForm, \
                        GITHUB_Product_Form, GITHUBFindingForm
@@ -56,9 +56,10 @@ def product(request):
     name_words = [product.name for product in prods
                     for word in product.name.split() if len(word) > 2]
 
-    prod_filter = ProductFilter(request.GET, queryset=prods, user=request.user)
+    prod_filter = ProductFilter2(request.GET, queryset=prods, user=request.user)
     # prod_list = get_page_items(request, prod_filter.qs, 25)
-    prod_list = get_page_items(request, prefetch_for_product(prod_filter.qs), 25)
+    prod_list = None
+    # prod_list = get_page_items(request, prefetch_for_product(prod_filter.qs), 25)
 
     # perform annotation/prefetching by replacing the queryset in the page with an annotated/prefetched queryset.
     # prod_list.object_list = prefetch_for_product(prod_list.object_list)
