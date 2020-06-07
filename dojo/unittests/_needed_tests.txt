@@ -1,0 +1,40 @@
+import scan
+- number of findings
+- status
+- risk acceptance?
+- hashcode set?
+- endpoints?
+reimport scan same
+- number of findings
+- status
+- risk acceptance?
+- hashcode set?
+- endpoints?
+reimport scan some closed, some new, some changed severity, some changed descriptions
+- number of findings
+- status closed / new / untouched
+- risk acceptance?
+- hashcode set?
+- endpoints?
+- check updated severity
+- check updated description?
+
+import scan
+- number of findings
+- status
+- risk acceptance?
+- hashcode set?
+- endpoints?
+
+import scan different testtype with some duplicates, some new
+- number of findings
+- status
+- risk acceptance?
+- hashcode set?
+- endpoints?
+- duplicates
+- new findings
+
+
+
+
