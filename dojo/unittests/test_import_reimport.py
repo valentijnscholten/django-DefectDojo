@@ -37,10 +37,12 @@ class DedupeTest(APITestCase):
         self.scans_path = 'dojo/unittests/scans/zap/'
         self.zap_sample1_filename = self.scans_path + 'zap_sample.xml'
         self.zap_sample2_filename = self.scans_path + 'zap_sample_updated.xml'
+        self.zap_sample3_filename = self.scans_path + 'zap_sample_severity_updated.xml'
         self.zap_sample1_xml = ElementTree.parse(open(self.zap_sample1_filename))
         self.zap_sample2_xml = ElementTree.parse(open(self.zap_sample2_filename))
         self.zap_sample1_count_above_threshold = 3
         self.zap_sample2_count_above_threshold = 3
+        self.zap_sample3_count_above_threshold = 3
 
     def import_scan(self, payload):
         response = self.client.post(reverse('importscan-list'), payload)
@@ -240,7 +242,7 @@ class DedupeTest(APITestCase):
                 "active": True,
                 "verified": True,
                 "scan_type": 'ZAP Scan',
-                "file": open(self.zap_sample2_filename),
+                "file": open(self.zap_sample3_filename),
                 "engagement": 1,
                 "version": "1.0.1",
             })
@@ -252,9 +254,14 @@ class DedupeTest(APITestCase):
         findings = self.get_test_findings(test_id)
         self.log_finding_summary(findings)
 
-        # active findings must be equal to those in the report
-        findings = self.get_test_findings(test_id, active=True, verified=True)
-        self.assert_finding_count(2 * self.zap_sample1_count_above_threshold, findings)
+        # total findings must be equal to those in the report, 3 active, 3 mitigated
+        findings = self.get_test_findings(test_id)
+        self.assert_finding_count(self.zap_sample1_count_above_threshold + self.zap_sample3_count_above_threshold, findings)
+        findings = self.get_test_findings(test_id, active=True)
+        self.assert_finding_count(self.zap_sample3_count_above_threshold, findings)
+        findings = self.get_test_findings(test_id, active=False)
+        self.assert_finding_count(self.zap_sample1_count_above_threshold, findings)
+
 
     def test_import(self):
         test_id = self.import_zap_scan_original()
@@ -274,7 +281,7 @@ class DedupeTest(APITestCase):
 
     def test_import_reimport_different_severity(self):
         test_id = self.import_zap_scan_original()
-        self.reimport_zap_scan_updated(test_id)
+        self.reimport_zap_scan_updated_severity(test_id)
 
         # Observations:
         # - When reopening a mititgated finding, almost no fields are updated such as title, description, severity, impact, references, ....
