@@ -63,7 +63,7 @@ class ZapXmlParser(object):
         items = list()
         for node in tree.findall('site'):
             site = Site(node)
-            main_host = Endpoint(host=site.ip + site.port if site.port is not None else "")
+            main_host = Endpoint(host=site.ip + ((':' + site.port) if site.port is not None else ""))
             for item in site.items:
                 severity = item.riskdesc.split(' ', 1)[0]
                 references = ''

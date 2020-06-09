@@ -32,7 +32,13 @@
     <param>opvc</param>
     <evidence>Set-Cookie: opvc</evidence>
     </instance>
-    </instances>
+    <instance>
+    <uri>https://justasite2.nl</uri>
+    <method>GET</method>
+    <param>opvc</param>
+    <evidence>Set-Cookie: NEW_END_POINT</evidence>
+    </instance>
+  </instances>
     <count>4</count>
     <solution>&lt;p&gt;Ensure that the SameSite attribute is set to either &apos;lax&apos; or ideally &apos;strict&apos; for all cookies.&lt;/p&gt;</solution>
     <reference>&lt;p&gt;https://tools.ietf.org/html/draft-ietf-httpbis-cookie-same-site&lt;/p&gt;</reference>
