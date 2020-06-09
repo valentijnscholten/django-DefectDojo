@@ -28,11 +28,13 @@ class DedupeTest(APITestCase):
         self.zap_sample1_filename = self.scans_path + 'zap_sample.xml'
         self.zap_sample2_filename = self.scans_path + 'zap_sample_updated.xml'
         self.zap_sample3_filename = self.scans_path + 'zap_sample_severity_endpoint_updated.xml'
+        self.zap_sample4_filename = self.scans_path + 'zap_sample_all_endpoints_updated.xml'
         self.zap_sample1_xml = ElementTree.parse(open(self.zap_sample1_filename))
         self.zap_sample2_xml = ElementTree.parse(open(self.zap_sample2_filename))
         self.zap_sample1_count_above_threshold = 3
         self.zap_sample2_count_above_threshold = 3
         self.zap_sample3_count_above_threshold = 3
+        self.zap_sample4_count_above_threshold = 3
 
     def import_scan(self, payload):
         response = self.client.post(reverse('importscan-list'), payload)
@@ -121,6 +123,10 @@ class DedupeTest(APITestCase):
 
         # the zap scan contains 2 new endpoints
         self.assertEqual(endpoint_count_before + 2, self.db_endpoint_count())
+
+        # no notes expected
+        self.assertEqual(notes_count_before, self.db_notes_count())
+
         return test_id
 
     # reimport zap scan, testing:
@@ -257,11 +263,11 @@ class DedupeTest(APITestCase):
         # this step note 2 and 3: finding reactivated + finding mitigated, so 2 new notes in this step
         self.assertEqual(notes_count_before + 2, self.db_notes_count())
 
-    # test what happens if we import the same report, but with changed severities.
+    # test what happens if we import the same report, but with changed severities and an extra endpoint in the report and an extra endpoint parameter
     # currently defect dojo sees them as different (new) findings.
     # the reimport process does not use the hash code based deduplication (yet)
     # this probably something that should change, but at least we have now captured current behaviour in a test
-    def reimport_zap_scan_updated_severity_and_endpoints(self, test_id):
+    def reimport_zap_scan_updated_severity_and_new_endpoints(self, test_id):
         logger.debug('reimporting original zap xml report, but with changed severities')
 
         endpoint_count_before = self.db_endpoint_count()
@@ -311,6 +317,43 @@ class DedupeTest(APITestCase):
         # 3 notes expected for the mitigated findings
         self.assertEqual(notes_count_before + 3, self.db_notes_count())
 
+    def reimport_zap_scan_all_different_endpoints(self, test_id):
+        logger.debug('reimporting original zap xml report, but with completely different endpoints severities')
+
+        endpoint_count_before = self.db_endpoint_count()
+        notes_count_before = self.db_notes_count()
+
+        # reimport updated report
+        reimport1 = self.reimport_scan(
+            {
+                "test": test_id,
+                "scan_date": '2020-06-04',
+                "minimum_severity": 'Low',
+                "active": True,
+                "verified": True,
+                "scan_type": 'ZAP Scan',
+                "file": open(self.zap_sample4_filename),
+                "engagement": 1,
+                "version": "1.0.1",
+            })
+
+        test_id = reimport1['test']
+        self.assertEqual(test_id, test_id)
+
+        test = self.get_test(test_id)
+        findings = self.get_test_findings(test_id)
+        self.log_finding_summary(findings)
+
+        # no new findings expected as only the endpoints are different
+        findings = self.get_test_findings(test_id)
+        self.assert_finding_count(self.zap_sample4_count_above_threshold, findings)
+
+        # the updated scan report has all endpoints changed. the previous endpoints are no longer present, but DD keeps them anyway.
+        # so there should be 2 new endpoints. 1 for the mainhost in zap report and 1 for the uri used in each finding
+        self.assertEqual(endpoint_count_before + 2, self.db_endpoint_count())
+        # no new notes expected
+        self.assertEqual(notes_count_before, self.db_notes_count())
+
     def test_import(self):
         test_id = self.import_zap_scan_original()
 
@@ -327,14 +370,17 @@ class DedupeTest(APITestCase):
         self.reimport_zap_scan_updated(test_id)
         self.reimport_zap_scan_original_after_updated_after_original(test_id)
 
-    def test_import_reimport_different_severity_and_endpoints(self):
+    def test_import_reimport_different_severity_and_new_endpoints(self):
         test_id = self.import_zap_scan_original()
-        self.reimport_zap_scan_updated_severity_and_endpoints(test_id)
+        self.reimport_zap_scan_updated_severity_and_new_endpoints(test_id)
+
+    def test_import_reimport_all_different_endpoints(self):
+        test_id = self.import_zap_scan_original()
+        self.reimport_zap_scan_all_different_endpoints(test_id)
+
 
 # Observations:
 # - When reopening a mititgated finding, almost no fields are updated such as title, description, severity, impact, references, ....
 # - Basically fields (and req/resp) are only stored on the initial import, reimporting only changes the active/mitigated/verified flags + some dates + notes
 # - (Re)Import could provide some more statistics of imported findings (reimport: new, mitigated, reactivated, untouched, ...)
-
-# TODO:
-# - Endpoints that are no longer present in the scan that is imported, should be tested for (DD currently keeps the endpoints present and attached to the finding)
+# - Endpoints that are no longer present in the scan that is imported, are still retained by DD, which makes them look "active" in the product view
