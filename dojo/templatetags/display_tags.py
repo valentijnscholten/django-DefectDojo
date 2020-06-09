@@ -766,10 +766,13 @@ def finding_display_status(finding):
         display_status = display_status.replace('Under Review', link)
 
     if finding.duplicate:
-        url = reverse('view_finding', args=(finding.duplicate_finding.id, ))
-        name = finding.duplicate_finding.title + ', ' + finding.duplicate_finding.created.strftime('%b %d, %Y, %H:%M:%S')
+        url = None
+        name = 'unknown'
+        if finding.duplicate_finding:
+            url = reverse('view_finding', args=(finding.duplicate_finding.id, ))
+            name = finding.duplicate_finding.title + ', ' + finding.duplicate_finding.created.strftime('%b %d, %Y, %H:%M:%S')
+
         link = '<a href="' + url + '" data-toggle="tooltip" data-placement="top" title="' + escape(name) + '">Duplicate</a>'
-        # print(link)
         display_status = display_status.replace('Duplicate', link)
 
     return display_status
