@@ -1152,7 +1152,7 @@ div.custom-search-form {
 }
 
 .panel-default > .panel-heading a{
-	text-decoration: underline;
+	/* text-decoration: underline; */
 }
 
 .panel-default > .panel-heading a:hover{
