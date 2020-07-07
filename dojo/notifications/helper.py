@@ -102,7 +102,7 @@ def process_notifications(event, notifications=None, *args, **kwargs):
     hipchat_enabled = get_system_setting('enable_hipchat_notifications')
     mail_enabled = get_system_setting('enable_mail_notifications')
 
-    from dojo.tasks import send_slack_notification_task, send_alert_notification_task, send_hipchat_notification_task, send_mail_notification_task
+    from dojo.tasks import send_slack_notification_task, send_hipchat_notification_task, send_mail_notification_task
 
     if slack_enabled and 'slack' in getattr(notifications, event):
         if not sync:
@@ -123,10 +123,7 @@ def process_notifications(event, notifications=None, *args, **kwargs):
             send_mail_notification(event, notifications.user, *args, **kwargs)
 
     if 'alert' in getattr(notifications, event, None):
-        if not sync:
-            send_alert_notification_task.delay(event, notifications.user, *args, **kwargs)
-        else:
-            send_alert_notification(event, notifications.user, *args, **kwargs)
+        send_alert_notification(event, notifications.user, *args, **kwargs)
 
 
 def send_slack_notification(event, user=None, *args, **kwargs):
