@@ -1,8 +1,8 @@
 version: "1"
 rules:
   - base: master
-    upstream: DefectDojo/django-DefectDojo:master
+    upstream: DefectDojo:master
     mergeMethod: hardreset
   - base: dev
-    upstream: DefectDojo/django-DefectDojo:dev
+    upstream: DefectDojo:dev
     mergeMethod: hardreset
