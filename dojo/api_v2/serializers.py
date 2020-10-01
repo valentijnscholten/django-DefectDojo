@@ -681,6 +681,13 @@ class FindingSerializer(TaggitSerializer, serializers.ModelSerializer):
         serialized_burps = BurpRawRequestResponseSerializer({'req_resp': burp_list})
         return serialized_burps.data
 
+    def save(self):
+        push_to_jira=False
+        if 'push_to_jira' in self.context:
+            push_to_jira = self.context['push_to_jira']
+        
+        super.save(push_to_jira=push_to_jira)
+
 
 class FindingCreateSerializer(TaggitSerializer, serializers.ModelSerializer):
     notes = serializers.PrimaryKeyRelatedField(
@@ -710,18 +717,10 @@ class FindingCreateSerializer(TaggitSerializer, serializers.ModelSerializer):
     # Overriding this to push add Push to JIRA functionality
     def create(self, validated_data):
         to_be_tagged, validated_data = self._pop_tags(validated_data)
-        push_to_jira = validated_data.pop('push_to_jira')
-        # Somewhere in the below line finding.save() is called, but I'm not sure how to get
-        # push_to_jira to it.
+        push_to_jira = self.get_push_to_jira()
         tag_object = super(TaggitSerializer, self).create(validated_data)
 
-        has_jira_config = tag_object.test.engagement.product.jira_pkey_set.first() is not None
-        if not push_to_jira and has_jira_config:
-            push_to_jira = tag_object.test.engagement.product.jira_pkey_set.first().push_all_issues
-
-        # No need to save the finding twice if we're not pushing to JIRA
         if push_to_jira:
-            # Saving again with push_to_jira context
             tag_object.save(push_to_jira=push_to_jira)
         return self._save_tags(tag_object, to_be_tagged)
         pass
@@ -734,6 +733,14 @@ class FindingCreateSerializer(TaggitSerializer, serializers.ModelSerializer):
             raise serializers.ValidationError('False positive findings cannot '
                                               'be verified.')
         return data
+
+    def get_push_to_jira(self):
+        push_to_jira=False
+        if 'push_to_jira' in self.context:
+            push_to_jira = self.context['push_to_jira']        
+
+    def save(self):
+        super.save(push_to_jira=self.get_push_to_jira())
 
 
 class FindingTemplateSerializer(serializers.ModelSerializer):

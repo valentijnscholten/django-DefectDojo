@@ -231,28 +231,10 @@ class FindingViewSet(mixins.ListModelMixin,
                      mixins.CreateModelMixin,
                      ra_api.AcceptedFindingsMixin,
                      viewsets.GenericViewSet):
-    serializer_class = serializers.FindingSerializer
+    serializer_class = serializers.FindingSerializer()
     queryset = Finding.objects.all()
     filter_backends = (DjangoFilterBackend,)
     filterset_class = ApiFindingFilter
-
-    # Overriding mixins.UpdateModeMixin perform_update() method to grab push_to_jira
-    # data and add that as a parameter to .save()
-    def perform_update(self, serializer):
-        enabled = False
-        push_to_jira = serializer.validated_data.get('push_to_jira')
-        # IF JIRA is enabled and this product has a JIRA configuration
-        if get_system_setting('enable_jira') and \
-                serializer.instance.test.engagement.product.jira_pkey_set.first() is not None:
-            # Check if push_all_issues is set on this product
-            enabled = serializer.instance.test.engagement.product.jira_pkey_set.first().push_all_issues
-
-        # If push_all_issues is set:
-        if enabled:
-            push_to_jira = True
-
-        # add a check for the product having push all issues enabled right here.
-        serializer.save(push_to_jira=push_to_jira)
 
     def get_queryset(self):
         if not self.request.user.is_staff:
@@ -266,6 +248,25 @@ class FindingViewSet(mixins.ListModelMixin,
             return serializers.FindingCreateSerializer
         else:
             return serializers.FindingSerializer
+
+    def get_serializer_context(self):
+        logger.debug('get_serializer_context')
+        enabled = False
+        push_to_jira = serializer.validated_data.get('push_to_jira')
+        logger.debug('get_serializer_context: push_to_jira from validated data: %s', str(push_to_jira))
+        
+        # IF JIRA is enabled and this product has a JIRA configuration
+        if get_system_setting('enable_jira') and \
+                serializer.instance.test.engagement.product.jira_pkey_set.first() is not None:
+            # Check if push_all_issues is set on this product
+            enabled = serializer.instance.test.engagement.product.jira_pkey_set.first().push_all_issues
+
+        # If push_all_issues is set:
+        if enabled:
+            push_to_jira = True
+
+        logger.debug('get_serializer_context: push_to_jira: %s', str(push_to_jira))
+        return {'push_to_jira': push_to_jira}
 
     @swagger_auto_schema(
         method='get',
