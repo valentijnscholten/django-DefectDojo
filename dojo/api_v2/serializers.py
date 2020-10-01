@@ -739,7 +739,7 @@ class FindingCreateSerializer(TaggitSerializer, serializers.ModelSerializer):
             push_to_jira = self.context['push_to_jira']        
 
     def save(self):
-        super.save(push_to_jira=self.get_push_to_jira())
+        super().save(push_to_jira=self.get_push_to_jira())
 
 
 class FindingTemplateSerializer(serializers.ModelSerializer):
