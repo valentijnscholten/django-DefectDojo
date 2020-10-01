@@ -256,8 +256,9 @@ class FindingViewSet(mixins.ListModelMixin,
     def get_serializer_context(self):
         logger.debug('get_serializer_context')
         enabled = False
-        push_to_jira = serializer.validated_data.get('push_to_jira')
-        logger.debug('get_serializer_context: push_to_jira from validated data: %s', str(push_to_jira))
+        # push_to_jira = serializer.validated_data.get('push_to_jira')
+        push_to_jira = self.context['request'].QUERY_PARAMS.get('push_to_jira', None)
+        logger.debug('get_serializer_context: push_to_jira from request data: %s', str(push_to_jira))
         
         # IF JIRA is enabled and this product has a JIRA configuration
         if get_system_setting('enable_jira') and \
