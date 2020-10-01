@@ -57,10 +57,15 @@ jobs:
       #   if: success()
       #   run: docker-compose up --exit-code-from integrationtest integrationtest
 
+      - name: Sleep for 30 seconds
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '300s'
+
       - name: Logs
         # if: failure()
         if: always()        
-        run: docker-compose logs -f
+        run: docker-compose logs
 
       - name: Shutdown
         if: always()
