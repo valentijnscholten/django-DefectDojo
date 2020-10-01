@@ -40,21 +40,21 @@ jobs:
         # run: docker-compose up --exit-code-from unittests
         run: docker-compose up --exit-code-from uwsgi
 
-      - name: Build the rest
-        if: success()
-        run: docker-compose build
+      # - name: Build the rest
+      #   if: success()
+      #   run: docker-compose build
 
-      - name: Start Dojo
-        # implicity starts uwsgi and rabbitmq
-        if: success()
-        run: docker-compose up -d nginx celerybeat celeryworker
+      # - name: Start Dojo
+      #   # implicity starts uwsgi and rabbitmq
+      #   if: success()
+      #   run: docker-compose up -d nginx celerybeat celeryworker
 
-      - name: Integration tests
-        if: success()
-        run: docker-compose up --exit-code-from integrationtest integrationtest
+      # - name: Integration tests
+      #   if: success()
+      #   run: docker-compose up --exit-code-from integrationtest integrationtest
 
       - name: Logs
-        if: failure()
+        # if: failure()
         run: docker-compose logs --tail="2500" uwsgi
 
       - name: Shutdown
