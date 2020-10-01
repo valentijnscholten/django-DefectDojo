@@ -273,7 +273,7 @@ class FindingViewSet(mixins.ListModelMixin,
             push_to_jira = True
 
         logger.debug('get_serializer_context: push_to_jira: %s', str(push_to_jira))
-        context = super.get_serializer_context()
+        context = super().get_serializer_context()
         context['push_to_jira'] = push_to_jira
         return context
 

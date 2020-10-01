@@ -685,7 +685,7 @@ class FindingSerializer(TaggitSerializer, serializers.ModelSerializer):
         if 'push_to_jira' in self.context:
             push_to_jira = self.context['push_to_jira']
         
-        super.save(push_to_jira=push_to_jira)
+        super().save(push_to_jira=push_to_jira)
 
 
 class FindingCreateSerializer(TaggitSerializer, serializers.ModelSerializer):
