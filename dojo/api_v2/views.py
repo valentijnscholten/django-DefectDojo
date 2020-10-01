@@ -252,7 +252,8 @@ class FindingViewSet(mixins.ListModelMixin,
             push_to_jira = True
 
         # add a check for the product having push all issues enabled right here.
-        serializer.save(push_to_jira=push_to_jira)
+        # serializer.save(push_to_jira=push_to_jira)
+        serializer.save(push_to_jira=False)
 
     def get_queryset(self):
         if not self.request.user.is_staff:
