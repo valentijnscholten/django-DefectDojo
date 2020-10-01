@@ -249,9 +249,11 @@ class FindingViewSet(mixins.ListModelMixin,
     def get_serializer_class(self):
         logger.debug('get_serializer_class')
         if self.request.method == 'POST':
-            return serializers.FindingCreateSerializer(context=self.get_serializer_context())
+            # return serializers.FindingCreateSerializer(context=self.get_serializer_context())
+            return serializers.FindingCreateSerializer
         else:
-            return serializers.FindingSerializer(context=self.get_serializer_context())
+            # return serializers.FindingSerializer(context=self.get_serializer_context())
+            return serializers.FindingSerializer
 
     def get_serializer_context(self):
         logger.debug('get_serializer_context')
