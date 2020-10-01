@@ -641,7 +641,7 @@ class FindingSerializer(TaggitSerializer, serializers.ModelSerializer):
     age = serializers.IntegerField(read_only=True)
     sla_days_remaining = serializers.IntegerField(read_only=True)
     finding_meta = FindingMetaSerializer(read_only=True, many=True)
-    push_to_jira = serializers.BooleanField(default=False, readonly=True)        
+    push_to_jira = serializers.BooleanField(default=False, read_only=True)        
 
     class Meta:
         model = Finding
@@ -705,7 +705,7 @@ class FindingCreateSerializer(TaggitSerializer, serializers.ModelSerializer):
         allow_null=True,
         default=None)
     tags = TagListSerializerField(required=False)
-    push_to_jira = serializers.BooleanField(default=False, readonly=True)    
+    push_to_jira = serializers.BooleanField(default=False, read_only=True)    
 
     class Meta:
         model = Finding
