@@ -243,7 +243,7 @@ class FindingsTest(BaseClass.RESTEndpointTest):
             "dynamic_finding": False,
             "endpoints": [1, 2],
             "images": []}
-        self.update_fields = {'active': True}
+        self.update_fields = {'active': True, "push_to_jira": "True"}
         BaseClass.RESTEndpointTest.__init__(self, *args, **kwargs)
 
 

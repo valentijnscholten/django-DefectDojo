@@ -36,7 +36,8 @@ python3 manage.py migrate
 export DJANGO_LOG_LEVEL=DEBUG
 
 echo "running unit tests"
-python3 manage.py test dojo.unittests.test_apiv2_scan_import_options --keepdb -v 3
+# python3 manage.py test dojo.unittests.test_apiv2_scan_import_options --keepdb -v 3
+python3 manage.py test dojo.unittests.test_rest_framework --keepdb -v 3
 
-echo "End of tests. Leaving the container up"
-tail -f /dev/null
+# echo "End of tests. Leaving the container up"
+# tail -f /dev/null
