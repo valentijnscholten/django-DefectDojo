@@ -60,7 +60,7 @@ jobs:
       - name: Logs
         # if: failure()
         if: always()        
-        run: docker-compose logs --tail="2500" uwsgi
+        run: docker-compose logs
 
       - name: Shutdown
         if: always()

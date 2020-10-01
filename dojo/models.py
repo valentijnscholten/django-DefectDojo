@@ -1908,6 +1908,7 @@ class Finding(models.Model):
 
         jira_issue_exists = JIRA_Issue.objects.filter(finding=self).exists()
         push_to_jira = getattr(self, 'push_to_jira', push_to_jira)
+        logger.info('push_to_jira after getatt: %s', str(push_to_jira))
 
         if self.pk is None:
             # We enter here during the first call from serializers.py
