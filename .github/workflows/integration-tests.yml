@@ -35,14 +35,14 @@ jobs:
       # - name: Initialize Logs
       #   run: docker-compose logs -f initializer
 
-      - name: Unit tests
+      - name: Start
         # run: docker-compose up --exit-code-from unittests unittests
         # run: docker-compose up --exit-code-from unittests
-        run: docker-compose up -d mysql celerybeat celeryworker rabbitmq nginx
+        run: docker-compose up -d
 
-      - name: Unit tests
-        # run: docker-compose up --exit-code-from unittests unittests
-        run: docker-compose up --exit-code-from uwsgi
+      # - name: Unit tests
+      #   # run: docker-compose up --exit-code-from unittests unittests
+      #   run: docker-compose up --exit-code-from uwsgi
 
       # - name: Build the rest
       #   if: success()
@@ -60,7 +60,7 @@ jobs:
       - name: Logs
         # if: failure()
         if: always()        
-        run: docker-compose logs
+        run: docker-compose logs -f
 
       - name: Shutdown
         if: always()
