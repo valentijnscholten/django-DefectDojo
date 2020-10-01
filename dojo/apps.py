@@ -62,9 +62,9 @@ class DojoAppConfig(AppConfig):
         # YourModel = self.get_model("YourModel")
         # watson.register(YourModel)
 
-        print('setting up tracing/trace')
-        # sys.settrace(trace)
-        sys.settrace(trace_calls)        
+        # uncomment the below if you want to log every function/method call to debug some serious sh!t
+        # print('setting up tracing/trace')
+        # sys.settrace(trace_calls)        
 
 
 def get_model_fields_with_extra(model, extra_fields=()):
@@ -82,18 +82,6 @@ def get_model_default_fields(model):
         field.name for field in model._meta.fields if
         isinstance(field, (models.CharField, models.TextField))
     )
-
-
-def trace(frame, event, arg):
-    if event == "call":
-        filename = frame.f_code.co_filename
-        # if "dojo" in filename or "django" in filename:
-        if "dojo" in filename in filename:
-            lineno = frame.f_lineno
-            # Here I'm printing the file and line number, 
-            # but you can examine the frame, locals, etc too.
-            print("trace: %s @ %s" % (filename, lineno))
-    return trace
 
 def trace_lines(frame, event, arg):
     if event != 'line':
