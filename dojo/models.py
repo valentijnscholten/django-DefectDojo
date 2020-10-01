@@ -1907,9 +1907,9 @@ class Finding(models.Model):
             logger.debug('finding.save() getting current user: %s', user)
 
         jira_issue_exists = JIRA_Issue.objects.filter(finding=self).exists()
-        logger.info('push_to_jira attr before: %s', str(getattr(self, 'push_to_jira'))
+        logger.info('push_to_jira attr before: %s', str(getattr(self, 'push_to_jira')))
         push_to_jira = getattr(self, 'push_to_jira', push_to_jira)
-        logger.info('push_to_jira after getattr: %s', str(getattr(self, 'push_to_jira'))
+        logger.info('push_to_jira after getattr: %s', str(getattr(self, 'push_to_jira')))
 
         if self.pk is None:
             # We enter here during the first call from serializers.py
