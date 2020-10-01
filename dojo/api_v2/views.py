@@ -247,10 +247,11 @@ class FindingViewSet(mixins.ListModelMixin,
             return Finding.objects.all()
 
     def get_serializer_class(self):
+        logger.debug('get_serializer_class')
         if self.request.method == 'POST':
-            return serializers.FindingCreateSerializer
+            return serializers.FindingCreateSerializer(context=self.get_serializer_context())
         else:
-            return serializers.FindingSerializer
+            return serializers.FindingSerializer(context=self.get_serializer_context()))
 
     def get_serializer_context(self):
         logger.debug('get_serializer_context')

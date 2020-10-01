@@ -638,7 +638,6 @@ class FindingSerializer(TaggitSerializer, serializers.ModelSerializer):
     tags = TagListSerializerField(required=False)
     request_response = serializers.SerializerMethodField()
     accepted_risks = RiskAcceptanceSerializer(many=True, read_only=True, source='risk_acceptance_set')
-    push_to_jira = serializers.SerializerMethodField()
     age = serializers.IntegerField(read_only=True)
     sla_days_remaining = serializers.IntegerField(read_only=True)
     finding_meta = FindingMetaSerializer(read_only=True, many=True)
@@ -705,7 +704,6 @@ class FindingCreateSerializer(TaggitSerializer, serializers.ModelSerializer):
         allow_null=True,
         default=None)
     tags = TagListSerializerField(required=False)
-    push_to_jira = serializers.BooleanField(default=False)
 
     class Meta:
         model = Finding
@@ -737,6 +735,7 @@ class FindingCreateSerializer(TaggitSerializer, serializers.ModelSerializer):
     def get_push_to_jira(self):
         push_to_jira=False
         if 'push_to_jira' in self.context:
+            logger.debug('context for push_to_jira_found')
             push_to_jira = self.context['push_to_jira']        
 
     def save(self):
