@@ -240,7 +240,7 @@ class FindingViewSet(mixins.ListModelMixin,
     # data and add that as a parameter to .save()
     def perform_update(self, serializer):
         enabled = False
-        # push_to_jira = serializer.validated_data.get('push_to_jira')
+        push_to_jira = serializer.validated_data.get('push_to_jira')
         # IF JIRA is enabled and this product has a JIRA configuration
         if get_system_setting('enable_jira') and \
                 serializer.instance.test.engagement.product.jira_pkey_set.first() is not None:
@@ -252,8 +252,7 @@ class FindingViewSet(mixins.ListModelMixin,
             push_to_jira = True
 
         # add a check for the product having push all issues enabled right here.
-        # serializer.save(push_to_jira=push_to_jira)
-        serializer.save(push_to_jira=False)
+        serializer.save(push_to_jira=push_to_jira)
 
     def get_queryset(self):
         if not self.request.user.is_staff:
