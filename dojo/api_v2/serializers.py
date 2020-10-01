@@ -23,6 +23,10 @@ import datetime
 import six
 from django.utils.translation import ugettext_lazy as _
 import json
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 class TagList(list):
@@ -881,7 +885,7 @@ class ImportScanSerializer(TaggitSerializer, serializers.Serializer):
         new_findings = []
         skipped_hashcodes = []
         try:
-            logger.debug('apiv2 serializer processing findins in import')
+            logger.debug('apiv2 serializer processing findings in import')
             for item in parser.items:
                 sev = item.severity
                 if sev == 'Information' or sev == 'Informational':

@@ -108,7 +108,8 @@ def trace_calls(frame, event, arg):
     if event != 'call':
         return
     filename = frame.f_code.co_filename
-    if "dojo" in filename or "django" in filename:
+    # if "dojo" in filename or "django" in filename:
+    if "dojo" in filename:
         co = frame.f_code
         func_name = co.co_name
         if func_name == 'write':
