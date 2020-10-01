@@ -24,9 +24,9 @@ jobs:
         # Ignore the failure of a step and avoid terminating the job.
         # continue-on-error: true
 
-      - name: Build for unittests
-        # run: docker-compose build uwsgi unittests mysql initializer
-        run: docker-compose build uwsgi unittests mysql initializer
+      # - name: Build for unittests
+      #   # run: docker-compose build uwsgi unittests mysql initializer
+      #   run: docker-compose build uwsgi unittests mysql initializer
 
       # phased startup so we can use the exit code from integrationtest container
       # - name: Initialize
