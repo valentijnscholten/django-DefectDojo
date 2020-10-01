@@ -37,7 +37,8 @@ jobs:
 
       - name: Unit tests
         # run: docker-compose up --exit-code-from unittests unittests
-        run: docker-compose up --exit-code-from unittests
+        # run: docker-compose up --exit-code-from unittests
+        run: docker-compose up --exit-code-from uwsgi
 
       - name: Build the rest
         if: success()
