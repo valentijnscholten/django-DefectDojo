@@ -1975,6 +1975,7 @@ def calculate_grade(product):
             critical, high, medium, low)
         product.prod_numeric_grade = aeval(grade_product)
         product.save()
+    logger.debug('done calculating grade for %s', product)        
 
 
 def get_celery_worker_status():

@@ -12,7 +12,7 @@ jobs:
           github_token: ${{ github.token }}
 
       - name: Set integration-test mode
-        run: docker/setEnv.sh integration_tests
+        run: docker/setEnv.sh unit_tests
       
       # Pull the latest image to build, and avoid caching pull-only images.
       # (docker pull is faster than caching in most cases.)
