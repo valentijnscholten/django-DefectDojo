@@ -1873,6 +1873,10 @@ class Finding(models.Model):
             return None
             pass
 
+    def get_push_all_to_jira(self):
+        if self.jira_pkey():
+            return instance.test.engagement.product.jira_pkey_set.first().push_all_issues
+
     def long_desc(self):
         long_desc = ''
         long_desc += '*' + self.title + '*\n\n'
@@ -2070,7 +2074,6 @@ class Finding(models.Model):
             return note.date.strftime("%Y-%m-%d %H:%M:%S") + ': ' + note.author.get_full_name() + ' : ' + note.entry
 
         return ''
-
 
 Finding.endpoints.through.__unicode__ = lambda \
     x: "Endpoint: " + x.endpoint.host

@@ -29,10 +29,7 @@ from dojo.utils import get_period_counts_legacy, get_system_setting
 from dojo.api_v2 import serializers, permissions
 from django.db.models import Count, Q
 
-import logging
 
-
-logger = logging.getLogger(__name__)
 class EndPointViewSet(mixins.ListModelMixin,
                       mixins.RetrieveModelMixin,
                       mixins.UpdateModelMixin,
@@ -234,10 +231,28 @@ class FindingViewSet(mixins.ListModelMixin,
                      mixins.CreateModelMixin,
                      ra_api.AcceptedFindingsMixin,
                      viewsets.GenericViewSet):
-    serializer_class = serializers.FindingSerializer()
+    serializer_class = serializers.FindingSerializer
     queryset = Finding.objects.all()
     filter_backends = (DjangoFilterBackend,)
     filterset_class = ApiFindingFilter
+
+    # Overriding mixins.UpdateModeMixin perform_update() method to grab push_to_jira
+    # data and add that as a parameter to .save()
+    def perform_update(self, serializer):
+        push_all = False
+        push_to_jira = serializer.validated_data.get('push_to_jira')
+        # IF JIRA is enabled and this product has a JIRA configuration
+        if get_system_setting('enable_jira') and \
+                serializer.instance.test.engagement.product.jira_pkey_set.first() is not None:
+            # Check if push_all_issues is set on this product
+            push_all = serializer.instance.test.engagement.product.jira_pkey_set.first().push_all_issues
+
+        # If push_all_issues is set:
+        if push_all:
+            push_to_jira = True
+
+        # add a check for the product having push all issues enabled right here.
+        serializer.save(push_to_jira=push_to_jira)
 
     def get_queryset(self):
         if not self.request.user.is_staff:
@@ -247,35 +262,10 @@ class FindingViewSet(mixins.ListModelMixin,
             return Finding.objects.all()
 
     def get_serializer_class(self):
-        logger.debug('get_serializer_class')
         if self.request.method == 'POST':
-            # return serializers.FindingCreateSerializer(context=self.get_serializer_context())
             return serializers.FindingCreateSerializer
         else:
-            # return serializers.FindingSerializer(context=self.get_serializer_context())
             return serializers.FindingSerializer
-
-    def get_serializer_context(self):
-        logger.debug('get_serializer_context')
-        enabled = False
-        # push_to_jira = serializer.validated_data.get('push_to_jira')
-        push_to_jira = self.request.query_params.get('push_to_jira', None)
-        logger.debug('get_serializer_context: push_to_jira from request data: %s', str(push_to_jira))
-        
-        # IF JIRA is enabled and this product has a JIRA configuration
-        if get_system_setting('enable_jira') and \
-                serializer.instance.test.engagement.product.jira_pkey_set.first() is not None:
-            # Check if push_all_issues is set on this product
-            enabled = serializer.instance.test.engagement.product.jira_pkey_set.first().push_all_issues
-
-        # If push_all_issues is set:
-        if enabled:
-            push_to_jira = True
-
-        logger.debug('get_serializer_context: push_to_jira: %s', str(push_to_jira))
-        context = super().get_serializer_context()
-        context['push_to_jira'] = push_to_jira
-        return context
 
     @swagger_auto_schema(
         method='get',
@@ -584,7 +574,6 @@ class ProductViewSet(mixins.ListModelMixin,
     filterset_class = ApiProductFilter
 
     def get_queryset(self):
-        print('ProductViewSet.getqueryset')
         if not self.request.user.is_staff:
             return self.queryset.filter(
                 authorized_users__in=[self.request.user])
@@ -597,7 +586,6 @@ class ProductViewSet(mixins.ListModelMixin,
     )
     @action(detail=True, methods=['post'], permission_classes=[permissions.UserHasReportGeneratePermission])
     def generate_report(self, request, pk=None):
-        print('ProductViewSet.generate_report')
         product = get_object_or_404(Product.objects, id=pk)
 
         options = {}
@@ -758,14 +746,11 @@ class TestsViewSet(mixins.ListModelMixin,
         return Test
 
     def get_queryset(self):
-        qs = Test.objects.all()
-
         if not self.request.user.is_staff:
             return Test.objects.filter(
                 engagement__product__authorized_users__in=[self.request.user])
-
-        #  serializer outputs also self.test_type.name, so prefetch that
-        return qs.select_related('test_type')
+        else:
+            return Test.objects.all()
 
     def get_serializer_class(self):
         if self.request.method == 'POST':

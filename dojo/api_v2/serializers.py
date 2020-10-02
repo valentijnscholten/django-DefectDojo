@@ -23,10 +23,6 @@ import datetime
 import six
 from django.utils.translation import ugettext_lazy as _
 import json
-import logging
-
-
-logger = logging.getLogger(__name__)
 
 
 class TagList(list):
@@ -54,7 +50,6 @@ class TagList(list):
 
 
 class TagListSerializerField(serializers.ListField):
-    # print('TagListSerializerField')
     child = serializers.CharField()
     default_error_messages = {
         'not_a_list': _(
@@ -66,7 +61,6 @@ class TagListSerializerField(serializers.ListField):
     order_by = None
 
     def __init__(self, **kwargs):
-        # print('TagListSerializerField.init')
         pretty_print = kwargs.pop("pretty_print", True)
 
         style = kwargs.pop("style", {})
@@ -78,7 +72,6 @@ class TagListSerializerField(serializers.ListField):
         self.pretty_print = pretty_print
 
     def to_internal_value(self, data):
-        # print('TagListSerializerField.to_internal_value')
         if isinstance(data, six.string_types):
             if not data:
                 data = []
@@ -99,10 +92,6 @@ class TagListSerializerField(serializers.ListField):
         return data
 
     def to_representation(self, value):
-        # print('TagListSerializerField.to_representation')
-        # print('type(value):', type(value))
-        # print('value:', value)
-
         if not isinstance(value, TagList):
             if not isinstance(value, list):
                 # this will trigger when a queryset is found...
@@ -638,14 +627,39 @@ class FindingSerializer(TaggitSerializer, serializers.ModelSerializer):
     tags = TagListSerializerField(required=False)
     request_response = serializers.SerializerMethodField()
     accepted_risks = RiskAcceptanceSerializer(many=True, read_only=True, source='risk_acceptance_set')
+    push_to_jira = serializers.BooleanField(default=False)
     age = serializers.IntegerField(read_only=True)
     sla_days_remaining = serializers.IntegerField(read_only=True)
     finding_meta = FindingMetaSerializer(read_only=True, many=True)
-    push_to_jira = serializers.BooleanField(default=False, read_only=True)        
 
     class Meta:
         model = Finding
         fields = '__all__'
+
+    # Overriding this to push add Push to JIRA functionality
+    def update(self, instance, validated_data):
+        # remove tags from validated data and store them seperately
+        to_be_tagged, validated_data = self._pop_tags(validated_data)
+        tag_object = self._save_tags(tag_object, to_be_tagged)
+
+        # pop push_to_jira so it won't get send to the model as a field
+        push_to_jira = validated_data.pop('push_to_jira') or instance.get_push_all_to_jira()
+
+        # I haven't been able to find a solution to pass 'push_to_jira' as a kwarg to the super().save that is happening at some point.
+        # so we have to override the update method here and perform the update ourselves.
+        # there is no built-in way to update all fields at once, so we loop over them ourselves.
+        for (key, value) in validated_data.items():
+            setattr(instance, key, value)
+
+        # No need to save the finding twice if we're not pushing to JIRA
+        if push_to_jira:
+            instance.save(push_to_jira=push_to_jira)
+        else:
+            instance.save()
+        
+        # not sure why we are returning a tag_object, but don't want to change too much now as we're just fixing a bug        #         
+        return tag_object
+        pass
 
     def validate(self, data):
         if self.context['request'].method == 'PATCH':
@@ -681,13 +695,6 @@ class FindingSerializer(TaggitSerializer, serializers.ModelSerializer):
         serialized_burps = BurpRawRequestResponseSerializer({'req_resp': burp_list})
         return serialized_burps.data
 
-    def save(self):
-        push_to_jira=False
-        if 'push_to_jira' in self.context:
-            push_to_jira = self.context['push_to_jira']
-        
-        super().save(push_to_jira=push_to_jira)
-
 
 class FindingCreateSerializer(TaggitSerializer, serializers.ModelSerializer):
     notes = serializers.PrimaryKeyRelatedField(
@@ -705,7 +712,7 @@ class FindingCreateSerializer(TaggitSerializer, serializers.ModelSerializer):
         allow_null=True,
         default=None)
     tags = TagListSerializerField(required=False)
-    push_to_jira = serializers.BooleanField(default=False, read_only=True)    
+    push_to_jira = serializers.BooleanField(default=False)
 
     class Meta:
         model = Finding
@@ -716,13 +723,25 @@ class FindingCreateSerializer(TaggitSerializer, serializers.ModelSerializer):
 
     # Overriding this to push add Push to JIRA functionality
     def create(self, validated_data):
+        # remove tags from validated data and store them seperately
         to_be_tagged, validated_data = self._pop_tags(validated_data)
-        push_to_jira = self.get_push_to_jira()
-        tag_object = super(TaggitSerializer, self).create(validated_data)
+        tag_object = self._save_tags(tag_object, to_be_tagged)
 
+        # pop push_to_jira so it won't get send to the model as a field
+        push_to_jira = validated_data.pop('push_to_jira')
+
+        # first save, so we have an instance to get push_all_to_jira from
+        new_finding = super(TaggitSerializer, self).create(validated_data)
+
+        push_to_jira = push_to_jira or new_finding.get_push_all_to_jira()
+
+        # If we need to push to JIRA, an extra save call is needed.
+        # TODO try to combine create and save, but for now I'm just fixing a bug and don't want to change to much
         if push_to_jira:
-            tag_object.save(push_to_jira=push_to_jira)
-        return self._save_tags(tag_object, to_be_tagged)
+            instance.save(push_to_jira=push_to_jira)
+        
+        # not sure why we are returning a tag_object, but don't want to change too much now as we're just fixing a bug        #         
+        return tag_object
         pass
 
     def validate(self, data):
@@ -733,15 +752,6 @@ class FindingCreateSerializer(TaggitSerializer, serializers.ModelSerializer):
             raise serializers.ValidationError('False positive findings cannot '
                                               'be verified.')
         return data
-
-    def get_push_to_jira(self):
-        push_to_jira=False
-        if 'push_to_jira' in self.context:
-            logger.debug('context for push_to_jira_found')
-            push_to_jira = self.context['push_to_jira']        
-
-    def save(self):
-        super().save(push_to_jira=self.get_push_to_jira())
 
 
 class FindingTemplateSerializer(serializers.ModelSerializer):
@@ -893,7 +903,6 @@ class ImportScanSerializer(TaggitSerializer, serializers.Serializer):
         new_findings = []
         skipped_hashcodes = []
         try:
-            logger.debug('apiv2 serializer processing findings in import')
             for item in parser.items:
                 sev = item.severity
                 if sev == 'Information' or sev == 'Informational':
@@ -956,11 +965,8 @@ class ImportScanSerializer(TaggitSerializer, serializers.Serializer):
         except SyntaxError:
             raise Exception('Parser SyntaxError')
 
-        logger.debug('apiv2 serializer done saving new findings')
-
         old_findings = []
         if close_old_findings:
-            logger.debug('apiv2 serializer closing old findings')
             # Close old active findings that are not reported by this scan.
             new_hash_codes = test.finding_set.values('hash_code')
 
@@ -1014,7 +1020,6 @@ class ImportScanSerializer(TaggitSerializer, serializers.Serializer):
                                 finding_count=updated_count, test=test, engagement=test.engagement, product=test.engagement.product,
                                 url=reverse('view_test', args=(test.id,)))
 
-        logger.debug('apiv2 serializer import done')
         return test
 
     def validate(self, data):
