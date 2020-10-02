@@ -1875,7 +1875,7 @@ class Finding(models.Model):
 
     def get_push_all_to_jira(self):
         if self.jira_pkey():
-            return instance.test.engagement.product.jira_pkey_set.first().push_all_issues
+            return self.jira_pkey().push_all_issues
 
     def long_desc(self):
         long_desc = ''

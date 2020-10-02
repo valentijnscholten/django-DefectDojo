@@ -89,7 +89,10 @@ class BaseClass():
             response = self.client.patch(
                 relative_url, self.update_fields)
             for key, value in self.update_fields.items():
-                self.assertEqual(value, response.data[key])
+                # some exception as push_to_jira has been implemented strangely in the update methods in the api
+                if key != 'push_to_jira':
+                    self.assertEqual(value, response.data[key])
+            self.assertFalse('push_to_jira' in response.data)
             response = self.client.put(
                 relative_url, self.payload)
             self.assertEqual(200, response.status_code)
