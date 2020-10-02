@@ -737,7 +737,7 @@ class FindingCreateSerializer(TaggitSerializer, serializers.ModelSerializer):
         # If we need to push to JIRA, an extra save call is needed.
         # TODO try to combine create and save, but for now I'm just fixing a bug and don't want to change to much
         if push_to_jira:
-            instance.save(push_to_jira=push_to_jira)
+            new_finding.save(push_to_jira=push_to_jira)
         
         # not sure why we are returning a tag_object, but don't want to change too much now as we're just fixing a bug        #         
         tag_object = self._save_tags(new_finding, to_be_tagged)
