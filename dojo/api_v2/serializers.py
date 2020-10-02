@@ -648,6 +648,7 @@ class FindingSerializer(TaggitSerializer, serializers.ModelSerializer):
         # so we have to override the update method here and perform the update ourselves.
         # there is no built-in way to update all fields at once, so we loop over them ourselves.
         for (key, value) in validated_data.items():
+            logger.debug('setting field from validated_data: %s: %s', key, value)
             setattr(instance, key, value)
 
         # No need to save the finding twice if we're not pushing to JIRA
