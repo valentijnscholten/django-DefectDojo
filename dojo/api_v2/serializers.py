@@ -23,7 +23,10 @@ import datetime
 import six
 from django.utils.translation import ugettext_lazy as _
 import json
+import logging
 
+
+logger = logging.getLogger(__name__)
 
 class TagList(list):
     def __init__(self, *args, **kwargs):
@@ -644,12 +647,14 @@ class FindingSerializer(TaggitSerializer, serializers.ModelSerializer):
         # pop push_to_jira so it won't get send to the model as a field
         push_to_jira = validated_data.pop('push_to_jira') or instance.get_push_all_to_jira()
 
-        # I haven't been able to find a solution to pass 'push_to_jira' as a kwarg to the super().save that is happening at some point.
-        # so we have to override the update method here and perform the update ourselves.
-        # there is no built-in way to update all fields at once, so we loop over them ourselves.
-        for (key, value) in validated_data.items():
-            logger.debug('setting field from validated_data: %s: %s', key, value)
-            setattr(instance, key, value)
+        instance = super(TaggitSerializer, self).update(instance, validated_data)
+
+        # # I haven't been able to find a solution to pass 'push_to_jira' as a kwarg to the super().save that is happening at some point.
+        # # so we have to override the update method here and perform the update ourselves.
+        # # there is no built-in way to update all fields at once, so we loop over them ourselves.
+        # for (key, value) in validated_data.items():
+        #     logger.debug('setting field from validated_data: %s: %s', key, value)
+        #     setattr(instance, key, value)
 
         # No need to save the finding twice if we're not pushing to JIRA
         if push_to_jira:

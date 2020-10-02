@@ -43,23 +43,23 @@ class BaseClass():
             self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
             self.url = reverse(self.viewname + '-list')
 
-        @skipIfNotSubclass('ListModelMixin')
-        def test_list(self):
-            if hasattr(self.endpoint_model, 'tags') and self.payload:
-                # create a new instance first to make sure there's at least 1 instance with tags set by payload to trigger tag handling code
-                response = self.client.post(self.url, self.payload)
+        # @skipIfNotSubclass('ListModelMixin')
+        # def test_list(self):
+        #     if hasattr(self.endpoint_model, 'tags') and self.payload:
+        #         # create a new instance first to make sure there's at least 1 instance with tags set by payload to trigger tag handling code
+        #         response = self.client.post(self.url, self.payload)
 
-            response = self.client.get(self.url, format='json')
-            # print("RESPONSE[0]:", response.data['results'])
-            # print("RESPONSE[0]:", response.data['results'][0])
-            # print("RESPONSE[0]:", response.data['results'][0]['id'])
-            # finding = Finding.objects.get(id=response.data['results'][0]['id'])
-            # print("RESPONSE.age:", response.data['results'][0]['age'])
-            # print("finding.age:", finding.age)
+        #     response = self.client.get(self.url, format='json')
+        #     # print("RESPONSE[0]:", response.data['results'])
+        #     # print("RESPONSE[0]:", response.data['results'][0])
+        #     # print("RESPONSE[0]:", response.data['results'][0]['id'])
+        #     # finding = Finding.objects.get(id=response.data['results'][0]['id'])
+        #     # print("RESPONSE.age:", response.data['results'][0]['age'])
+        #     # print("finding.age:", finding.age)
 
-            # print("RESPONSE.sla_days_remaining:", response.data['results'][0]['sla_days_remaining'])
-            # print("finding.sla_days_remaining:", finding.sla_days_remaining())
-            self.assertEqual(200, response.status_code)
+        #     # print("RESPONSE.sla_days_remaining:", response.data['results'][0]['sla_days_remaining'])
+        #     # print("finding.sla_days_remaining:", finding.sla_days_remaining())
+        #     self.assertEqual(200, response.status_code)
 
         @skipIfNotSubclass('CreateModelMixin')
         def test_create(self):
@@ -68,19 +68,19 @@ class BaseClass():
             self.assertEqual(201, response.status_code, response.data)
             self.assertEqual(self.endpoint_model.objects.count(), length + 1)
 
-        @skipIfNotSubclass('RetrieveModelMixin')
-        def test_detail(self):
-            current_objects = self.client.get(self.url, format='json').data
-            relative_url = self.url + '%s/' % current_objects['results'][0]['id']
-            response = self.client.get(relative_url)
-            self.assertEqual(200, response.status_code)
+        # @skipIfNotSubclass('RetrieveModelMixin')
+        # def test_detail(self):
+        #     current_objects = self.client.get(self.url, format='json').data
+        #     relative_url = self.url + '%s/' % current_objects['results'][0]['id']
+        #     response = self.client.get(relative_url)
+        #     self.assertEqual(200, response.status_code)
 
-        @skipIfNotSubclass('DestroyModelMixin')
-        def test_delete(self):
-            current_objects = self.client.get(self.url, format='json').data
-            relative_url = self.url + '%s/' % current_objects['results'][0]['id']
-            response = self.client.delete(relative_url)
-            self.assertEqual(204, response.status_code)
+        # @skipIfNotSubclass('DestroyModelMixin')
+        # def test_delete(self):
+        #     current_objects = self.client.get(self.url, format='json').data
+        #     relative_url = self.url + '%s/' % current_objects['results'][0]['id']
+        #     response = self.client.delete(relative_url)
+        #     self.assertEqual(204, response.status_code)
 
         @skipIfNotSubclass('UpdateModelMixin')
         def test_update(self):

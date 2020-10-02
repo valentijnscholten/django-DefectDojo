@@ -26,12 +26,12 @@ else
   echo "settings.py already present, not creating a new one"
 fi
 
-cat dojo/settings/settings.py
+# cat dojo/settings/settings.py
 
-echo "checking migrations"
-python3 manage.py makemigrations dojo
-echo "running migrations"
-python3 manage.py migrate
+# echo "checking migrations"
+# python3 manage.py makemigrations dojo
+# echo "running migrations"
+# python3 manage.py migrate
 
 export DJANGO_LOG_LEVEL=DEBUG
 
