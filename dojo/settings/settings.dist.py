@@ -775,10 +775,12 @@ DEDUPLICATION_ALGORITHM_PER_PARSER = {
     'PHP Symfony Security Check': DEDUPE_ALGO_HASH_CODE,
     'Clair Scan': DEDUPE_ALGO_HASH_CODE,
     'Clair Klar Scan': DEDUPE_ALGO_HASH_CODE,
+    'Veracode Scan': DEDUPE_ALGO_UNIQUE_ID_FROM_TOOL_OR_HASH_CODE,
     # for backwards compatibility because someone decided to rename this scanner:
     'Symfony Security Check': DEDUPE_ALGO_HASH_CODE,
     'DSOP Scan': DEDUPE_ALGO_HASH_CODE,
     'Trivy Scan': DEDUPE_ALGO_HASH_CODE,
+    'HackerOne Cases': DEDUPE_ALGO_UNIQUE_ID_FROM_TOOL_OR_HASH_CODE,
 }
 
 # merging findings doesn't always work well with dedupe and reimport etc.
