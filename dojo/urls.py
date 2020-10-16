@@ -64,6 +64,7 @@ from dojo.google_sheet.urls import urlpatterns as google_sheets_urls
 from dojo.banner.urls import urlpatterns as banner_urls
 from dojo.redirects.urls import urlpatterns as redirects_urls
 from dojo.survey.urls import urlpatterns as survey_urls
+from dojo.components.urls import urlpatterns as component_urls
 from dojo.regulations.urls import urlpatterns as regulations
 
 admin.autodiscover()
@@ -165,6 +166,7 @@ ur += note_type_urls
 ur += google_sheets_urls
 ur += banner_urls
 ur += redirects_urls
+ur += component_urls
 ur += regulations
 
 swagger_urls = [
