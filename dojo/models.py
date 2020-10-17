@@ -31,7 +31,6 @@ from dojo.tag.prefetching_tag_descriptor import PrefetchingTagDescriptor
 from django.contrib.contenttypes.fields import GenericRelation
 from tagging.models import TaggedItem
 from dateutil.relativedelta import relativedelta
-from dojo.user.helper import user_is_authorized
 
 fmt = getattr(settings, 'LOG_FORMAT', None)
 lvl = getattr(settings, 'LOG_LEVEL', logging.DEBUG)
@@ -178,7 +177,7 @@ class System_Settings(models.Model):
                                       'places, whereas if turned off '
                                       'Critical, High, Medium, etc will '
                                       'be displayed.')
-    false_positive_history = models.BooleanField(default=False, help_text="DefectDojo will automatically mark the finding as a false positive if the finding has been previously marked as a false positive.")
+    false_positive_history = models.BooleanField(default=False, help_text="DefectDojo will automatically mark the finding as a false positive if the finding has been previously marked as a false positive. Not needed when using deduplication, advised to not combine these two.")
 
     url_prefix = models.CharField(max_length=300, default='', blank=True, help_text="URL prefix if DefectDojo is installed in it's own virtual subdirectory.")
     team_name = models.CharField(max_length=100, default='', blank=True)
@@ -401,6 +400,7 @@ class Product_Type(models.Model):
     key_product = models.BooleanField(default=False)
     updated = models.DateTimeField(auto_now=True, null=True)
     created = models.DateTimeField(auto_now_add=True, null=True)
+    authorized_users = models.ManyToManyField(User, blank=True)
 
     @cached_property
     def critical_present(self):
@@ -1732,11 +1732,9 @@ class Finding(models.Model):
             # models.Index(fields=['file_path']), # can't add index because the field has max length 4000.
             models.Index(fields=['line']),
             models.Index(fields=['component_name']),
+            models.Index(fields=['duplicate']),
+            models.Index(fields=['is_Mitigated']),
         ]
-
-    def is_authorized(self, user, perm_type):
-        # print('finding.is_authorized')
-        return user_is_authorized(user, perm_type, self)
 
     def get_absolute_url(self):
         from django.urls import reverse
