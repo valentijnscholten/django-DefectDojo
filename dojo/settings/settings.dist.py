@@ -101,6 +101,7 @@ env = environ.Env(
     DD_SAML2_METADATA_LOCAL_FILE_PATH=(str, ''),
     DD_SAML2_ASSERTION_URL=(str, ''),
     DD_SAML2_ENTITY_ID=(str, ''),
+    DD_SAML2_LOGOUT_URL=(str, ''),
     DD_SAML2_DEFAULT_NEXT_URL=(str, '/dashboard'),
     DD_SAML2_NEW_USER_PROFILE=(dict, {
         # The default group name when a new user logs in
@@ -136,7 +137,8 @@ env = environ.Env(
 
     # maximum number of result in search as search can be an expensive operation
     DD_SEARCH_MAX_RESULTS=(int, 100),
-    DD_MAX_AUTOCOMPLETE_WORDS=(int, 20000)
+    DD_MAX_AUTOCOMPLETE_WORDS=(int, 20000),
+    DD_JIRA_SSL_VERIFY=(bool, True)
 )
 
 
@@ -375,6 +377,7 @@ SOCIAL_AUTH_TRAILING_SLASH = env('DD_SOCIAL_AUTH_TRAILING_SLASH')
 # For more configuration and customization options, see django-saml2-auth documentation
 # https://github.com/fangli/django-saml2-auth
 SAML2_ENABLED = env('DD_SAML2_ENABLED')
+SAML2_LOGOUT_URL = env('DD_SAML2_LOGOUT_URL')
 SAML2_AUTH = {
     # Metadata is required, choose either remote url or local file path
     'METADATA_AUTO_CONF_URL': env('DD_SAML2_METADATA_AUTO_CONF_URL'),
@@ -504,6 +507,7 @@ DJANGO_ADMIN_ENABLED = env('DD_DJANGO_ADMIN_ENABLED')
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
@@ -525,6 +529,9 @@ SWAGGER_SETTINGS = {
             'name': 'Authorization'
         }
     },
+    'DOC_EXPANSION': "none",
+    'JSON_EDITOR': True,
+    'SHOW_REQUEST_HEADERS': True,
 }
 
 # ------------------------------------------------------------------------------
@@ -799,6 +806,8 @@ JIRA_ISSUE_TYPE_CHOICES_CONFIG = (
     ('Bug', 'Bug'),
     ('Security', 'Security')
 )
+
+JIRA_SSL_VERIFY = env('DD_JIRA_SSL_VERIFY')
 
 
 # ------------------------------------------------------------------------------
