@@ -591,7 +591,7 @@ INSTALLED_APPS = (
     # 'axes'
     'django_celery_results',
     'social_django',
-    'drf_yasg',
+    'drf_yasg2',
     'debug_toolbar',
     # 'cachalot'
 )
@@ -829,6 +829,9 @@ LOGGING = {
         'simple': {
             'format': '%(levelname)s %(funcName)s %(lineno)d %(message)s'
         },
+        'json': {
+            '()': 'json_log_formatter.JSONFormatter',
+        },
     },
     'filters': {
         'require_debug_false': {
@@ -848,6 +851,11 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'verbose'
         },
+        'json_console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'json'
+        },
     },
     'loggers': {
         'django.request': {
@@ -861,11 +869,15 @@ LOGGING = {
         #     'propagate': False,
         # },
         'dojo': {
+            # specify 'json_console' to get jsonify logs (or both at once)
+            # 'handlers': ['json_console'],
             'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': False,
         },
         'dojo.specific-loggers.deduplication': {
+            # specify 'json_console' to get jsonify logs (or both at once)
+            # 'handlers': ['json_console'],
             'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': False,
