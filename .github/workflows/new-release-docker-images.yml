@@ -1,8 +1,5 @@
-name: Release new version
+name: Docker build and push
 
-env:
-  GIT_USERNAME: "DefectDojo release bot"
-  GIT_EMAIL: "dojo-release-bot@users.noreply.github.com"
 on:
   push:
     tags:
@@ -16,7 +13,7 @@ jobs:
       matrix: ${{ steps.set-tag.outputs.matrix }}
     steps:
       - id: set-matrix
-        run: echo ::set-output name=matrix::[{\"docker-image\":\"django\",\"nginx\"},{\"docker-tag\":\"latest\",\"{GITHUB_REF#refs/*/}\"}]"
+        run: echo ::set-output name=matrix::[{\"docker-image\":\"django\",\"nginx\"},{\"docker-tag\":\"latest\",\"${GITHUB_REF#refs/*/}\"}]"
         # run: echo "::set-output name=matrix::{\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}"
   job-build-and-push:
     build:
