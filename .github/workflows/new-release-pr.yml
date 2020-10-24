@@ -3,6 +3,8 @@ name: Release new version
 on:
   workflow_dispatch:
     inputs:
+      # the actual branch that can be chosen on the UI is made irrelevant by further steps
+      # because someone will forget one day to change it.
       release_number:
         description: 'Release version (x.y.z format)'
         required: true
@@ -15,18 +17,12 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: dev
-        # - name: Create new release branch
-        # uses: peterjgrainger/action-create-branch@2.0.1
-        # env:
-        #  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        #with:
-        #  branch: release/${{ github.event.inputs.release_number }}
       - name: Create release branch
         run: |
           echo "NEW_BRANCH=release/${{ github.event.inputs.release_number }}" >> $GITHUB_ENV
       - name: Configure git
         run: |
-          git config --global user.name "Dojo release bot"
+          git config --global user.name "DefectDojo release bot"
           git config --global user.email "dojo-release-bot@users.noreply.github.com"
       - name: Push branch
         run: git push origin HEAD:${NEW_BRANCH}
@@ -38,7 +34,6 @@ jobs:
         run: |
           # sed -ri "s/'([0-9]+(\.[0-9]+)*)'/'${{ github.event.inputs.release_number }}'/" dojo/__init__.py
           sed -ri "s/__version__ = '.*'/__version__ = '${{ github.event.inputs.release_number }}'/" dojo/__init__.py
-          # sed -ri "s/'([0-9]+(\.[0-9]+)*)'/'${{ github.event.inputs.release_number }}'/" setup.py
           sed -ri "s/version='.*'/version='${{ github.event.inputs.release_number }}'/" setup.py
           sed -ri "s/appVersion: \"([0-9]+(\.[0-9]+)*)\"/appVersion: \"${{ github.event.inputs.release_number }}\"/" helm/defectdojo/Chart.yaml
       - name: Check numbers
@@ -49,10 +44,10 @@ jobs:
       - name: Push version changes
         uses: stefanzweifel/git-auto-commit-action@v4.1.2
         with:
-          commit_user_name: "dojo_bot"
-          commit_user_email: "noreply@defectdojo.org"
-          commit_author: "Dojo Bot <noreply@defectdojo.org>"
-          commit_message: "Update versions"
+          # commit_user_name: "dojo_bot"
+          # commit_user_email: "noreply@defectdojo.org"
+          # commit_author: "DefectDojo Bot <noreply@defectdojo.org>"
+          commit_message: "Update versions in application files"
           branch: ${{ github.head_ref }}
       - name: Create Pull Request
         uses: actions/github-script@v3
