@@ -23,3 +23,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           branch: ${{ github.event.inputs.release_number }}
+      - name: Update version numbers in key files
+          run |
+            sed -ir "s/'([0-9]+(\.[0-9]+)*)'/'${{ github.event.inputs.release_number }}'/" dojo/__init.py__
+            sed -ir "s/'([0-9]+(\.[0-9]+)*)'/'${{ github.event.inputs.release_number }}'/" setup.py
+            sed -ir "s/appVersion: \"([0-9]+(\.[0-9]+)*)\"/appVersion: \"${{ github.event.inputs.release_number }}\"/" helm/defectdojo/Chart.yaml
+      - name: Check numbers
+          run |
+            grep version dojo/__init.py__
+            grep version setup.py
+            grep appVersion helm/defectdojo/Chart.yaml
