@@ -11,10 +11,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout master branch
+      - name: Checkout dev branch
         uses: actions/checkout@v2
         with:
-          ref: master
+          ref: dev
       - run: |
           echo "This is release ${{ github.event.inputs.release_number }}"
       - name: Create new release branch
@@ -23,13 +23,27 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           branch: ${{ github.event.inputs.release_number }}
+      - name: Checkout release branch
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.release_number }}
       - name: Update version numbers in key files
         run: |
-            sed -ir "s/'([0-9]+(\.[0-9]+)*)'/'${{ github.event.inputs.release_number }}'/" dojo/__init.py__
-            sed -ir "s/'([0-9]+(\.[0-9]+)*)'/'${{ github.event.inputs.release_number }}'/" setup.py
-            sed -ir "s/appVersion: \"([0-9]+(\.[0-9]+)*)\"/appVersion: \"${{ github.event.inputs.release_number }}\"/" helm/defectdojo/Chart.yaml
+          # sed -ri "s/'([0-9]+(\.[0-9]+)*)'/'${{ github.event.inputs.release_number }}'/" dojo/__init__.py
+          sed -ri "s/__version__ = '.*'/__version__ = '${{ github.event.inputs.release_number }}'/" dojo/__init__.py
+          # sed -ri "s/'([0-9]+(\.[0-9]+)*)'/'${{ github.event.inputs.release_number }}'/" setup.py
+          sed -ri "s/version='.*'/version='${{ github.event.inputs.release_number }}'/" setup.py
+          sed -ri "s/appVersion: \"([0-9]+(\.[0-9]+)*)\"/appVersion: \"${{ github.event.inputs.release_number }}\"/" helm/defectdojo/Chart.yaml
       - name: Check numbers
         run: |
-            grep version dojo/__init.py__
-            grep version setup.py
-            grep appVersion helm/defectdojo/Chart.yaml
+          grep version dojo/__init__.py
+          grep version setup.py
+          grep appVersion helm/defectdojo/Chart.yaml
+      - name: Push version changes
+        uses: stefanzweifel/git-auto-commit-action@v4.1.2
+        with:
+          commit_user_name: "dojo_bot"
+          commit_user_email: "noreply@defectdojo.org"
+          commit_author: "Dojo Bot <noreply@defectdojo.org>"
+          commit_message: "Update versions"
+          branch: ${{ github.head_ref }}
