@@ -22,11 +22,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          branch: ${{ github.event.inputs.release_number }}
+          branch: release/${{ github.event.inputs.release_number }}
       - name: Checkout release branch
         uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.inputs.release_number }}
+          ref: release/${{ github.event.inputs.release_number }}
       - name: Update version numbers in key files
         run: |
           # sed -ri "s/'([0-9]+(\.[0-9]+)*)'/'${{ github.event.inputs.release_number }}'/" dojo/__init__.py
@@ -47,3 +47,5 @@ jobs:
           commit_author: "Dojo Bot <noreply@defectdojo.org>"
           commit_message: "Update versions"
           branch: ${{ github.head_ref }}
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v3
