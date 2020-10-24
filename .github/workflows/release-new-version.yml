@@ -15,8 +15,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: dev
-      - run: |
-          echo "This is release ${{ github.event.inputs.release_number }}"
         # - name: Create new release branch
         # uses: peterjgrainger/action-create-branch@2.0.1
         # env:
@@ -25,7 +23,13 @@ jobs:
         #  branch: release/${{ github.event.inputs.release_number }}
       - name: Create release branch
         run: |
-          git branch release/${{ github.event.inputs.release_number }}
+          echo "NEW_BRANCH=release/${{ github.event.inputs.release_number }}" >> $GITHUB_ENV
+      - name: Configure git
+        run: |
+          git config --global user.name "Dojo release bot"
+          git config --global user.email "dojo-release-bot@users.noreply.github.com"
+      - name: Push branch
+        run: git push origin HEAD:${NEW_BRANCH}
       - name: Checkout release branch
         uses: actions/checkout@v2
         with:
