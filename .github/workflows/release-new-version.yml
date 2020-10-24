@@ -1,0 +1,23 @@
+name: Release new version
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_number:
+        description: 'Release version (x.y.z format)'
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout master branch
+        uses: actions/checkout@v2
+        with:
+          ref: master
+      - run: |
+          echo "This is release ${{ github.event.inputs.release_number }}"
+      - name: Create new release branch
+        uses: peterjgrainger/action-create-branch@2.0.1
+        with:
+          branch: ${{ github.event.inputs.release_number }}
