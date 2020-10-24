@@ -26,7 +26,6 @@ jobs:
       steps:
         - name: Checkout dev branch
           uses: actions/checkout@v2
-        - name: Grab repository org name
         - id: set-repo-org
           run: echo ::set-output name=repoorg::${GITHUB_REPOSITORY%%/*}
         - name: Login to DockerHub
