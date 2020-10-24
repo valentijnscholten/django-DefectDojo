@@ -10,20 +10,19 @@ on:
       - '*.*.*.*'
 
 jobs:
-  job-get-tag:
+  job-build-matrix:
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.set-tag.outputs.tag }}
+      matrix: ${{ steps.set-tag.outputs.matrix }}
     steps:
-      - id: set-tag
-        run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+      - id: set-matrix
+        run: echo ::set-output name=matrix::[{\"docker-image\":\"django\",\"nginx\"},{\"docker-tag\":\"latest\",\"{GITHUB_REF#refs/*/}\"}]"
+        # run: echo "::set-output name=matrix::{\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}"
   job-build-and-push:
     build:
       runs-on: ubuntu-latest
       strategy:
-        matrix:
-          docker-image: [django, nginx]
-          docker-tag: [latest, ${{ needs.job-get-tag.outputs.tag }}]
+        matrix: ${{fromJson(needs.job-build-matrix.outputs.matrix)}}
       steps:
         - name: Checkout dev branch
           uses: actions/checkout@v2
