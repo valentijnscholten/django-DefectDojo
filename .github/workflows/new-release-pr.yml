@@ -1,5 +1,8 @@
 name: Release new version
 
+env:
+  GIT_USERNAME: "DefectDojo release bot"
+  GIT_EMAIL: "dojo-release-bot@users.noreply.github.com"
 on:
   workflow_dispatch:
     inputs:
@@ -22,8 +25,8 @@ jobs:
           echo "NEW_BRANCH=release/${{ github.event.inputs.release_number }}" >> $GITHUB_ENV
       - name: Configure git
         run: |
-          git config --global user.name "DefectDojo release bot"
-          git config --global user.email "dojo-release-bot@users.noreply.github.com"
+          git config --global user.name "${{ env.GIT_USERNAME }}"
+          git config --global user.email "${{ env.GIT_EMAIL }}"
       - name: Push branch
         run: git push origin HEAD:${NEW_BRANCH}
       - name: Checkout release branch
@@ -44,9 +47,9 @@ jobs:
       - name: Push version changes
         uses: stefanzweifel/git-auto-commit-action@v4.1.2
         with:
-          # commit_user_name: "dojo_bot"
-          # commit_user_email: "noreply@defectdojo.org"
-          # commit_author: "DefectDojo Bot <noreply@defectdojo.org>"
+          commit_user_name: "${{ env.GIT_USERNAME }}"
+          commit_user_email: "${{ env.GIT_EMAIL }}"
+          commit_author: "${{ env.GIT_USERNAME }} <${{ env.GIT_EMAIL }}>"
           commit_message: "Update versions in application files"
           branch: ${{ github.head_ref }}
       - name: Create Pull Request
