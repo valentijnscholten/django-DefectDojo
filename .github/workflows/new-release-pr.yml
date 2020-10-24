@@ -1,4 +1,4 @@
-name: Release new version
+name: Prepare release PR
 
 env:
   GIT_USERNAME: "DefectDojo release bot"
