@@ -1,6 +1,8 @@
 name: Docker build and push
 
-on: create
+on:
+  release:
+    types: [published]
 
 jobs:
   job-build-matrix:
