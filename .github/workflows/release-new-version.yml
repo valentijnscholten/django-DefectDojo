@@ -17,12 +17,15 @@ jobs:
           ref: dev
       - run: |
           echo "This is release ${{ github.event.inputs.release_number }}"
-      - name: Create new release branch
-        uses: peterjgrainger/action-create-branch@2.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          branch: release/${{ github.event.inputs.release_number }}
+        # - name: Create new release branch
+        # uses: peterjgrainger/action-create-branch@2.0.1
+        # env:
+        #  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        #with:
+        #  branch: release/${{ github.event.inputs.release_number }}
+      - name: Create release branch
+        run: |
+          git branch release/${{ github.event.inputs.release_number }}
       - name: Checkout release branch
         uses: actions/checkout@v2
         with:
