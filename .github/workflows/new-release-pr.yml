@@ -62,8 +62,8 @@ jobs:
             github.pulls.create({
               owner: 'madchap',
               repo: 'django-DefectDojo',
-              title: '${{ env.NEW_BRANCH }}',
-              body: `Created by \`${ process.env.GITHUB_ACTOR }\``,
+              title: 'Release PR - ${{ env.NEW_BRANCH }}',
+              body: `Release triggered by \`${ process.env.GITHUB_ACTOR }\``,
               head: '${{ env.NEW_BRANCH }}',
               base: 'master'
             })
