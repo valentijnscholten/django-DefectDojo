@@ -1,10 +1,6 @@
 name: Docker build and push
 
-on:
-  create:
-    tags:
-      - '*.*.*'
-      - '*.*.*.*'
+on: create
 
 jobs:
   job-build-matrix:
