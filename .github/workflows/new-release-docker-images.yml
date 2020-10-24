@@ -16,6 +16,7 @@ jobs:
         run: echo ::set-output name=matrix::[{\"docker-image\":\"django\",\"nginx\"},{\"docker-tag\":\"latest\",\"${GITHUB_REF#refs/*/}\"}]"
         # run: echo "::set-output name=matrix::{\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}"
   job-build-and-push:
+    needs: job-build-matrix
     build:
       runs-on: ubuntu-latest
       strategy:
