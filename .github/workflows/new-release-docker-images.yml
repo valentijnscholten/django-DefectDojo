@@ -4,6 +4,8 @@ on:
   create:
     tags:
       # on any tags, at least for now.
+      # will sadly not get triggered by 1st workflow https://github.community/t/action-does-not-trigger-another-on-push-tag-action/17148/5
+      # looking for workaround. Meanwhile, push by hand.
       - '*'
 
   #  workflow_dispatch:
