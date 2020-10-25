@@ -1,13 +1,13 @@
 name: Docker build and push
 
 on:
-  release:
-    types: [published, edited]
+  create:
+    tags:
+      - '*'
 
   workflow_dispatch:
     inputs:
-      # the actual branch that can be chosen on the UI is made irrelevant by further steps
-      # because someone will forget one day to change it.
+      # for tests -- or need to come up with an override if needed
       release_number:
         description: 'Release version (x.y.z format)'
         required: true
@@ -20,9 +20,8 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - id: set-matrix
+        # ref should be the tag name
         run: echo "::set-output name=matrix::{\"docker-image\":[\"django\",\"nginx\"],\"docker-tag\":[\"latest\",\"${GITHUB_REF#refs/*/}\"]}"
-        # print Array:Array run: echo "::set-output name=matrix::{\"include\":[{\"docker-image\":[\"django\",\"nginx\"],\"docker-tag\":[\"latest\",\"${GITHUB_REF#refs/*/}\"]}]}"
-        # run: echo "::set-output name=matrix::{\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}"
   job-build-and-push:
     needs: job-build-matrix
     runs-on: ubuntu-latest
