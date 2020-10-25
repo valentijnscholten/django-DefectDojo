@@ -12,7 +12,6 @@ on:
         description: 'Release version (x.y.z format)'
         required: true
 
-
 jobs:
   job-build-matrix:
     runs-on: ubuntu-latest
