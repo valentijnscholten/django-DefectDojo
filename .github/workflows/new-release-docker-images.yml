@@ -4,14 +4,24 @@ on:
   release:
     types: [published, edited]
 
+  workflow_dispatch:
+    inputs:
+      # the actual branch that can be chosen on the UI is made irrelevant by further steps
+      # because someone will forget one day to change it.
+      release_number:
+        description: 'Release version (x.y.z format)'
+        required: true
+
+
 jobs:
   job-build-matrix:
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.set-tag.outputs.matrix }}
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - id: set-matrix
-        run: echo ::set-output name=matrix::[{\"docker-image\":\"django\",\"nginx\"},{\"docker-tag\":\"latest\",\"${GITHUB_REF#refs/*/}\"}]"
+        run: echo "::set-output name=matrix::{\"docker-image\":[\"django\",\"nginx\"],\"docker-tag\":[\"latest\",\"${GITHUB_REF#refs/*/}\"]}"
+        # print Array:Array run: echo "::set-output name=matrix::{\"include\":[{\"docker-image\":[\"django\",\"nginx\"],\"docker-tag\":[\"latest\",\"${GITHUB_REF#refs/*/}\"]}]}"
         # run: echo "::set-output name=matrix::{\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}"
   job-build-and-push:
     needs: job-build-matrix
@@ -34,7 +44,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: $REPO_ORG/defectdojo-${{ matrix.docker-image}}:${{ matrix.docker-tag }}
+          tags: ${{ env.REPO_ORG }}/defectdojo-${{ matrix.docker-image}}:${{ matrix.docker-tag }}
           file: ./Dockerfile.${{ matrix.docker-image }}
           context: .
       - name: Image digest
