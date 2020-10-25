@@ -22,11 +22,11 @@ jobs:
         run: |
           git config --global user.name "${{ env.GIT_USERNAME }}"
           git config --global user.email "${{ env.GIT_EMAIL }}"
-      - name: Tag new release
-        run: |
-          git tag -a ${{ github.event.inputs.release_number }} -m "[bot] release ${{ github.event.inputs.release_number }}"
-          git push origin ${{ github.event.inputs.release_number }}
-      - name: Release
+          #- name: Create new tag ${{ github.event.inputs.release_number }}
+          #run: |
+          #git tag -a ${{ github.event.inputs.release_number }} -m "[bot] release ${{ github.event.inputs.release_number }}"
+          # git push origin ${{ github.event.inputs.release_number }}
+      - name: Create release ${{ github.event.inputs.release_number }}
         id: create_release
         uses: actions/create-release@v1
         env:
