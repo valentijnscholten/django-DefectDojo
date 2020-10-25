@@ -1,4 +1,4 @@
-name: Tag and release
+name: Tag, release, docker
 
 env:
   GIT_USERNAME: "DefectDojo release bot"
@@ -45,7 +45,7 @@ jobs:
     steps:
       - id: set-matrix
         # ref should be the tag name
-        run: echo "::set-output name=matrix::{\"docker-image\":[\"django\",\"nginx\"],\"docker-tag\":[\"latest\",\"${GITHUB_REF#refs/*/}\"]}"
+        run: echo "::set-output name=matrix::{\"docker-image\":[\"django\",\"nginx\"],\"docker-tag\":[\"latest\",\"${{ github.event.inputs.release_number }}\"]}"
   job-build-and-push:
     needs: job-build-matrix
     runs-on: ubuntu-latest
