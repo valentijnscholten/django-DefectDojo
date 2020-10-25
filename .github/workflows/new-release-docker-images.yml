@@ -2,7 +2,7 @@ name: Docker build and push
 
 on:
   release:
-    types: [published]
+    types: [published, edited]
 
 jobs:
   job-build-matrix:
