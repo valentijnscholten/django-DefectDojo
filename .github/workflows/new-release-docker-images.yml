@@ -3,14 +3,15 @@ name: Docker build and push
 on:
   create:
     tags:
+      # on any tags, at least for now.
       - '*'
 
-  workflow_dispatch:
-    inputs:
-      # for tests -- or need to come up with an override if needed
-      release_number:
-        description: 'Release version (x.y.z format)'
-        required: true
+  #  workflow_dispatch:
+  #  inputs:
+  #    # for tests -- or need to come up with an override if needed
+  #    release_number:
+  #      description: 'Release version (x.y.z format)'
+  #      required: true
 
 jobs:
   job-build-matrix:
