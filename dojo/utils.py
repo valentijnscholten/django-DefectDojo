@@ -1224,7 +1224,7 @@ def get_jira_connection(finding):
             jira = JIRA(
                 server=jira_conf.url,
                 basic_auth=(jira_conf.username, jira_conf.password),
-                verify=settings.JIRA_SSL_VERIFY)
+                options={"verify": settings.JIRA_SSL_VERIFY})
     except JIRA_PKey.DoesNotExist:
         pass
     return jira
@@ -1373,7 +1373,7 @@ def add_jira_issue(find, push_to_jira):
                 jira = JIRA(
                     server=jira_conf.url,
                     basic_auth=(jira_conf.username, jira_conf.password),
-                    verify=settings.JIRA_SSL_VERIFY)
+                    options={"verify": settings.JIRA_SSL_VERIFY})
 
                 meta = None
 
@@ -1518,7 +1518,7 @@ def update_jira_issue(find, push_to_jira):
             jira = JIRA(
                 server=jira_conf.url,
                 basic_auth=(jira_conf.username, jira_conf.password),
-                verify=settings.JIRA_SSL_VERIFY)
+                options={"verify": settings.JIRA_SSL_VERIFY})
             issue = jira.issue(j_issue.jira_id)
 
             meta = None
@@ -1632,7 +1632,7 @@ def update_epic(eng, push_to_jira):
             jira = JIRA(
                 server=jira_conf.url,
                 basic_auth=(jira_conf.username, jira_conf.password),
-                verify=settings.JIRA_SSL_VERIFY)
+                options={"verify": settings.JIRA_SSL_VERIFY})
             j_issue = JIRA_Issue.objects.get(engagement=eng)
             issue = jira.issue(j_issue.jira_id)
             issue.update(summary=eng.name, description=eng.name)
@@ -1663,7 +1663,7 @@ def add_epic(eng, push_to_jira):
             jira = JIRA(
                 server=jira_conf.url,
                 basic_auth=(jira_conf.username, jira_conf.password),
-                verify=settings.JIRA_SSL_VERIFY)
+                options={"verify": settings.JIRA_SSL_VERIFY})
             new_issue = jira.create_issue(fields=issue_dict)
             j_issue = JIRA_Issue(
                 jira_id=new_issue.id,
@@ -1688,7 +1688,7 @@ def jira_get_issue(jpkey, issue_key):
         jira = JIRA(
             server=jira_conf.url,
             basic_auth=(jira_conf.username, jira_conf.password),
-            verify=settings.JIRA_SSL_VERIFY)
+            options={"verify": settings.JIRA_SSL_VERIFY})
         issue = jira.issue(issue_key)
         # print(vars(issue))
         return issue
@@ -1714,7 +1714,7 @@ def add_comment(find, note, force_push=False):
                     jira = JIRA(
                         server=jira_conf.url,
                         basic_auth=(jira_conf.username, jira_conf.password),
-                        verify=settings.JIRA_SSL_VERIFY)
+                        options={"verify": settings.JIRA_SSL_VERIFY})
                     j_issue = JIRA_Issue.objects.get(finding=find)
                     jira.add_comment(
                         j_issue.jira_id,
@@ -1731,7 +1731,7 @@ def add_simple_jira_comment(jira_conf, jira_issue, comment):
         jira = JIRA(
             server=jira_conf.url,
             basic_auth=(jira_conf.username, jira_conf.password),
-            verify=settings.JIRA_SSL_VERIFY
+            options={"verify": settings.JIRA_SSL_VERIFY}
         )
         jira.add_comment(
             jira_issue.jira_id, comment
