@@ -665,7 +665,8 @@ class FindingSerializer(TaggitSerializer, serializers.ModelSerializer):
                 },
                 'engagement': {
                     'id': obj.test.engagement.id,
-                    'name': obj.test.engagement.name
+                    'name': obj.test.engagement.name,
+                    'branch': obj.test.engagement.branch_tag
                 },
                 'test': {
                     'id': obj.test.id,
@@ -678,7 +679,8 @@ class FindingSerializer(TaggitSerializer, serializers.ModelSerializer):
                 'environment': {
                     'id': obj.test.environment.id,
                     'name': obj.test.environment.name
-                }
+                },
+                'display_status': obj.status()
             }
             return related_fields
 
