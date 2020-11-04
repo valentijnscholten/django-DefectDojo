@@ -14,8 +14,9 @@ def dojo_async_task(func):
         user = get_current_user()
         from dojo.models import Dojo_User
         if Dojo_User.wants_block_execution(user):
-            logger.debug('dojo_async_task: running task in the foreground as block_execution is set to True for %s', user)
+            logger.debug('dojo_async_task: running task in the foreground as block_execution is set to True for user: %s', user)
             return func(*args, **kwargs)
         else:
+            logger.debug('dojo_async_task: sending task to celery for user: %s', user)
             return func.delay(*args, **kwargs)
     return __wrapper__
