@@ -233,3 +233,7 @@ if settings.DEBUG:
 
 import debug_toolbar
 urlpatterns += [url(r"^__debug__/", include(debug_toolbar.urls))]
+
+# sometimes urlpatterns needed be added from local_settings.py to avoid having to modify core defect dojo files
+if hasattr(settings, 'EXTRA_URL_PATTERNS'):
+    urlpatterns += settings.EXTRA_URL_PATTERNS
