@@ -858,6 +858,12 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'json'
         },
+        'celery_logfile': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'celery.log',
+            'formatter': 'verbose'
+        }
     },
     'loggers': {
         'django.request': {
@@ -871,10 +877,8 @@ LOGGING = {
             'propagate': False,
         },
         'celery': {
-            'handlers': [r'%s' % LOGGING_HANDLER],
-            'level': 'INFO',
+            'handlers': ['celery_logfile'],
             'propagate': False,
-            # does not seem to work?
             # 'worker_hijack_root_logger': False,
         },
         'dojo': {
