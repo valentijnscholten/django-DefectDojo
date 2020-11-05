@@ -143,7 +143,8 @@ def express_new_jira(request):
                     jira = JIRA(server=jira_server,
                         basic_auth=(jira_username, jira_password),
                         options={"verify": settings.JIRA_SSL_VERIFY})
-                except Exception:
+                except Exception as e:
+                    logger.exception(e)
                     messages.add_message(request,
                                      messages.ERROR,
                                      'Unable to authenticate. Please check the URL, username, and password.',
@@ -240,7 +241,8 @@ def new_jira(request):
                                     url=request.build_absolute_uri(reverse('jira')),
                                     )
                 return HttpResponseRedirect(reverse('jira', ))
-            except Exception:
+            except Exception as e:
+                logger.exception(e)
                 messages.add_message(request,
                                      messages.ERROR,
                                      'Unable to authenticate. Please check the URL, username, and password.',
@@ -291,7 +293,7 @@ def edit_jira(request, jid):
                                     )
                 return HttpResponseRedirect(reverse('jira', ))
             except Exception as e:
-                logger.error(e)
+                logger.exception(e)
                 messages.add_message(request,
                                      messages.ERROR,
                                      'Unable to authenticate. Please check the URL, username, and password.',
