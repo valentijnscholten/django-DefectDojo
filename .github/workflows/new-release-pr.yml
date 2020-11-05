@@ -46,7 +46,7 @@ jobs:
       - name: Checkout release branch
         uses: actions/checkout@v2
         with:
-          ref: ${NEW_BRANCH}
+          ref: $NEW_BRANCH
       - name: Update version numbers in key files
         run: |
           sed -ri "s/__version__ = '.*'/__version__ = '${{ github.event.inputs.release_number }}'/" dojo/__init__.py
