@@ -29,11 +29,11 @@ jobs:
         with:
           ref: ${{ github.event.inputs.from_branch }}
       - name: Create release branch
-        if: ! startsWith(${{ github.event.inputs.from_branch }}, 'release/')
+        if: ! startsWith('${{ github.event.inputs.from_branch }}', 'release/')
         run: |
           echo "NEW_BRANCH=release/${{ github.event.inputs.release_number }}" >> $GITHUB_ENV
       - name: Use existing release branch
-        if: startsWith(${{ github.event.inputs.from_branch }}, 'release/')
+        if: startsWith('${{ github.event.inputs.from_branch }}', 'release/')
         run: |
           echo "NEW_BRANCH=${{ github.event.inputs.from_branch }}" >> $GITHUB_ENV
       - name: Configure git
@@ -41,7 +41,7 @@ jobs:
           git config --global user.name "${{ env.GIT_USERNAME }}"
           git config --global user.email "${{ env.GIT_EMAIL }}"
       - name: Push branch
-        if: ! startsWith(${{ github.event.inputs.from_branch }}, 'release/')
+        if: ! startsWith('${{ github.event.inputs.from_branch }}', 'release/')
         run: git push origin HEAD:${NEW_BRANCH}
       - name: Checkout release branch
         uses: actions/checkout@v2
