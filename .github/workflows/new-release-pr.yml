@@ -58,6 +58,7 @@ jobs:
           grep version dojo/__init__.py
           grep version setup.py
           grep appVersion helm/defectdojo/Chart.yaml
+          grep version components/package.json
       - name: Push version changes
         uses: stefanzweifel/git-auto-commit-action@v4.7.2
         with:
