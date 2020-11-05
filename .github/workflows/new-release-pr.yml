@@ -16,7 +16,7 @@ on:
         required: true
 
 jobs:
-  build:
+  create_pr:
     runs-on: ubuntu-latest
     steps:
       - name: Login to DockerHub
