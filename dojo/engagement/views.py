@@ -170,19 +170,19 @@ def edit_engagement(request, eid):
 
             # save jira project config
             jira_project = jira_project_form.save(commit=False)
+            jira_project.engagement = engagement
+            # only check jira project if form is sufficiently populated
             if jira_project.jira_instance and jira_project.project_key:
-                jira_project.engagement = engagement
-                if jira_helper.is_jira_project_valid(jira_project):
+                jira_error = not jira_helper.is_jira_project_valid(jira_project)
+
+                if not jira_error:
                     jira_project.save()
 
-                    # logger.debug('jira_project_form: %s', vars(jira_project_form))
                     messages.add_message(
                         request,
                         messages.SUCCESS,
-                        'JIRA Project config updated successfully.',
+                        'JIRA Project config added successfully.',
                         extra_tags='alert-success')
-                else:
-                    jira_error = True
 
             # push epic
             if jira_epic_form.cleaned_data.get('push_to_jira'):
