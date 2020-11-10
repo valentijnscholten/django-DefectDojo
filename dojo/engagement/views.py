@@ -559,10 +559,10 @@ def import_scan_results(request, eid=None, pid=None):
 
         if jira_helper.get_jira_project(engagement_or_product):
             jform = JIRAImportScanForm(request.POST, push_all=push_all_jira_issues, prefix='jiraform')
+            logger.debug('jform valid: %s', jform.is_valid())
+            logger.debug('jform errors: %s', jform.errors)
 
-        logger.debug('jform valid: %s', jform.is_valid())
-        logger.debug('jform errors: %s', jform.errors)
-        if form.is_valid() and jform.is_valid():
+        if form.is_valid() and (jform is None or jform.is_valid()):
             # Allows for a test to be imported with an engagement created on the fly
             if engagement is None:
                 engagement = Engagement()

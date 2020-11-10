@@ -1860,8 +1860,8 @@ def finding_bulk_update_all(request, pid=None):
                     # push the JIRA stuff here, rather than in finding.save()
 
                     # can't use helper as when push_all_jira_issues is True, the checkbox gets disabled and is always false
-                    # push_to_jira = jira_helper.is_push_to_jira(new_finding, jform.cleaned_data.get('push_to_jira'))
-                    if push_all_jira_issues or jform.cleaned_data.get('push_to_jira'):
+                    # push_to_jira = jira_helper.is_push_to_jira(new_finding, form.cleaned_data.get('push_to_jira'))
+                    if jira_helper.is_push_all_issues(finding) or form.cleaned_data.get('push_to_jira'):
                         if not jira_helper.get_jira_project(finding):
                             jira_helper.log_jira_alert('Finding cannot be pushed to jira as there is no jira project configuration for this product.', finding)
                         else:
