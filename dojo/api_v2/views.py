@@ -280,7 +280,7 @@ class FindingViewSet(mixins.ListModelMixin,
         jira_project = jira_helper.get_jira_project(serializer.instance)
         if get_system_setting('enable_jira') and jira_project:
             push_all_jira_issues = jira_project.push_all_issues
-            push_to_jira = push_all_jira_issues or serializer.validated_data.get('push_to_jira')
+            push_to_jira = push_all_jira_issues or serializer.validated_data.pop('push_to_jira')
 
         serializer.save(push_to_jira=push_to_jira)
 
