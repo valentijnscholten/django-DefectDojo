@@ -629,16 +629,20 @@ def re_import_scan_results(request, tid):
     engagement = test.engagement
     form = ReImportScanForm()
     jform = None
+    jira_project = jira_helper.get_jira_project(test)
     push_all_jira_issues = False
 
     # Decide if we need to present the Push to JIRA form
-    if get_system_setting('enable_jira') and jira_helper.get_jira_project(engagement):
+    if get_system_setting('enable_jira') and jira_project:
         jform = JIRAImportScanForm(push_all=jira_helper.is_push_all_issues(engagement), prefix='jiraform')
 
     form.initial['tags'] = [tag.name for tag in test.tags]
     if request.method == "POST":
         form = ReImportScanForm(request.POST, request.FILES)
-        if form.is_valid():
+        if jira_helper.get_jira_project(test):
+            jform = JIRAImportScanForm(request.POST, push_all=push_all_jira_issues, prefix='jiraform')
+
+        if form.is_valid() and jform.is_valid():
             scan_date = form.cleaned_data['scan_date']
 
             scan_date_time = datetime.combine(scan_date, timezone.now().time())
@@ -682,16 +686,9 @@ def re_import_scan_results(request, tid):
                 finding_count = 0
                 finding_added_count = 0
                 reactivated_count = 0
-                # Push to Jira?
 
-                push_to_jira = False
-                if push_all_jira_issues:
-                    push_to_jira = True
-                elif 'jiraform-push_to_jira' in request.POST:
-                    jform = JIRAImportScanForm(request.POST, prefix='jiraform',
-                                            push_all=push_all_jira_issues)
-                    if jform.is_valid():
-                        push_to_jira = jform.cleaned_data.get('push_to_jira')
+                push_to_jira = jira_helper.is_push_to_jira(test, jform.cleaned_data.get('push_to_jira'))
+
                 for item in items:
 
                     sev = item.severity

@@ -10,7 +10,7 @@ from django.utils import timezone
 from jira import JIRA
 from jira.exceptions import JIRAError
 from dojo.models import Finding, Test, Engagement, Product, JIRA_Issue, JIRA_Project, \
-    System_Settings, Notes, JIRA_Instance, User
+    System_Settings, Notes, JIRA_Instance
 from requests.auth import HTTPBasicAuth
 from dojo.notifications.helper import create_notification
 from django.contrib import messages
@@ -462,11 +462,12 @@ def add_jira_issue(find):
 
             jira_issue_url = get_jira_issue_url(find)
 
-            new_note = Notes()
-            new_note.entry = 'created JIRA issue %s for finding' % (jira_issue_url)
-            new_note.author, created = User.objects.get_or_create(username='JIRA')  # quick hack copied from webhook because we don't have request.user here
-            new_note.save()
-            find.notes.add(new_note)
+            # commented out as it creates too much noise and clutters the search for issue for which 'has_notes==True'
+            # new_note = Notes()
+            # new_note.entry = 'created JIRA issue %s for finding' % (jira_issue_url)
+            # new_note.author, created = User.objects.get_or_create(username='JIRA')  # quick hack copied from webhook because we don't have request.user here
+            # new_note.save()
+            # find.notes.add(new_note)
 
             # Upload dojo finding screenshots to Jira
             for pic in find.images.all():
