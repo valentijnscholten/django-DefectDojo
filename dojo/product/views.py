@@ -966,12 +966,12 @@ def new_eng_for_app(request, pid, cicd=False):
 
             create_notification(event='engagement_added', title=engagement.name + " for " + product.name, engagement=engagement, url=reverse('view_engagement', args=(engagement.id,)), objowner=engagement.lead)
 
-            if not jira_error:
-                messages.add_message(request,
-                                    messages.SUCCESS,
-                                    'Engagement added successfully.',
-                                    extra_tags='alert-success')
+            messages.add_message(request,
+                                messages.SUCCESS,
+                                'Engagement added successfully.',
+                                extra_tags='alert-success')
 
+            if not jira_error:
                 if "_Add Tests" in request.POST:
                     return HttpResponseRedirect(reverse('add_tests', args=(engagement.id,)))
                 elif "_Import Scan Results" in request.POST:

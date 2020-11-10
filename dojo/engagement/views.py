@@ -201,12 +201,13 @@ def edit_engagement(request, eid):
                         'Push to JIRA for Epic failed, check alerts on the top right for errors',
                         extra_tags='alert-danger')
 
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                'Engagement updated successfully.',
+                extra_tags='alert-success')
+
             if not jira_error:
-                messages.add_message(
-                    request,
-                    messages.SUCCESS,
-                    'Engagement updated successfully.',
-                    extra_tags='alert-success')
                 if '_Add Tests' in request.POST:
                     return HttpResponseRedirect(
                         reverse('add_tests', args=(engagement.id, )))
