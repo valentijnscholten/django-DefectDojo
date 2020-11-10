@@ -305,11 +305,11 @@ def log_jira_alert(error, finding):
 
     create_notification(
         event='jira_update',
-        title='JIRA update issue' + '(' + truncate_with_dots(prod_name, 25) + ')',
+        title='Error pushing to JIRA ' + '(' + truncate_with_dots(prod_name, 25) + ')',
         description='Finding: ' + str(finding.id if finding else 'unknown') + ', ' + error,
         url=reverse('view_finding', args=(finding.id, )) if finding else None,
         icon='bullseye',
-        source='JIRA update',
+        source='Push to JIRA',
         finding=finding)
 
 
@@ -317,7 +317,7 @@ def log_jira_alert(error, finding):
 def log_jira_message(text, finding):
     create_notification(
         event='jira_update',
-        title='Jira update message',
+        title='Pushing to JIRA: ',
         description=text + " Finding: " + str(finding.id),
         url=reverse('view_finding', args=(finding.id, )),
         icon='bullseye',
