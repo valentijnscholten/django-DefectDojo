@@ -943,9 +943,7 @@ def new_eng_for_app(request, pid, cicd=False):
             # only check jira project if form is sufficiently populated
             if jira_project.jira_instance and jira_project.project_key:
                 jira_error = not jira_helper.is_jira_project_valid(jira_project)
-                logger.debug('jira config validation result: %s', jira_error)
 
-            logger.debug('jira_error1: %s', jira_error)
             if not jira_error:
                 jira_project.save()
 
@@ -966,14 +964,13 @@ def new_eng_for_app(request, pid, cicd=False):
                 else:
                     jira_error = True
 
-            # create_notification(event='engagement_added', title=engagement.name + " for " + product.name, engagement=engagement, url=reverse('view_engagement', args=(engagement.id,)), objowner=engagement.lead)
+            create_notification(event='engagement_added', title=engagement.name + " for " + product.name, engagement=engagement, url=reverse('view_engagement', args=(engagement.id,)), objowner=engagement.lead)
 
             messages.add_message(request,
                                 messages.SUCCESS,
                                 'Engagement added successfully.',
                                 extra_tags='alert-success')
 
-            logger.debug('jira_error2: %s', jira_error)
             if not jira_error:
                 if "_Add Tests" in request.POST:
                     return HttpResponseRedirect(reverse('add_tests', args=(engagement.id,)))

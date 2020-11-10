@@ -199,9 +199,14 @@ def get_jira_creation(obj):
 
 
 def get_jira_change(obj):
+    # logger.debug('get_jira_change')
     if isinstance(obj, Finding) or isinstance(obj, Engagement):
+        # logger.debug('get_jira_change2')
         if obj.has_jira_issue:
+            # logger.debug('get_jira_change3')
             return obj.jira_issue.jira_change
+    else:
+        logger.debug('get_jira_change unsupported object type: %s', obj)
     return None
 
 
