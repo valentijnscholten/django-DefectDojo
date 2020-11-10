@@ -10,7 +10,7 @@ from django.utils import timezone
 from jira import JIRA
 from jira.exceptions import JIRAError
 from dojo.models import Finding, Test, Engagement, Product, JIRA_Issue, JIRA_Project, \
-    System_Settings, Notes, JIRA_Instance
+    System_Settings, Notes, JIRA_Instance, User
 from requests.auth import HTTPBasicAuth
 from dojo.notifications.helper import create_notification
 from django.contrib import messages
@@ -395,10 +395,10 @@ def add_jira_issue(find):
             return
 
         logger.debug('Trying to create a new JIRA issue for finding {}...'.format(find.id))
+        meta = None
         try:
             JIRAError.log_to_tempfile = False
             jira = get_jira_connection(jira_instance)
-            meta = None
 
             fields = {
                     'project': {
@@ -482,6 +482,7 @@ def add_jira_issue(find):
             return True
         except JIRAError as e:
             logger.exception(e)
+            logger.error("jira_meta: %s", json.dumps(meta, indent=4))  # this is None safe
             log_jira_alert(e.text, find)
             return False
     else:
@@ -507,13 +508,12 @@ def update_jira_issue(find):
         return False
 
     j_issue = find.jira_issue
+    meta = None
     try:
         JIRAError.log_to_tempfile = False
         jira = get_jira_connection(jira_instance)
 
         issue = jira.issue(j_issue.jira_id)
-
-        meta = None
 
         fields = {}
         # Only update the component if it didn't exist earlier in Jira, this is to avoid assigning multiple components to an item
@@ -563,6 +563,7 @@ def update_jira_issue(find):
 
     except JIRAError as e:
         logger.exception(e)
+        logger.error("jira_meta: %s", json.dumps(meta, indent=4))  # this is None safe
         log_jira_alert(e.text, find)
         return False
 
@@ -599,7 +600,7 @@ def update_jira_issue(find):
 # gets the metadata for the default issue type in this jira project
 def get_jira_meta(jira, jira_project):
     meta = jira.createmeta(projectKeys=jira_project.project_key, issuetypeNames=jira_project.jira_instance.default_issue_type, expand="projects.issuetypes.fields")
-    logger.debug("get_jira_meta: %s", json.dumps(meta, indent=4))  # this is None safe
+    # logger.debug("get_jira_meta: %s", json.dumps(meta, indent=4))  # this is None safe
     # meta['projects'][0]['issuetypes'][0]['fields']:
 
     meta_data_error = False
