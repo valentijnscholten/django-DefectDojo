@@ -655,6 +655,7 @@ def is_jira_project_valid(jira_project):
         meta = get_jira_meta(get_jira_connection(jira_project), jira_project)
         return True
     except JIRAError as e:
+        logger.debug('invalid JIRA Project Config, can''t retrieve metadata for: ''%s''', jira_project)
         return False
 
 
