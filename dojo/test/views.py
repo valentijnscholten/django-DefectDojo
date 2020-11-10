@@ -300,7 +300,7 @@ def add_findings(request, tid):
     form_error = False
     jform = None
     form = AddFindingForm(initial={'date': timezone.now().date()}, req_resp=None)
-    push_all_jira_issues = False
+    push_all_jira_issues = jira_helper.is_push_all_issues(test)
     use_jira = jira_helper.get_jira_project(test) is not None
 
     if request.method == 'POST':
@@ -370,7 +370,8 @@ def add_findings(request, tid):
             push_to_jira = False
             jira_message = None
             if jform and jform.is_valid():
-                # Push to Jira?
+                # can't use helper as when push_all_jira_issues is True, the checkbox gets disabled and is always false
+                # push_to_jira = jira_helper.is_push_to_jira(new_finding, jform.cleaned_data.get('push_to_jira'))
                 push_to_jira = push_all_jira_issues or jform.cleaned_data.get('push_to_jira')
 
                 # if the jira issue key was changed, update database
@@ -473,7 +474,7 @@ def add_temp_finding(request, tid, fid):
     test = get_object_or_404(Test, id=tid)
     finding = get_object_or_404(Finding_Template, id=fid)
     findings = Finding_Template.objects.all()
-    push_all_jira_issues = False
+    push_all_jira_issues = jira_helper.is_push_all_issues(finding)
 
     if jira_helper.get_jira_project(test):
         jform = JIRAFindingForm(push_all=jira_helper.is_push_all_issues(test), prefix='jiraform', jira_project=jira_helper.get_jira_project(test))
@@ -630,7 +631,7 @@ def re_import_scan_results(request, tid):
     form = ReImportScanForm()
     jform = None
     jira_project = jira_helper.get_jira_project(test)
-    push_all_jira_issues = False
+    push_all_jira_issues = jira_helper.is_push_all_issues(test)
 
     # Decide if we need to present the Push to JIRA form
     if get_system_setting('enable_jira') and jira_project:
@@ -687,7 +688,9 @@ def re_import_scan_results(request, tid):
                 finding_added_count = 0
                 reactivated_count = 0
 
-                push_to_jira = jira_helper.is_push_to_jira(test, jform.cleaned_data.get('push_to_jira'))
+                # can't use helper as when push_all_jira_issues is True, the checkbox gets disabled and is always false
+                # push_to_jira = jira_helper.is_push_to_jira(new_finding, jform.cleaned_data.get('push_to_jira'))
+                push_to_jira = push_all_jira_issues or jform.cleaned_data.get('push_to_jira')
 
                 for item in items:
 

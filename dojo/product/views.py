@@ -1123,7 +1123,7 @@ def ad_hoc_finding(request, pid):
                     target_start=timezone.now(), target_end=timezone.now())
         test.save()
     form_error = False
-    push_all_jira_issues = False
+    push_all_jira_issues = jira_helper.is_push_all_issues(test)
     jform = None
     gform = None
     form = AdHocFindingForm(initial={'date': timezone.now().date()}, req_resp=None)

@@ -638,7 +638,9 @@ def import_scan_results(request, eid=None, pid=None):
                 return HttpResponseRedirect(reverse('import_scan_results', args=(engagement.id,)))
 
             try:
-                push_to_jira = jira_helper.is_push_to_jira(t, jform.cleaned_data.get('push_to_jira'))
+                # can't use helper as when push_all_jira_issues is True, the checkbox gets disabled and is always false
+                # push_to_jira = jira_helper.is_push_to_jira(new_finding, jform.cleaned_data.get('push_to_jira'))
+                push_to_jira = push_all_jira_issues or jform.cleaned_data.get('push_to_jira')
 
                 for item in parser.items:
                     # print("item blowup")
