@@ -60,7 +60,9 @@ env = environ.Env(
     DD_CELERY_RESULT_EXPIRES=(int, 86400),
     DD_CELERY_BEAT_SCHEDULE_FILENAME=(str, root('dojo.celery.beat.db')),
     DD_CELERY_TASK_SERIALIZER=(str, 'pickle'),
+    DD_CELERY_PASS_MODEL_BY_ID=(str, False),
     DD_FOOTER_VERSION=(str, ''),
+    # models should be passed to celery by ID, default is False (for now)
     DD_FORCE_LOWERCASE_TAGS=(bool, True),
     DD_MAX_TAG_LENGTH=(int, 25),
     DD_DATABASE_ENGINE=(str, 'django.db.backends.mysql'),
@@ -71,7 +73,7 @@ env = environ.Env(
     DD_DATABASE_PASSWORD=(str, 'defectdojo'),
     DD_DATABASE_PORT=(int, 3306),
     DD_DATABASE_USER=(str, 'defectdojo'),
-    DD_SECRET_KEY=(str, '.'),
+    DD_SECRET_KEY=(str, ''),
     DD_CREDENTIAL_AES_256_KEY=(str, '.'),
     DD_DATA_UPLOAD_MAX_MEMORY_SIZE=(int, 8388608),  # Max post size set to 8mb
     DD_SOCIAL_AUTH_TRAILING_SLASH=(bool, True),
@@ -662,6 +664,7 @@ CELERY_RESULT_EXPIRES = env('DD_CELERY_RESULT_EXPIRES')
 CELERY_BEAT_SCHEDULE_FILENAME = env('DD_CELERY_BEAT_SCHEDULE_FILENAME')
 CELERY_ACCEPT_CONTENT = ['pickle', 'json', 'msgpack', 'yaml']
 CELERY_TASK_SERIALIZER = env('DD_CELERY_TASK_SERIALIZER')
+CELERY_PASS_MODEL_BY_ID = env('DD_CELERY_PASS_MODEL_BY_ID')
 
 # Celery beat scheduled tasks
 CELERY_BEAT_SCHEDULE = {
@@ -877,13 +880,15 @@ LOGGING = {
             'propagate': False,
         },
         'celery': {
-            'handlers': ['celery_logfile'],
+            'handlers': [r'%s' % LOGGING_HANDLER],
+            'level': 'INFO',
             'propagate': False,
-            # 'worker_hijack_root_logger': False,
+            # workaround some celery logging known issue
+            'worker_hijack_root_logger': False,
         },
         'dojo': {
             'handlers': [r'%s' % LOGGING_HANDLER],
-            'level': 'INFO',
+            'level': 'DEBUG',
             'propagate': False,
         },
         'dojo.specific-loggers.deduplication': {

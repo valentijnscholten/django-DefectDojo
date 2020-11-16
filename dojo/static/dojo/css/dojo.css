@@ -1616,3 +1616,11 @@ small {
 .no-bottom-margin {
     margin-bottom: 0px;
 }
+
+.lightgrey {
+    color:lightgrey;
+}
+
+.red {
+    color:red;
+}
