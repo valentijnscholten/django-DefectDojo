@@ -799,8 +799,6 @@ DEDUPLICATION_ALGORITHM_PER_PARSER = {
     'HackerOne Cases': DEDUPE_ALGO_UNIQUE_ID_FROM_TOOL_OR_HASH_CODE,
 }
 
-# merging findings doesn't always work well with dedupe and reimport etc.
-# disable it if you see any issues (and report them on github)
 DISABLE_FINDING_MERGE = env('DD_DISABLE_FINDING_MERGE')
 
 # ------------------------------------------------------------------------------
@@ -861,12 +859,6 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'json'
         },
-        'celery_logfile': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': 'celery.log',
-            'formatter': 'verbose'
-        }
     },
     'loggers': {
         'django.request': {
