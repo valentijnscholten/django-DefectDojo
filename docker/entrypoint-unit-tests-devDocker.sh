@@ -15,7 +15,7 @@ cd /app
 python3 manage.py makemigrations dojo
 python3 manage.py migrate
 
-python3 manage.py test dojo.unittests --keepdb -v 3 
+# python3 manage.py test dojo.unittests --keepdb -v 3 
 
 # you can select a single file to "test" unit tests 
 # python3 manage.py test dojo.unittests.test_npm_audit_scan_parser.TestNpmAuditParser --keepdb -v 3
