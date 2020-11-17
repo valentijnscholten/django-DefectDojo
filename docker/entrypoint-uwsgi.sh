@@ -38,6 +38,6 @@ exec uwsgi \
   --reload-mercy 1 \
   --worker-reload-mercy 1 \
   --wsgi dojo.wsgi:application \
-  --buffer-size="${DD_UWSGI_BUFFER_SIZE:-4096}" \
+  --buffer-size="${DD_UWSGI_BUFFER_SIZE:-8192}" \
   # HTTP endpoint is enabled for Kubernetes liveness checks. It should not be exposed as a serivce.
   --http 0.0.0.0:8081 --http-to ${DD_UWSGI_ENDPOINT}
