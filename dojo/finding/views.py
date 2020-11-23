@@ -255,11 +255,11 @@ def view_finding(request, fid):
     try:
         prev_finding_id = findings[(list(findings).index(finding.id)) - 1]
     except AssertionError:
-        prev_finding_id = finding
+        prev_finding_id = finding.id
     try:
         next_finding_id = findings[(list(findings).index(finding.id)) + 1]
     except IndexError:
-        next_finding_id = finding
+        next_finding_id = finding.id
 
     cred_finding = Cred_Mapping.objects.filter(
         finding=finding.id).select_related('cred_id').order_by('cred_id')
@@ -1882,6 +1882,9 @@ def finding_bulk_update_all(request, pid=None):
                 for finding in finds:
                     from dojo.tools import tool_issue_updater
                     tool_issue_updater.async_tool_issue_update(finding)
+                    if finding.is_Mitigated:
+                        finding.mitigated = timezone.now()
+                        finding.save()
 
                     # not sure yet if we want to support bulk unlink, so leave as commented out for now
                     # if form.cleaned_data['unlink_from_jira']:

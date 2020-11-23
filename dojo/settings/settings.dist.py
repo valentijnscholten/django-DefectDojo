@@ -134,8 +134,11 @@ env = environ.Env(
     # Set to True if you want to allow authorized users staff access only on specific products
     # This will only apply to users with 'active' status
     DD_AUTHORIZED_USERS_ALLOW_STAFF=(bool, False),
+    # SLA Notifications via alerts and JIRA comments
+    # enable either DD_SLA_NOTIFY_ACTIVE or DD_SLA_NOTIFY_ACTIVE_VERIFIED_ONLY to enable the feature
     DD_SLA_NOTIFY_ACTIVE=(bool, False),
-    DD_SLA_NOTIFY_ACTIVE_VERIFIED_ONLY=(bool, True),
+    DD_SLA_NOTIFY_ACTIVE_VERIFIED_ONLY=(bool, False),
+    # finetuning settings for when enabled
     DD_SLA_NOTIFY_WITH_JIRA_ONLY=(bool, False),
     DD_SLA_NOTIFY_PRE_BREACH=(int, 3),
     DD_SLA_NOTIFY_POST_BREACH=(int, 7),
@@ -146,7 +149,9 @@ env = environ.Env(
     DD_JIRA_SSL_VERIFY=(bool, True),
     # if you want to keep logging to the console but in json format, change this here to 'json_console'
     DD_LOGGING_HANDLER=(str, 'console'),
-    DD_ALERT_REFRESH=(bool, True)
+    DD_ALERT_REFRESH=(bool, True),
+    DD_DISABLE_ALERT_COUNTER=(bool, False),
+    DD_TAG_PREFETCHING=(bool, True)
 )
 
 
@@ -218,6 +223,9 @@ USE_TZ = env('DD_USE_TZ')
 TEST_RUNNER = env('DD_TEST_RUNNER')
 
 ALERT_REFRESH = env('DD_ALERT_REFRESH')
+DISABLE_ALERT_COUNTER = env("DD_DISABLE_ALERT_COUNTER")
+
+TAG_PREFETCHING = env('DD_TAG_PREFETCHING')
 
 # ------------------------------------------------------------------------------
 # DATABASE
