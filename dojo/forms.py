@@ -1282,10 +1282,9 @@ class AddEndpointForm(forms.Form):
     product = forms.CharField(required=True,
                               widget=forms.widgets.HiddenInput(), help_text="The product this endpoint should be "
                                                                             "associated with.")
-    tags = forms.CharField(widget=forms.SelectMultiple(choices=[]),
-                           required=False,
-                           help_text="Add tags that help describe this endpoint.  "
-                                     "Choose from the list or add new tags.  Press TAB key to add.")
+    tags = TagField(required=False,
+                    help_text="Add tags that help describe this endpoint.  "
+                              "Choose from the list or add new tags.  Press Enter key to add.")
 
     def __init__(self, *args, **kwargs):
         product = None

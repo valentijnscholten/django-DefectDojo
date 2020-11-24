@@ -656,9 +656,6 @@ def new_product(request):
 
         if form.is_valid():
             product = form.save()
-            tags = request.POST.getlist('tags')
-            t = ", ".join('"{0}"'.format(w) for w in tags)
-            product.tags = t
             messages.add_message(request,
                                  messages.SUCCESS,
                                  'Product added successfully.',
@@ -951,10 +948,7 @@ def new_eng_for_app(request, pid, cicd=False):
             engagement.active = True
 
             engagement.save()
-
-            tags = request.POST.getlist('tags')
-            t = ", ".join('"{0}"'.format(w) for w in tags)
-            engagement.tags = t
+            form.save_m2m()
 
             # save jira project config
             jira_project = jira_project_form.save(commit=False)

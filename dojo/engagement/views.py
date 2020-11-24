@@ -468,9 +468,6 @@ def add_tests(request, eid):
                 eng.save()
 
             new_test.save()
-            tags = request.POST.getlist('tags')
-            t = ", ".join('"{0}"'.format(w) for w in tags)
-            new_test.tags = t
 
             # Save the credential to the test
             if cred_form.is_valid():
@@ -584,6 +581,7 @@ def import_scan_results(request, eid=None, pid=None):
             active = form.cleaned_data['active']
             verified = form.cleaned_data['verified']
             scan_type = request.POST['scan_type']
+            tags = form.cleaned_data['tags']
             if not any(scan_type in code
                        for code in ImportScanForm.SCAN_TYPE_CHOICES):
                 raise Http404()
@@ -604,13 +602,11 @@ def import_scan_results(request, eid=None, pid=None):
                 target_start=scan_date,
                 target_end=scan_date,
                 environment=environment,
-                percent_complete=100)
+                percent_complete=100,
+                tags=tags)
             t.lead = user
             t.full_clean()
             t.save()
-            tags = request.POST.getlist('tags')
-            ts = ", ".join(tags)
-            t.tags = ts
 
             # Save the credential to the test
             if cred_form.is_valid():
