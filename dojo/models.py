@@ -3001,7 +3001,7 @@ class Objects_Product(models.Model):
     created = models.DateTimeField(null=False, editable=False, default=now)
 
     tags_from_django_tagging = models.TextField(editable=False, blank=True, help_text=_('Temporary archive with tags from the previous tagging library we used'))
-    tags = TagField(blank=True, help_text="Add tags that help describe this objects. Choose from the list or add new tags.  Press Enter key to add.")
+    tags = TagField(blank=True, help_text="Add tags that help describe this object. Choose from the list or add new tags.  Press Enter key to add.")
 
     def __unicode__(self):
         name = None
@@ -3028,7 +3028,7 @@ class Objects_Product(models.Model):
 
 class Objects_Engagement(models.Model):
     engagement = models.ForeignKey(Engagement, on_delete=models.CASCADE)
-    object_id = models.ForeignKey(Objects_Product, on_delete=models.CASCADE, db_column="object_id")
+    object_id = models.ForeignKey(Objects_Product, on_delete=models.CASCADE)
     build_id = models.CharField(max_length=150, null=True)
     created = models.DateTimeField(null=False, editable=False, default=now)
     full_url = models.URLField(max_length=400, null=True, blank=True)
