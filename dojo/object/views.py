@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
-from dojo.models import Product, Objects, Objects_Engagement, Engagement
+from dojo.models import Product, Objects_Product, Objects_Engagement, Engagement
 from dojo.forms import ObjectSettingsForm, DeleteObjectsSettingsForm
 from dojo.utils import Product_Tab
 
@@ -42,7 +42,7 @@ def new_object(request, pid):
 
 @user_passes_test(lambda u: u.is_staff)
 def view_objects(request, pid):
-    object_queryset = Objects.objects.filter(product=pid).order_by('path', 'folder', 'artifact')
+    object_queryset = Objects_Product.objects.filter(product=pid).order_by('path', 'folder', 'artifact')
 
     product_tab = Product_Tab(pid, title="Tracked Product Files, Paths and Artifacts", tab="settings")
     return render(request,
@@ -56,7 +56,7 @@ def view_objects(request, pid):
 
 @user_passes_test(lambda u: u.is_staff)
 def edit_object(request, pid, ttid):
-    object = Objects.objects.get(pk=ttid)
+    object = Objects_Product.objects.get(pk=ttid)
 
     if request.method == 'POST':
         tform = ObjectSettingsForm(request.POST, instance=object)
@@ -90,7 +90,7 @@ def edit_object(request, pid, ttid):
 
 @user_passes_test(lambda u: u.is_staff)
 def delete_object(request, pid, ttid):
-    object = Objects.objects.get(pk=ttid)
+    object = Objects_Product.objects.get(pk=ttid)
 
     if request.method == 'POST':
         tform = ObjectSettingsForm(request.POST, instance=object)
