@@ -42,7 +42,7 @@ class Migration(migrations.Migration):
         # version than this migration expects. We use the historical version.
         logger.info('Migrating tags from django-tagging to django-tagulous step2. Enable DEBUG logging to find out more.')
         # for model_name in ['Product']:
-        for model_name in ['Product', 'test', 'finding', 'engagement', 'endpoint', 'finding_template', 'app_Analysis', 'objects']:
+        for model_name in ['Product', 'test', 'finding', 'engagement', 'endpoint', 'finding_template', 'app_Analysis', 'objects_product']:
             model_class = apps.get_model('dojo', model_name)
 
             for obj in model_class.objects.all():
