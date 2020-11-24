@@ -74,7 +74,7 @@ def edit_object(request, pid, ttid):
             return HttpResponseRedirect(reverse('view_objects', args=(pid,)))
     else:
         # TODO TAGS
-        # tform = ObjectSettingsForm(instance=object,
+        tform = ObjectSettingsForm(instance=object)
         #                             initial={'tags': get_tag_list(Tag.objects.get_for_object(object))})
         pass
 
