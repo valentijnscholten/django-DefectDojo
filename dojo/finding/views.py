@@ -118,6 +118,7 @@ django_filter=open_findings_filter):
     # tags = Tag.objects.usage_for_model(Finding)
     # TODO TAGS
     tags = ['one', 'two']
+    tags = Finding.tags.tag_model.objects.all()
 
     findings = Finding.objects.all()
     if view == "All":

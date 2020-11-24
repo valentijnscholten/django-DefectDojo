@@ -26,11 +26,6 @@
             });
         })
 
-        <!-- dirty hack but do not want to refactor the bulk_edit_form currenly-->
-        setTimeout(function() {
-            $('#bulk_edit_menu .select2').width(200)
-        }, 800);
-
         var title_words = [
                 {% for word in title_words %}
                     "{{word}}",
