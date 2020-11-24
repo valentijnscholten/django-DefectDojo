@@ -165,10 +165,11 @@ def edit_engagement(request, eid):
             else:
                 engagement.active = True
             engagement.save()
+            form.save_m2m()
 
-            tags = request.POST.getlist('tags')
-            t = ", ".join('"{0}"'.format(w) for w in tags)
-            engagement.tags = t
+            # tags = request.POST.getlist('tags')
+            # t = ", ".join('"{0}"'.format(w) for w in tags)
+            # engagement.tags = t
 
             # save jira project config
             jira_project = jira_project_form.save(commit=False)

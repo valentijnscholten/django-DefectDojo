@@ -668,7 +668,7 @@ class Product(models.Model):
 
     # used for prefetching tags because django-tagging doesn't support that out of the box
     tags_from_django_tagging = models.TextField(editable=False, blank=True, help_text=_('Temporary archive with tags from the previous tagging library we used'))
-    tags = TagField(help_text="Add tags that help describe this product. Choose from the list or add new tags. Press Enter key to add.")
+    tags = TagField(blank=True, help_text="Add tags that help describe this product. Choose from the list or add new tags. Press Enter key to add.")
 
     def __unicode__(self):
         return self.name
@@ -1057,7 +1057,7 @@ class Engagement(models.Model):
 
     # used for prefetching tags because django-tagging doesn't support that out of the box
     tags_from_django_tagging = models.TextField(editable=False, blank=True, help_text=_('Temporary archive with tags from the previous tagging library we used'))
-    tags = TagField(help_text="Add tags that help describe this engagement. Choose from the list or add new tags.  Press Enter key to add.")
+    tags = TagField(blank=True, help_text="Add tags that help describe this engagement. Choose from the list or add new tags.  Press Enter key to add.")
 
     class Meta:
         ordering = ['-target_start']
@@ -1178,7 +1178,7 @@ class Endpoint(models.Model):
 
     # used for prefetching tags because django-tagging doesn't support that out of the box
     tags_from_django_tagging = models.TextField(editable=False, blank=True, help_text=_('Temporary archive with tags from the previous tagging library we used'))
-    tags = TagField(help_text="Add tags that help describe this endpoint. Choose from the list or add new tags. Press Enter key to add.")
+    tags = TagField(blank=True, help_text="Add tags that help describe this endpoint. Choose from the list or add new tags. Press Enter key to add.")
 
     class Meta:
         ordering = ['product', 'protocol', 'host', 'path', 'query', 'fragment']
@@ -1361,7 +1361,7 @@ class Test(models.Model):
 
     # used for prefetching tags because django-tagging doesn't support that out of the box
     tags_from_django_tagging = models.TextField(editable=False, blank=True, help_text=_('Temporary archive with tags from the previous tagging library we used'))
-    tags = TagField(help_text="Add tags that help describe this test. Choose from the list or add new tags.  Press Enter key to add.")
+    tags = TagField(blank=True, help_text="Add tags that help describe this test. Choose from the list or add new tags.  Press Enter key to add.")
 
     version = models.CharField(max_length=100, null=True, blank=True)
 
@@ -1756,7 +1756,7 @@ class Finding(models.Model):
 
     # used for prefetching tags because django-tagging doesn't support that out of the box
     tags_from_django_tagging = models.TextField(editable=False, blank=True, help_text=_('Temporary archive with tags from the previous tagging library we used'))
-    tags = TagField(help_text="Add tags that help describe this finding. Choose from the list or add new tags.  Press Enter key to add.")
+    tags = TagField(blank=True, help_text="Add tags that help describe this finding. Choose from the list or add new tags.  Press Enter key to add.")
 
     SEVERITIES = {'Info': 4, 'Low': 3, 'Medium': 2,
                   'High': 1, 'Critical': 0}
@@ -2334,7 +2334,7 @@ class Finding_Template(models.Model):
 
     # used for prefetching tags because django-tagging doesn't support that out of the box
     tags_from_django_tagging = models.TextField(editable=False, blank=True, help_text=_('Temporary archive with tags from the previous tagging library we used'))
-    tags = TagField(help_text="Add tags that help describe this finding template. Choose from the list or add new tags. Press Enter key to add.")
+    tags = TagField(blank=True, help_text="Add tags that help describe this finding template. Choose from the list or add new tags. Press Enter key to add.")
 
     SEVERITIES = {'Info': 4, 'Low': 3, 'Medium': 2,
                   'High': 1, 'Critical': 0}
@@ -2975,7 +2975,7 @@ class App_Analysis(models.Model):
 
     # used for prefetching tags because django-tagging doesn't support that out of the box
     tags_from_django_tagging = models.TextField(editable=False, blank=True, help_text=_('Temporary archive with tags from the previous tagging library we used'))
-    tags = TagField()
+    tags = TagField(blank=True)
 
     def __unicode__(self):
         return self.name + " | " + self.product.name
@@ -3009,7 +3009,7 @@ class Objects(models.Model):
 
     # used for prefetching tags because django-tagging doesn't support that out of the box
     tags_from_django_tagging = models.TextField(editable=False, blank=True, help_text=_('Temporary archive with tags from the previous tagging library we used'))
-    # tags = TagField()
+    # tags = TagField(blank=True)
 
     def __unicode__(self):
         name = None

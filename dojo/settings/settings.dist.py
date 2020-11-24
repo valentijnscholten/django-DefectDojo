@@ -938,3 +938,5 @@ TAGULOUS_AUTOCOMPLETE_JS = (
     'tagulous/tagulous.js',
     'tagulous/adaptor/select2-4.js',
 )
+
+TAGULOUS_AUTOCOMPLETE_SETTINGS = {'placeholder': "Enter some tags (comma separated, use enter to select / create a new tag)"}
