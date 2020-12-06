@@ -1,6 +1,10 @@
 {
   "name": "DefectDojo",
+<<<<<<< HEAD
   "version": "1.11.0-dev",
+=======
+  "version": "1.10.3",
+>>>>>>> Update versions in application files
   "dependencies": {
     "JUMFlot": "jumjum123/JUMFlot#*",
     "bootstrap": "^3.4.0",
