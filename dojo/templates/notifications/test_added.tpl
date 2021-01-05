@@ -36,7 +36,7 @@ You can manage your product notifications here: <a href="{{product_url|full_url}
     New test added for engagement {{ engagement.product }}.
 Title: {{test.title}}
 Type: {{ test.test_type }}
-You can find details here: {{ url }}
+You can find details here: {{ url|full_url }}
 {% elif type == 'msteams' %}
 {% url 'view_test' test.id as test_url %}
     {
