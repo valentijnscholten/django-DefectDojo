@@ -1,0 +1,26 @@
+name: "Cache test"
+
+workflow_dispatch:
+
+jobs:
+job-build:
+    needs: tag-and-release
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: 
+          docker-image: [django, nginx]
+    steps:
+      - name: Checkout tag
+        uses: actions/checkout@v2
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Build and push images
+        uses: docker/build-push-action@v2
+        with:
+          push: false
+          file: ./Dockerfile.${{ matrix.docker-image }}
+          context: .
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
