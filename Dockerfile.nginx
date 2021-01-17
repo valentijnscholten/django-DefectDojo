@@ -18,7 +18,7 @@ RUN \
     uuid-runtime \
     && \
   apt-get clean && \
-  rm -rf /var/lib/apt/lists && \
+#  rm -rf /var/lib/apt/lists && \
   true
 COPY requirements.txt ./
 RUN pip3 wheel --wheel-dir=/tmp/wheels -r ./requirements.txt
