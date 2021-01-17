@@ -21,7 +21,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          key: ${{ runner.os }}-buildx-django-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-
 
@@ -56,7 +56,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          key: ${{ runner.os }}-buildx-nginx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-
 
