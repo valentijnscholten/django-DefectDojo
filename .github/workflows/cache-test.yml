@@ -1,6 +1,7 @@
 name: "Cache test"
 
-workflow_dispatch:
+on:
+  workflow_dispatch
 
 jobs:
 job-build:
