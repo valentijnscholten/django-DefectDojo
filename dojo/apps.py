@@ -63,6 +63,10 @@ class DojoAppConfig(AppConfig):
         # YourModel = self.get_model("YourModel")
         # watson.register(YourModel)
 
+        from actstream import registry
+        registry.register(self.get_model('Finding'))
+        registry.register(self.get_model('Dojo_User'))
+
 
 def get_model_fields_with_extra(model, extra_fields=()):
     return get_model_fields(get_model_default_fields(model), extra_fields)

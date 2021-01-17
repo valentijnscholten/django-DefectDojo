@@ -1761,6 +1761,14 @@ class Finding(models.Model):
     tags_from_django_tagging = models.TextField(editable=False, blank=True, help_text=_('Temporary archive with tags from the previous tagging library we used'))
     tags = TagField(blank=True, force_lowercase=True, help_text="Add tags that help describe this finding. Choose from the list or add new tags. Press Enter key to add.")
 
+    from django.contrib.contenttypes.fields import GenericRelation
+    from actstream.models import Action
+    actions = GenericRelation(Action,
+                                related_query_name='finding',
+                                content_type_field='action_object_content_type',
+                                object_id_field='action_object_object_id',
+                              )
+
     SEVERITIES = {'Info': 4, 'Low': 3, 'Medium': 2,
                   'High': 1, 'Critical': 0}
 

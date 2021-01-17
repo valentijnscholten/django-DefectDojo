@@ -636,6 +636,7 @@ INSTALLED_APPS = (
     'social_django',
     'drf_yasg2',
     'tagulous',
+    'actstream',
 )
 
 # ------------------------------------------------------------------------------
@@ -983,3 +984,12 @@ TAGULOUS_AUTOCOMPLETE_JS = (
 
 # using 'element' for width should take width from css defined in template, but it doesn't. So set to 70% here.
 TAGULOUS_AUTOCOMPLETE_SETTINGS = {'placeholder': "Enter some tags (comma separated, use enter to select / create a new tag)", 'width': '70%'}
+
+
+ACTSTREAM_SETTINGS = {
+    # 'MANAGER': 'myapp.managers.MyActionManager',
+    'FETCH_RELATIONS': True,
+    'USE_PREFETCH': True,
+    'USE_JSONFIELD': True,
+    # 'GFK_FETCH_DEPTH': 1,
+}
