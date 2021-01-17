@@ -5,6 +5,7 @@ on:
 
 jobs:
   django:
+    needs: nginx
     runs-on: ubuntu-latest
     strategy:
       matrix: 
@@ -39,7 +40,6 @@ jobs:
         run: echo ${{ steps.docker_build.outputs.digest }}
 
   nginx:
-    needs: django
     runs-on: ubuntu-latest
     strategy:
       matrix: 
