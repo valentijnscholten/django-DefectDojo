@@ -4,8 +4,7 @@ on:
   workflow_dispatch
 
 jobs:
-job-build:
-    needs: tag-and-release
+  job-build:
     runs-on: ubuntu-latest
     strategy:
       matrix: 
