@@ -4,11 +4,11 @@ on:
   workflow_dispatch
 
 jobs:
-  build:
+  django:
     runs-on: ubuntu-latest
     strategy:
       matrix: 
-          docker-image: [django, nginx]
+          docker-image: [django]
     steps:
       - name: Checkout tag
         uses: actions/checkout@v2
@@ -38,8 +38,44 @@ jobs:
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
 
+  nginx:
+    needs: django
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: 
+          docker-image: [nginx]
+    steps:
+      - name: Checkout tag
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        id: buildx        
+        uses: docker/setup-buildx-action@master
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Build and push images
+        uses: docker/build-push-action@v2
+        with:
+          push: false
+          builder: ${{ steps.buildx.outputs.name }}
+          file: ./Dockerfile.${{ matrix.docker-image }}
+          context: .
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
+
+
   build-again:
-    needs: build
+    needs: [django, nginx]
     runs-on: ubuntu-latest
     strategy:
       matrix: 
