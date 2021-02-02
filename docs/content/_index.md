@@ -7,13 +7,13 @@ draft: false
 DefectDojo\'s Documentation
 ===========================
 
-![image](/images/dashboard.png)
+![image](../images/dashboard.png)
 
 **About DefectDojo**
 
 *What is DefectDojo?*
 
-![image](/images/bug-2x.png)
+![image](../images/bug-2x.png)
 
 [DefectDojo]{.title-ref} is a security tool that automates application
 security vulnerability management. [DefectDojo]{.title-ref} streamlines
@@ -24,7 +24,7 @@ metrics.
 
 *What does DefectDojo do?*
 
-![image](/images/graph-2x.png)
+![image](../images/graph-2x.png)
 
 While traceability and metrics are the ultimate end goal, DefectDojo is
 a bug tracker at its core. Taking advantage of DefectDojo\'s
@@ -33,7 +33,7 @@ and test cycles, and allows for fine-grained reporting.
 
 *How does DefectDojo work?*
 
-![image](/images/key-2x.png)
+![image](../images/key-2x.png)
 
 DefectDojo is based on a model that allows the ultimate flexibility in
 your test tracking needs.
@@ -44,7 +44,7 @@ your test tracking needs.
 -   Each Engagement can have one or more `Tests`.
 -   Each Test can have one or more `Findings`.
 
-![image](/images/DD-Hierarchy.png)
+![image](../images/DD-Hierarchy.png)
 
 The code is open source, and [available on
 github](https://github.com/DefectDojo/django-DefectDojo) and a running

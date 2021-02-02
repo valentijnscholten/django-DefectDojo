@@ -11,7 +11,7 @@ each endpoint is available within each DefectDojo installation at
 [/api/v2/doc/]{.title-ref} and can be accessed by choosing the API v2
 Docs link on the user drop down menu in the header.
 
-![image](/images/api_v2_1.png)
+![image](../../images/api_v2_1.png)
 
 The documentation is generated using [Django Rest Framework
 Swagger](https://marcgibbons.com/django-rest-swagger/), and is
@@ -21,7 +21,7 @@ To interact with the documentation, a valid Authorization header value
 is needed. Visit the [/api/v2/key/]{.title-ref} view to generate your
 API Key (Token \<api\_key\>) and copy the header value provided.
 
-![image](/images/api_v2_2.png)
+![image](../../images/api_v2_2.png)
 
 Return to the [/api/v2/doc/]{.title-ref} and click on
 [Authorize]{.title-ref} to open Authorization form. Paste your key in
@@ -31,7 +31,7 @@ authorization header value will be captured and used for all requests.
 Each section allows you to make calls to the API and view the Request
 URL, Response Body, Response Code and Response Headers.
 
-![image](/images/api_v2_3.png)
+![image](../../images/api_v2_3.png)
 
 Currently the following endpoints are available:
 

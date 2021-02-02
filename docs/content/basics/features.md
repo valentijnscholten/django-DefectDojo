@@ -73,15 +73,15 @@ Authorized Users
 Products are listed on the `/product` page and can be filtered by their
 attributes as well as sorted by their name and product type.
 
-![Product Listing Page](/images/product_3.png)
+![Product Listing Page](../../images/product_3.png)
 
 Visual representation of a product:
 
-![View Product Page](/images/product_1.png)
+![View Product Page](../../images/product_1.png)
 
 Product with metrics:
 
-![View Product Page With Metrics Displayed](/images/product_2.png)
+![View Product Page With Metrics Displayed](../../images/product_2.png)
 
 Engagements
 -----------
@@ -141,11 +141,11 @@ Status
 Engagements are listed in the `/engagement` page and can be filtered by
 their attributes as well as sorted by the product or product type.
 
-![Engagement Listing Page](/images/eng_2.png)
+![Engagement Listing Page](../../images/eng_2.png)
 
 Visual representation of an engagement:
 
-![View Engagement Page](/images/eng_1.png)
+![View Engagement Page](../../images/eng_1.png)
 
 Endpoints
 ---------
@@ -188,15 +188,15 @@ Product
 Endpoints are listed in the `/endpoints` page and can be filtered by
 their attributes as well as sorted by the product or host.
 
-![Endpoint Listing Page](/images/end_1.png)
+![Endpoint Listing Page](../../images/end_1.png)
 
 Visual representation of an endpoint:
 
-![View Endpoint Page](/images/end_2.png)
+![View Endpoint Page](../../images/end_2.png)
 
 Visual representation of an endpoint with metrics displayed:
 
-![View Endpoint Page with metrics](/images/end_3.png)
+![View Endpoint Page with metrics](../../images/end_3.png)
 
 Findings
 --------
@@ -572,25 +572,25 @@ Findings are listed on the `/finding/open`, `/finding/closed`,
 their attributes as well as sorted by their Name, Date, Reviewed Date,
 Severity and Product.
 
-![Finding Listing Page](/images/find_1.png)
+![Finding Listing Page](../../images/find_1.png)
 
 | 
 
-![Finding Listing Page](/images/find_2.png)
+![Finding Listing Page](../../images/find_2.png)
 
 | 
 
-![Finding Listing Page](/images/find_3.png)
+![Finding Listing Page](../../images/find_3.png)
 
 | 
 
 Visual representation of a Finding:
 
-![Finding View](/images/find_4.png)
+![Finding View](../../images/find_4.png)
 
-![Finding View](/images/find_5.png)
+![Finding View](../../images/find_5.png)
 
-![Finding View](/images/find_6.png)
+![Finding View](../../images/find_6.png)
 
 ### Deduplication / Similar findings
 
@@ -606,13 +606,13 @@ Automatically Flag Duplicate Findings
     to the engagement view. The following image illustrates the option
     deduplication on engagement and deduplication on product level:
 
-    ![Deduplication on product and engagement level](/images/deduplication.png)
+    ![Deduplication on product and engagement level](../../images/deduplication.png)
 
 Similar Findings Visualization:
 
-![Similar findings list](/images/similar_finding_1.png)
+![Similar findings list](../../images/similar_finding_1.png)
 
-![Similar findings list with a duplicate](/images/similar_finding_2.png)
+![Similar findings list with a duplicate](../../images/similar_finding_2.png)
 
 Similar Findings
 
@@ -645,7 +645,7 @@ Product Type Metrics
     Findings, Accepted Findings, Closed Findings, Trending Open Bug
     Count, Trending Accepted Bug Count, and Age of Issues.
 
-    ![Product Type Metrics](/images/met_1.png)
+    ![Product Type Metrics](../../images/met_1.png)
 
 Product Type Counts
 
@@ -655,7 +655,7 @@ Product Type Counts
     and Open Findings. This view works great for communication with
     stakeholders as it is a snapshot in time of the product.
 
-    ![Product Type Counts](/images/met_2.png)
+    ![Product Type Counts](../../images/met_2.png)
 
 Simple Metrics
 
@@ -663,20 +663,20 @@ Simple Metrics
     this view is the total number of S0, S1, S2, S3, S4, Opened This
     Month, and Closed This Month.
 
-    ![Simple Metrics](/images/met_3.png)
+    ![Simple Metrics](../../images/met_3.png)
 
 Engineer Metrics
 
 :   Provides graphs displaying information about a tester\'s activity.
 
-    ![Simple Metrics](/images/met_4.png)
+    ![Simple Metrics](../../images/met_4.png)
 
 Metrics Dashboard
 
 :   Provides a full screen, auto scroll view with many metrics in graph
     format. This view is great for large displays or \"Dashboards.\"
 
-    ![Metrics Dashboard](/images/met_5.png)
+    ![Metrics Dashboard](../../images/met_5.png)
 
 Users
 -----
@@ -715,7 +715,7 @@ DefectDojo has the ability to run a port scan using nmap. Scan can be
 configured for TCP or UDP ports as well as for a Weekly, Monthly or
 Quarterly frequency.
 
-![Port Scan Form](/images/scan_1.png)
+![Port Scan Form](../../images/scan_1.png)
 
 In order for the scans to kick off the
 [dojo.management.commands.run\_scan.py]{.title-ref} must run. It is easy
@@ -726,19 +726,19 @@ frequency. Below is an example cron entry: :
     0 0 1 * * /root/.virtualenvs/dojo/bin/python /root/defect-dojo/manage.py run_scan Monthly
     0 0 1 3,6,9,12 * /root/.virtualenvs/dojo/bin/python /root/defect-dojo/manage.py run_scan Quarterly
 
-![Port Scan Form](/images/scan_2.png)
+![Port Scan Form](../../images/scan_2.png)
 
 The scan process will email the configured recipients with the results.
 
 These scans call also be kicked off on demand by selecting the Launch
 Scan Now option in the view scan screen.
 
-![Port Scan Form](/images/scan_3.png)
+![Port Scan Form](../../images/scan_3.png)
 
 Notifications
 -------------
 
-![Notification settings](/images/notifications_1.png)
+![Notification settings](../../images/notifications_1.png)
 
 DefectDojo can inform you of different events in a variety of ways. You
 can be notified about things like an upcoming engagement, when someone
@@ -764,7 +764,7 @@ available in the [Reports](#reports) section.
 Benchmarks
 ----------
 
-![OWASP ASVS Benchmarks](/images/owasp_asvs.png)
+![OWASP ASVS Benchmarks](../../images/owasp_asvs.png)
 
 DefectDojo utilizes the OWASP ASVS Benchmarks to benchmark a product to
 ensure the product meets your application technical security controls.
@@ -776,7 +776,7 @@ benchmarks select the dropdown menu from the right hand drop down menu.
 You will find the selection near the bottom of the menu entitled:
 \'OWASP ASVS v.3.1\'.
 
-![OWASP ASVS Benchmarks Menu](/images/owasp_asvs_menu.png)
+![OWASP ASVS Benchmarks Menu](../../images/owasp_asvs_menu.png)
 
 In the Benchmarks view for each product, the default level is ASVS Level
 1. On the top right hand side the drop down can be changed to the
@@ -784,7 +784,7 @@ desired ASVS level (Level 1, Level 2 or Level 3). The publish checkbox
 will display the ASVS score on the product page and in the future this
 will be applied to reporting.
 
-![OWASP ASVS Score](/images/owasp_asvs_score.png)
+![OWASP ASVS Score](../../images/owasp_asvs_score.png)
 
 On the left hand side the ASVS score is displayed with the desired
 score, the % of benchmarks passed to achieve the score and the total
@@ -796,7 +796,7 @@ a future release this will be brought out to the UI.
 Reports
 -------
 
-![Report Listing](/images/report_1.png)
+![Report Listing](../../images/report_1.png)
 
 DefectDojo\'s reports can be generated in AsciiDoc and PDF. AsciiDoc is
 recommended for reports with a large number of findings.
@@ -906,7 +906,7 @@ Reports can be generated for:
 4.  Product Types
 5.  Custom Reports
 
-![Report Generation](/images/report_2.png)
+![Report Generation](../../images/report_2.png)
 
 Filtering is available on all Report Generation views to aid in focusing
 the report for the appropriate need.
@@ -931,13 +931,13 @@ Slack integration
 
 The following scopes have to be granted.
 
-![Slack OAuth scopes](/images/slack_scopes.png)
+![Slack OAuth scopes](../../images/slack_scopes.png)
 
 ### Token
 
 The bot token has to be chosen and put in your System Settings
 
-![Slack token](/images/slack_tokens.png)
+![Slack token](../../images/slack_tokens.png)
 
 JIRA Integration
 ----------------
@@ -1318,7 +1318,7 @@ Configurations in DefectDojo
     2.  Click \'Google Sheets Sync\'.
     3.  Fill the form.
 
-        ![Google Sheets Sync Configuration Page](/images/google_sheets_sync_1.png)
+        ![Google Sheets Sync Configuration Page](../../images/google_sheets_sync_1.png)
 
         a.  Upload the downloaded json file into the **Upload
             Credentials file** field.
@@ -1331,7 +1331,7 @@ Configurations in DefectDojo
             c.  Extract the folder id from the URL and insert it as the
                 **Drive Folder Id**.
 
-                ![Extracting Drive Folder ID](/images/google_sheets_sync_2.png)
+                ![Extracting Drive Folder ID](../../images/google_sheets_sync_2.png)
 
         c.  Tick the **Enable Service** check box. (**Optional** as this
             has no impact on the configuration, but you must set it to
@@ -1362,11 +1362,11 @@ interface displayed will be different.
 
 If a Google Spreadsheet does not exist for the Test:
 
-![Create Google Sheet Button](/images/google_sheets_sync_3.png)
+![Create Google Sheet Button](../../images/google_sheets_sync_3.png)
 
 If a Google Spreadsheet is already created for the Test:
 
-![Sync Google Sheet Button](/images/google_sheets_sync_4.png)
+![Sync Google Sheet Button](../../images/google_sheets_sync_4.png)
 
 After creating a Google Spreadsheet, users can review and edit Finding
 details using the Google Sheet. If any change is done in the Google
@@ -1382,7 +1382,7 @@ remind teams whenever a SLA is about to get breached, or breaches.
 Simply indicate in the `System Settings` for each severity, how many
 days teams have to remediate a finding.
 
-![SLA configuration screen](/images/sla_global_settings.png)
+![SLA configuration screen](../../images/sla_global_settings.png)
 
 ### SLA notification configuration
 
@@ -1430,7 +1430,7 @@ The same as usual. You will notice that an extra [SLA
 breach]{.title-ref} option is now present on the `Notification` page and
 also in the `Product` view.
 
-![SLA notification checkbox](/images/sla_notification_product_checkboxes.png)
+![SLA notification checkbox](../../images/sla_notification_product_checkboxes.png)
 
 ### SLA notification with JIRA
 

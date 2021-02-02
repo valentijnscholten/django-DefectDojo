@@ -632,14 +632,14 @@ The importers analyze each report and create new Findings for each item
 reported. DefectDojo collapses duplicate Findings by capturing the
 individual hosts vulnerable.
 
-![Import Form](/images/imp_1.png)
+![Import Form](../../images/imp_1.png)
 
 Additionally, DefectDojo allows for re-imports of previously uploaded
 reports. DefectDojo will attempt to capture the deltas between the
 original and new import and automatically add or mitigate findings as
 appropriate.
 
-![Re-Import Form](/images/imp_2.png)
+![Re-Import Form](../../images/imp_2.png)
 
 Bulk import of findings can be done using a CSV file with the following
 column headers:

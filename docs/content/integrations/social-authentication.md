@@ -54,12 +54,12 @@ to be created. Closely follow the steps below to guarantee success.
     on the left side of the screen. Click **Create Credentials**, and
     choose **OAuth Client ID**:
 
-![image](/images/google_1.png)
+![image](../../images/google_1.png)
 
 3.  Select **Web Applications**, and provide a descriptive name for the
     client.
 
-![image](/images/google_2.png)
+![image](../../images/google_2.png)
 
 4.  Add the pictured URLs in the **Authorized Redirect URLs** section.
     This part is very important. If there are any mistakes here, the
@@ -71,18 +71,18 @@ Now with the authentication client created, the **Client ID** and
 **Client Secret Key** need to be copied over to settings.py in the
 project. Click the newly created client and copy the values:
 
-![image](/images/google_3.png)
+![image](../../images/google_3.png)
 
 In the **Environment** section at the top of settings.py, enter the
 values as shown below:
 
-![image](/images/google_4.png)
+![image](../../images/google_4.png)
 
 In the **Authentication** section of settings.py, set
 **DD\_GOOGLE\_OAUTH\_ENABLED** to **True** to redirect away from this
 README and actually authorize.
 
-![image](/images/google_5.png)
+![image](../../images/google_5.png)
 
 To authorize users you will need to set the following:
 
@@ -106,41 +106,41 @@ carries the same attributes and a similar procedure. Follow along below.
 2.  Once logged in, enter the **Applications** and click **Add
     Application**:
 
-![image](/images/okta_1.png)
+![image](../../images/okta_1.png)
 
 3.  Select **Web Applications**.
 
-![image](/images/okta_2.png)
+![image](../../images/okta_2.png)
 
 4.  Add the pictured URLs in the **Login Redirect URLs** section. This
     part is very important. If there are any mistakes here, the
     authentication client will not authorize the request, and deny
     access. Check the **Implicit** box as well.
 
-![image](/images/okta_3.png)
+![image](../../images/okta_3.png)
 
 5.  Once all URLs are added, finish by clicking **Done**.
 6.  Return to the **Dashboard** to find the **Org-URL**. Note this value
     as it will be important in the settings file.
 
-![image](/images/okta_4.png)
+![image](../../images/okta_4.png)
 
 Now, with the authentication client created, the **Client ID** and
 **Client Secret** Key need to be copied over to settings.py in the
 project. Click the newly created client and copy the values:
 
-![image](/images/okta_5.png)
+![image](../../images/okta_5.png)
 
 In the **Environment** section at the top of settings.py, enter the
 values as shown below:
 
-![image](/images/okta_6.png)
+![image](../../images/okta_6.png)
 
 In the **Authentication** section of settings.py, set
 **DD\_OKTA\_OAUTH\_ENABLED** to **True** to redirect away from this
 README and actually authorize.
 
-![image](/images/okta_7.png)
+![image](../../images/okta_7.png)
 
 If during the login process you get the following error: *The
 \'redirect\_uri\' parameter must be an absolute URI that is whitelisted

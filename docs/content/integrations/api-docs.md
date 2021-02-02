@@ -21,7 +21,7 @@ of each endpoint is available within each DefectDojo installation at
 [/api/v1/doc/]{.title-ref} and can be accessed by choosing the API Docs
 link on the user drop down menu in the header.
 
-![image](/images/api_1.png)
+![image](../../images/api_1.png)
 
 The documentation is generated using [Tastypie
 Swagger](http://django-tastypie-swagger.readthedocs.org/), and is
@@ -31,7 +31,7 @@ To interact with the documentation, a valid Authorization header value
 is needed. Visit the [/api/key/]{.title-ref} view to generate your API
 Key and copy the header value provided.
 
-![image](/images/api_3.png)
+![image](../../images/api_3.png)
 
 Return to the [/api/v1/doc/]{.title-ref} view to paste your key in the
 form field and click [Explore]{.title-ref}. Your authorization header
@@ -40,7 +40,7 @@ value will be captured and used for all requests.
 Each section allows you to make calls to the API and view the Request
 URL, Response Body, Response Code and Response Headers.
 
-![image](/images/api_2.png)
+![image](../../images/api_2.png)
 
 Currently the following endpoints are available:
 

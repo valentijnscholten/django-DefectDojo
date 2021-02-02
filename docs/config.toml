@@ -1,13 +1,16 @@
-baseURL = "http://example.org/"
+baseURL = "https://alles-klar.github.io/django-DefectDojo/"
 languageCode = "en-us"
 title = "DefectDojo Documentation"
 theme = "learn"
+
 # For search functionality
 [outputs]
 home = [ "HTML", "RSS", "JSON"]
+
 [params]
   # Change default color scheme with a variant one. Can be "red", "blue", "green".
   themeVariant = "blue"
+
 [[menu.shortcuts]] 
 name = "<i class='fab fa-github'></i> Github repo"
 identifier = "ds"
