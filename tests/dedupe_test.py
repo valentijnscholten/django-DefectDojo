@@ -79,16 +79,24 @@ class DedupeTest(BaseTestCase):
         driver.find_element_by_css_selector("i.fa.fa-trash").click()
         try:
             WebDriverWait(driver, 1).until(EC.alert_is_present(),
-                                        'Timed out waiting for PA creation ' +
+                                        'Timed out waiting for finding delete ' +
                                         'confirmation popup to appear.')
             driver.switch_to.alert.accept()
         except TimeoutException:
             self.fail('Confirmation dialogue not shown, cannot delete previous findings')
 
+        # not sure if this is needed. the datatables js logic only kicks in
+        # if the dev with id "findings" is present
+        # so if it isn't, the no_findings div is available straight after
+        # the page load. but we see some errors here about the div not being there
+        # but when we log the page source, the no_findings div is present
+        self.wait_for_datatable_if_content("no_findings", "findings_wrapper")
+
         text = None
         if self.element_exists_by_id("no_findings"):
             text = driver.find_element_by_id("no_findings").text
 
+        self.assertIsNotNone(text)
         self.assertTrue('No findings found.' in text)
         # check that user was redirect back to url where it came from based on return_url
         self.assertTrue(driver.current_url.endswith('page=1'))
@@ -104,7 +112,7 @@ class DedupeTest(BaseTestCase):
         # Create engagement
         driver = self.driver
         self.goto_product_overview(driver)
-        driver.find_element_by_class_name("pull-left").click()
+        driver.find_element_by_css_selector(".dropdown-toggle.pull-left").click()
         driver.find_element_by_link_text("Add New Engagement").click()
         driver.find_element_by_id("id_name").send_keys("Dedupe Path Test")
         driver.find_element_by_xpath('//*[@id="id_deduplication_on_engagement"]').click()
@@ -176,7 +184,7 @@ class DedupeTest(BaseTestCase):
 
         driver = self.driver
         self.goto_product_overview(driver)
-        driver.find_element_by_class_name("pull-left").click()
+        driver.find_element_by_css_selector(".dropdown-toggle.pull-left").click()
         driver.find_element_by_link_text("Add New Engagement").click()
         driver.find_element_by_id("id_name").send_keys("Dedupe Endpoint Test")
         driver.find_element_by_xpath('//*[@id="id_deduplication_on_engagement"]').click()
@@ -246,7 +254,7 @@ class DedupeTest(BaseTestCase):
 
         driver = self.driver
         self.goto_product_overview(driver)
-        driver.find_element_by_class_name("pull-left").click()
+        driver.find_element_by_css_selector(".dropdown-toggle.pull-left").click()
         driver.find_element_by_link_text("Add New Engagement").click()
         driver.find_element_by_id("id_name").send_keys("Dedupe Same Eng Test")
         driver.find_element_by_xpath('//*[@id="id_deduplication_on_engagement"]').click()
@@ -320,7 +328,7 @@ class DedupeTest(BaseTestCase):
 
         driver = self.driver
         self.goto_product_overview(driver)
-        driver.find_element_by_class_name("pull-left").click()
+        driver.find_element_by_css_selector(".dropdown-toggle.pull-left").click()
         driver.find_element_by_link_text("Add New Engagement").click()
         driver.find_element_by_id("id_name").send_keys("Dedupe on hash_code only")
         driver.find_element_by_xpath('//*[@id="id_deduplication_on_engagement"]').click()
@@ -389,7 +397,7 @@ class DedupeTest(BaseTestCase):
 
         driver = self.driver
         self.goto_product_overview(driver)
-        driver.find_element_by_class_name("pull-left").click()
+        driver.find_element_by_css_selector(".dropdown-toggle.pull-left").click()
         driver.find_element_by_link_text("Add New Engagement").click()
         driver.find_element_by_id("id_name").send_keys("Dedupe Generic Test")
         # driver.find_element_by_xpath('//*[@id="id_deduplication_on_engagement"]').click()
@@ -406,7 +414,7 @@ class DedupeTest(BaseTestCase):
 
         # Create immuniweb engagement
         self.goto_product_overview(driver)
-        driver.find_element_by_class_name("pull-left").click()
+        driver.find_element_by_css_selector(".dropdown-toggle.pull-left").click()
         driver.find_element_by_link_text("Add New Engagement").click()
         driver.find_element_by_id("id_name").send_keys("Dedupe Immuniweb Test")
         # driver.find_element_by_xpath('//*[@id="id_deduplication_on_engagement"]').click()

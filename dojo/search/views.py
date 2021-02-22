@@ -6,7 +6,7 @@ from django.db.models import Q
 from dojo.forms import SimpleSearchForm
 from dojo.models import Finding, Finding_Template, Product, Test, Endpoint, Engagement, Languages, \
     App_Analysis
-from dojo.utils import add_breadcrumb, get_words_for_field
+from dojo.utils import add_breadcrumb, get_page_items, get_words_for_field
 import re
 from dojo.finding.views import prefetch_for_findings
 from dojo.endpoint.views import prefetch_for_endpoints
@@ -57,7 +57,6 @@ def simple_search(request):
     if request.method == 'GET':
         form = SimpleSearchForm(request.GET)
         if form.is_valid():
-            # logger.debug('form vars: %s', vars(form))
             cookie = True
 
             clean_query = form.cleaned_data['query'] or ''
@@ -143,11 +142,13 @@ def simple_search(request):
             # prefetch after watson to avoid inavlid query errors due to watson not understanding prefetching
             if findings is not None:  # check for None to avoid query execution
                 logger.debug('prefetching findings')
-                findings = prefetch_for_findings(findings)
-                # some over the top tag displaying happening...
-                findings = findings.prefetch_related('test__engagement__product__tags')
 
-                findings = findings[:max_results]
+                findings = get_page_items(request, findings, 25)
+
+                findings.object_list = prefetch_for_findings(findings.object_list)
+
+                # some over the top tag displaying happening...
+                findings.object_list = findings.object_list.prefetch_related('test__engagement__product__tags')
 
             tag = operators['tag'] if 'tag' in operators else keywords
             tags = operators['tags'] if 'tags' in operators else keywords
@@ -163,12 +164,12 @@ def simple_search(request):
                 if tags:
                     Q2 = Q(tags__name__in=tags)
 
-                tagged_findings = authorized_findings.filter(Q1 | Q2).distinct()[:max_results]
+                tagged_findings = authorized_findings.filter(Q1 | Q2).distinct()[:max_results].prefetch_related('tags')
                 tagged_finding_templates = authorized_finding_templates.filter(Q1 | Q2).distinct()[:max_results]
-                tagged_tests = authorized_tests.filter(Q1 | Q2).distinct()[:max_results]
-                tagged_engagements = authorized_engagements.filter(Q1 | Q2).distinct()[:max_results]
-                tagged_products = authorized_products.filter(Q1 | Q2).distinct()[:max_results]
-                tagged_endpoints = authorized_endpoints.filter(Q1 | Q2).distinct()[:max_results]
+                tagged_tests = authorized_tests.filter(Q1 | Q2).distinct()[:max_results].prefetch_related('tags')
+                tagged_engagements = authorized_engagements.filter(Q1 | Q2).distinct()[:max_results].prefetch_related('tags')
+                tagged_products = authorized_products.filter(Q1 | Q2).distinct()[:max_results].prefetch_related('tags')
+                tagged_endpoints = authorized_endpoints.filter(Q1 | Q2).distinct()[:max_results].prefetch_related('tags')
             else:
                 tagged_findings = None
                 tagged_finding_templates = None
@@ -468,13 +469,11 @@ def apply_tag_filters(qs, operators, skip_relations=False):
         if tag_filter in operators:
             value = operators[tag_filter]
             value = ','.join(value)  # contains needs a single value
-            print('adding filter: ' + str('%stags__name__contains' % tag_filters[tag_filter]))
             qs = qs.filter(**{'%stags__name__contains' % tag_filters[tag_filter]: value})
 
     for tag_filter in tag_filters:
         if tag_filter + 's' in operators:
             value = operators[tag_filter + 's']
-            print('adding filter: ' + str('%stags__name__contains' % tag_filters[tag_filter]))
             qs = qs.filter(**{'%stags__name__in' % tag_filters[tag_filter]: value})
 
     return qs
@@ -518,7 +517,10 @@ def perform_keyword_search_for_operator(qs, operators, operator, keywords_query)
 
     if keywords_query:
         logger.debug('going watson with: %s', keywords_query)
+        # watson is too slow to get all results or even to count them
+        # counting also results in invalid queries with group by errors
         watson_results = watson.filter(qs, keywords_query)[:max_results]
+        # watson_results = watson.filter(qs, keywords_query)
         qs = qs.filter(id__in=[watson.id for watson in watson_results])
 
     return qs

@@ -6,9 +6,6 @@ import logging
 logger = logging.getLogger(__name__)
 deduplicationLogger = logging.getLogger("dojo.specific-loggers.deduplication")
 
-loglevel = logging.DEBUG
-logging.basicConfig(level=loglevel)
-
 # things to consider:
 # - cross scanner deduplication is still flaky as if some scanners don't provide severity, but another doesn, the hashcode will be different so no deduplication happens.
 #   so I couldn't create any good tests
@@ -1348,12 +1345,12 @@ class TestDuplicationLogic(TestCase):
         if not_pk:
             self.assertNotEqual(finding.pk, not_pk)
 
-        logger.debug('asserting that finding %i is a duplicate of %i', finding.id, duplicate_finding_id)
         self.assertEqual(finding.duplicate, duplicate)
         if not duplicate:
             self.assertFalse(finding.duplicate_finding)  # False -> None
 
         if duplicate_finding_id:
+            logger.debug('asserting that finding %i is a duplicate of %i', finding.id, duplicate_finding_id)
             self.assertTrue(finding.duplicate_finding)  # True -> not None
             self.assertEqual(finding.duplicate_finding.id, duplicate_finding_id)
 
