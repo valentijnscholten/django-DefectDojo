@@ -15,6 +15,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: master
+          fetch-depth: 0
       - name: Configure git
         run: |
           git config --global user.name "${{ env.GIT_USERNAME }}"
@@ -23,9 +24,15 @@ jobs:
         uses: azure/setup-helm@v1
         with:
           version: v3.4.0
+      - name: Configure HELM repos
+        run: |-
+             helm repo add stable https://charts.helm.sh/stable
+             helm repo add bitnami https://charts.bitnami.com/bitnami
+             helm dependency list ./helm/defectdojo
+             helm dependency update ./helm/defectdojo
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.2.0
         with:
-          charts_dir: "helm/defectdojo"
+          charts_dir: "helm"
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
