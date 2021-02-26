@@ -79,6 +79,10 @@ class JIRAConfigAndPushTestApi(DojoVCRAPITestCase):
         return test_id
 
     def test_import_with_push_to_jira(self):
+        # template = JIRAIssueTemplate.objects.filter(name='full')[0]
+        # template.template = '{% ASDFASDFASDF %}'
+        # template.save()
+
         import0 = self.import_scan_with_params(self.zap_sample5_filename, push_to_jira=True)
         test_id = import0['test']
         self.assert_jira_issue_count_in_test(test_id, 2)

@@ -1,5 +1,21 @@
 [
-  {
+    {
+        "model": "dojo.jiraissuetemplate",
+        "pk": 1,
+        "fields": {
+            "name": "full",
+            "template": "{% load navigation_tags %}\r\n{% load display_tags %}\r\n{% url 'view_product' finding.test.engagement.product.id as product_url %}\r\n{% url 'view_engagement' finding.test.engagement.id as engagement_url %}\r\n{% url 'view_test' finding.test.id as test_url %}\r\n{% url 'view_finding' finding.id as finding_url %}\r\n*Title*: [{{ finding.title|jiraencode}}|{{ finding_url|full_url }}]\r\n\r\n*Defect Dojo link:* {{ finding_url|full_url }}\r\n\r\n*Severity:* {{ finding.severity }} \r\n{% if finding.cwe > 0 %}\r\n*CWE:* [CWE-{{ finding.cwe }}|{{ finding.cwe|cwe_url }}]\r\n{% else %}\r\n*CWE:* Unknown\r\n{% endif %}\r\n\r\n{% if finding.cve %}\r\n*CVE:* [{{ finding.cve }}|{{ finding.cve|cve_url }}]\r\n{% else %}\r\n*CVE:* Unknown\r\n{% endif %}\r\n\r\n*Product/Engagement/Test:* [{{ finding.test.engagement.product.name }}|{{ product_url|full_url }}] / [{{ finding.test.engagement.name }}|{{ engagement_url|full_url }}] / [{{ finding.test }}|{{ test_url|full_url }}]\r\n\r\n*Branch/Tag:* {{ finding.test.engagement.branch_tag }}\r\n\r\n*BuildID:* {{ finding.test.engagement.build_id }}\r\n\r\n*Commit hash:* {{ finding.test.engagement.commit_hash }}\r\n\r\n*Systems/Endpoints*:    \r\n{% for endpoint in finding.endpoints.all %}\r\n* {{ endpoint }}{% endfor %}\r\n{% comment %}\r\n    we leave the endfor at the same line to avoid double line breaks i.e. too many blank lines\r\n{% endcomment %}\r\n*Description*:\r\n{{ finding.description }}\r\n\r\n*Mitigation*:\r\n{{ finding.mitigation }}\r\n\r\n*Impact*:\r\n{{ finding.impact }}\r\n\r\n*Steps to reproduce*:\r\n{{ finding.steps_to_reproduce }}\r\n\r\n*References*:\r\n{{ finding.references }}\r\n\r\n*Defect Dojo ID:* {{ finding.id }}\r\n\r\n*Reporter:* [{{ finding.reporter|full_name}} ({{ finding.reporter.email }})|mailto:{{ finding.reporter.email }}]"
+        }
+    },
+    {
+        "model": "dojo.jiraissuetemplate",
+        "pk": 2,
+        "fields": {
+            "name": "limited",
+            "template": "{% load navigation_tags %}\r\n{% load display_tags %}\r\n{% url 'view_product' finding.test.engagement.product.id as product_url %}\r\n{% url 'view_engagement' finding.test.engagement.id as engagement_url %}\r\n{% url 'view_test' finding.test.id as test_url %}\r\n{% url 'view_finding' finding.id as finding_url %}\r\n\r\n*Defect Dojo link:* {{ finding_url|full_url }}\r\n*Defect Dojo ID:* {{ finding.id }}\r\n\r\nPlease refer to Defect Dojo for more information.\r\nJIRA Due Date field was automatically calculated based on it, if configured in your JIRA screen.\r\n\r\n*Severity:* {{ finding.severity }}\r\n{% if finding.cwe > 0 %}\r\n*CWE:* [CWE-{{ finding.cwe }}|{{ finding.cwe|cwe_url }}]\r\n{% else %}\r\n*CWE:* Unknown\r\n{% endif %}\r\n\r\n{% if finding.cve %}\r\n*CVE:* [{{ finding.cve }}|{{ finding.cve|cve_url }}]\r\n{% else %}\r\n*CVE:* Unknown\r\n{% endif %}\r\n\r\n*Product/Engagement/Test:* [{{ finding.test.engagement.product.name }}|{{ product_url|full_url }}] / [{{ finding.test.engagement.name }}|{{ engagement_url|full_url }}] / [{{ finding.test }}|{{ test_url|full_url }}]\r\n\r\n*Reporter:* [{{ finding.reporter|full_name}} ({{ finding.reporter.email }})|mailto:{{ finding.reporter.email }}]"
+        }
+    },
+    {
     "pk": 1,
     "model": "auth.user",
     "fields": {
@@ -1639,6 +1655,7 @@
         "username": "<USERNAME HERE>",
         "password": "<API TOKEN HERE>",
         "default_issue_type": "Task",
+        "issue_template": 1,
         "epic_name_id": 10011,
         "open_status_key": 11,
         "close_status_key": 41,
@@ -1656,6 +1673,7 @@
     "fields": {
       "username": "defect.dojo",
       "default_issue_type": "Task",
+      "issue_template": 1,
       "finding_text": "",
       "low_mapping_severity": "test severity",
       "url": "http://www.testjira.com",
@@ -1674,6 +1692,7 @@
     "fields": {
       "username": "defect.dojo",
       "default_issue_type": "Spike",
+      "issue_template": 1,
       "finding_text": "",
       "low_mapping_severity": "test severity",
       "url": "http://www.testjira.com",

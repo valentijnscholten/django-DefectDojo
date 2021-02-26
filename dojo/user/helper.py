@@ -126,7 +126,7 @@ def user_is_authorized(user, perm_type, obj):
         logger.error('permtype %s not supported', perm_type)
         raise ValueError('permtype ' + perm_type + ' not supported')
 
-    if user.is_staff:
+    if user.is_staff or user.is_superuser:
         # print('is_staff, returning True')
         return True
 

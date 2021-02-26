@@ -1,12 +1,13 @@
 import logging
 
+from django.template.context import Context
+
 from dojo.utils import add_error_message_to_response, get_system_setting
 import os
 import io
 import json
 import requests
 from django.conf import settings
-from django.template.loader import render_to_string
 from django.utils import timezone
 from jira import JIRA
 from jira.exceptions import JIRAError
@@ -20,6 +21,7 @@ from dojo.decorators import dojo_async_task, dojo_model_from_id, dojo_model_to_i
 from dojo.utils import truncate_with_dots
 from django.urls import reverse
 from dojo.forms import JIRAProjectForm, JIRAEngagementForm
+from django.template import Template
 
 logger = logging.getLogger(__name__)
 
@@ -426,11 +428,28 @@ def get_labels(find):
 
 
 def jira_description(find):
-    template = 'issue-trackers/jira-description.tpl'
+    jira_project = get_jira_project(find)
+    issue_template = jira_project.issue_template
+    if not issue_template:
+        jira_instance = get_jira_instance(find)
+        issue_template = jira_instance.issue_template
+
+    if not issue_template:
+        raise ValueError('no issue_template found for jira_project or jira_instance, aborting')
+
+    template = Template(issue_template.template)
+
     kwargs = {}
     kwargs['finding'] = find
     kwargs['jira_instance'] = get_jira_instance(find)
-    return render_to_string(template, kwargs)
+    try:
+        description = template.render(Context(kwargs))
+    except Exception as e:
+        logger.error('error rendering jira description from template %s' % (issue_template))
+        log_jira_alert('error rendering jira description from template %s' % (issue_template), find)
+
+    logger.debug('rendered description: %s', description)
+    return description
 
 
 def push_to_jira(obj):

@@ -2590,6 +2590,7 @@ class JIRA_Instance(models.Model):
                                           choices=default_issue_type_choices,
                                           default='Bug',
                                           help_text='You can define extra issue types in settings.py')
+    issue_template = models.ForeignKey('JIRAIssueTemplate', on_delete=models.PROTECT, null=True, blank=True)
     epic_name_id = models.IntegerField(help_text="To obtain the 'Epic name id' visit https://<YOUR JIRA URL>/rest/api/2/field and search for Epic Name. Copy the number out of cf[number] and paste it here.")
     open_status_key = models.IntegerField(help_text="To obtain the 'open status key' visit https://<YOUR JIRA URL>/rest/api/latest/issue/<ANY VALID ISSUE KEY>/transitions?expand=transitions.fields")
     close_status_key = models.IntegerField(help_text="To obtain the 'open status key' visit https://<YOUR JIRA URL>/rest/api/latest/issue/<ANY VALID ISSUE KEY>/transitions?expand=transitions.fields")
@@ -2663,6 +2664,7 @@ class JIRA_Project(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
     engagement = models.OneToOneField(Engagement, on_delete=models.CASCADE, null=True, blank=True)
     component = models.CharField(max_length=200, blank=True)
+    issue_template = models.ForeignKey('JIRAIssueTemplate', on_delete=models.PROTECT, null=True, blank=True)
     push_all_issues = models.BooleanField(default=False, blank=True,
          help_text="Automatically maintain parity with JIRA. Always create and update JIRA tickets for findings in this Product.")
     enable_engagement_epic_mapping = models.BooleanField(default=False,
@@ -2729,6 +2731,17 @@ class JIRA_Issue(models.Model):
         elif self.engagement:
             text = self.engagement.product.name + " | Engagement: " + self.engagement.name + ", ID: " + str(self.engagement.id)
         return text + " | Jira Key: " + str(self.jira_key)
+
+
+class JIRAIssueTemplate(models.Model):
+    name = models.CharField(max_length=200, unique=True, blank=False, null=False, help_text="Descriptive name to identify this template")
+    template = models.TextField(null=True, blank=True, help_text="Django Template used to populate JIRA Issues.")
+
+    class Meta:
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
 
 
 NOTIFICATION_CHOICES = (
@@ -3367,6 +3380,7 @@ def enable_disable_auditlog(enable=True):
         auditlog.register(Risk_Acceptance)
         auditlog.register(Finding_Template)
         auditlog.register(Cred_User)
+        auditlog.register(JIRAIssueTemplate)
     else:
         logger.info('disabling audit logging')
         auditlog.unregister(Dojo_User)
@@ -3378,6 +3392,7 @@ def enable_disable_auditlog(enable=True):
         auditlog.unregister(Risk_Acceptance)
         auditlog.unregister(Finding_Template)
         auditlog.unregister(Cred_User)
+        auditlog.unregister(JIRAIssueTemplate)
 
 
 from dojo.utils import get_system_setting
