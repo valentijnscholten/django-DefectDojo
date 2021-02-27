@@ -5,7 +5,7 @@ kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    defectdojo.org/component: djangos
+    defectdojo.org/component: djangoss
     app.kubernetes.io/name: {{ include "defectdojo.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
