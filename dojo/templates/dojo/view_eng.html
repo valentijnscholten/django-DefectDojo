@@ -217,12 +217,12 @@
                                 <li class="divider"></li>
                                 {% endif %}
                                 <li role="presentation">
-                                    <a href="{% url 'engagment_open_findings' eng.id %}?active=2&verified=2&false_p=3&duplicate=2&out_of_scope=1&test__engagement={{ eng.id }}">
+                                    <a href="{% url 'engagment_open_findings' eng.id %}?active=true">
                                         <i class="fa fa-file-text-o"></i> View Open Findings
                                     </a>
                                 </li>
                                 <li role="presentation">
-                                    <a href="{% url 'engagment_all_findings' eng.id %}?test__engagement={{ eng.id }}">
+                                    <a href="{% url 'engagment_all_findings' eng.id %}">
                                         <i class="fa fa-file-text-o"></i> View All Findings
                                     </a>
                                 </li>
@@ -802,6 +802,18 @@
                 </a>
               {% else %}
                 {{ eng.source_code_management_uri|notspecified}}
+              {% endif %}
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Test Strategy</strong></td>
+            <td>
+              {% if eng.test_strategy %}
+                <a target="_blank" data-toggle="tooltip" data-placement="top" title="{{ eng.test_strategy }}" href="{{ eng.test_strategy }}">
+                  <i class="fa fa-external-link"></i> {{ eng.test_strategy|last_value }}
+                </a>
+              {% else %}
+                {{ eng.test_strategy|notspecified}}
               {% endif %}
             </td>
           </tr>

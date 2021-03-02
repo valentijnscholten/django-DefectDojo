@@ -1016,7 +1016,8 @@ class FindingForm(forms.ModelForm):
 
         # do not show checkbox if finding is not accepted and simple risk acceptance is disabled
         # if checked, always show to allow unaccept also with full risk acceptance enabled
-        if not self.instance.risk_accepted and not self.instance.test.engagement.product.enable_simple_risk_acceptance:
+        # when adding from template, we don't have access to the test. quickfix for now to just hide simple risk acceptance
+        if not hasattr(self.instance, 'test') or (not self.instance.risk_accepted and not self.instance.test.engagement.product.enable_simple_risk_acceptance):
             del self.fields['risk_accepted']
         else:
             if self.instance.risk_accepted:
@@ -1646,6 +1647,7 @@ class ReportOptionsForm(forms.Form):
     include_finding_images = forms.ChoiceField(choices=yes_no, label="Finding Images")
     include_executive_summary = forms.ChoiceField(choices=yes_no, label="Executive Summary")
     include_table_of_contents = forms.ChoiceField(choices=yes_no, label="Table of Contents")
+    include_disclaimer = forms.ChoiceField(choices=yes_no, label="Disclaimer")
     report_type = forms.ChoiceField(choices=(('HTML', 'HTML'), ('AsciiDoc', 'AsciiDoc')))
 
 

@@ -30,7 +30,9 @@
                     <tr>
                         <th>Event</th>
                         <th class="centered">Slack</th>
+                        {% if scope == 'system' %}
                         <th class="centered">Microsoft Teams</th>
+                        {% endif %}
                         <th class="centered">Mail</th>
                         <th class="centered">Alert</th>
                     </tr>
@@ -47,9 +49,11 @@
                             </td>
                     {% endif %}
                     {% for pk,c in field.field.widget.choices %}
+                    {% if scope == 'system' or scope == 'personal' and c != "msteams" %}
                         <td class="centered">
                             <input type="checkbox" name="{{ field.name }}" {% if c in field.value %}checked{% endif %} value="{{ c }}"/>
                         </td>
+                    {% endif %}
                     {% endfor %}
                     </tr>
                     {% for error in field.errors %}
