@@ -748,7 +748,7 @@ def status_classes(finding):
 
 @register.filter
 def is_authorized_for_change(user, obj):
-    if not settings.FEATURE_NEW_AUTHORIZATION:
+    if not settings.FEATURE_AUTHORIZATION_V2:
         return user_is_authorized(user, 'change', obj)
     else:
         return False
@@ -756,7 +756,7 @@ def is_authorized_for_change(user, obj):
 
 @register.filter
 def is_authorized_for_delete(user, obj):
-    if not settings.FEATURE_NEW_AUTHORIZATION:
+    if not settings.FEATURE_AUTHORIZATION_V2:
         return user_is_authorized(user, 'delete', obj)
     else:
         return False
@@ -764,7 +764,7 @@ def is_authorized_for_delete(user, obj):
 
 @register.filter
 def is_authorized_for_staff(user, obj):
-    if not settings.FEATURE_NEW_AUTHORIZATION:
+    if not settings.FEATURE_AUTHORIZATION_V2:
         return user_is_authorized(user, 'staff', obj)
     else:
         return False
