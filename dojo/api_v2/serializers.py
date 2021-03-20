@@ -396,7 +396,7 @@ class ProductSerializer(TaggitSerializer, serializers.ModelSerializer):
         return obj.findings_count
 
     def get_findings_list(self, obj):
-        return obj.open_findings_list()
+        return obj.open_findings_list
 
 
 class ProductTypeMemberSerializer(serializers.ModelSerializer):
