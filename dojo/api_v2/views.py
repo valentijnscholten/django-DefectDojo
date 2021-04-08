@@ -9,8 +9,8 @@ from rest_framework.permissions import DjangoModelPermissions, IsAuthenticated, 
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser
 from django_filters.rest_framework import DjangoFilterBackend
-from drf_yasg2 import openapi
-from drf_yasg2.utils import swagger_auto_schema, no_body
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema, no_body
 import base64
 from dojo.engagement.services import close_engagement, reopen_engagement
 from dojo.models import Product, Product_Type, Engagement, Test, Test_Import, Test_Type, Finding, \
@@ -476,6 +476,8 @@ class FindingViewSet(prefetch.PrefetchListMixin,
 
             if finding.has_jira_issue:
                 jira_helper.add_comment(finding, note)
+            elif finding.has_jira_group_issue:
+                jira_helper.add_comment(finding.finding_group, note)
 
             serialized_note = serializers.NoteSerializer({
                 "author": author, "entry": entry,
@@ -1190,7 +1192,7 @@ class TestImportViewSet(prefetch.PrefetchListMixin,
     serializer_class = serializers.TestImportSerializer
     queryset = Test_Import.objects.none()
     filter_backends = (DjangoFilterBackend,)
-    filter_fields = ('test', 'findings_affected', 'version', 'test_import_finding_action__action',
+    filter_fields = ('test', 'findings_affected', 'version', 'branch_tag', 'build_id', 'commit_hash', 'test_import_finding_action__action',
                     'test_import_finding_action__finding', 'test_import_finding_action__created')
     swagger_schema = prefetch.get_prefetch_schema(["test_imports_list", "test_imports_read"], serializers.TestImportSerializer). \
         to_schema()
@@ -1205,24 +1207,24 @@ class TestImportViewSet(prefetch.PrefetchListMixin,
             test_imports = Test_Import.objects.all()
         return test_imports.prefetch_related(
                                         'test_import_finding_action_set',
-                                        'findings',
-                                        'findings__endpoints',
-                                        'findings__endpoint_status',
-                                        'findings__finding_meta',
-                                        'findings__jira_issue',
-                                        'findings__burprawrequestresponse_set',
-                                        'findings__jira_issue',
-                                        'findings__jira_issue',
-                                        'findings__jira_issue',
-                                        'findings__reviewers',
-                                        'findings__notes',
-                                        'findings__notes__author',
-                                        'findings__notes__history',
-                                        'findings__files',
-                                        'findings__images',
-                                        'findings__found_by',
-                                        'findings__tags',
-                                        'findings__risk_acceptance_set',
+                                        'findings_affected',
+                                        'findings_affected__endpoints',
+                                        'findings_affected__endpoint_status',
+                                        'findings_affected__finding_meta',
+                                        'findings_affected__jira_issue',
+                                        'findings_affected__burprawrequestresponse_set',
+                                        'findings_affected__jira_issue',
+                                        'findings_affected__jira_issue',
+                                        'findings_affected__jira_issue',
+                                        'findings_affected__reviewers',
+                                        'findings_affected__notes',
+                                        'findings_affected__notes__author',
+                                        'findings_affected__notes__history',
+                                        'findings_affected__files',
+                                        'findings_affected__images',
+                                        'findings_affected__found_by',
+                                        'findings_affected__tags',
+                                        'findings_affected__risk_acceptance_set',
                                         'test',
                                         'test__tags',
                                         'test__notes',

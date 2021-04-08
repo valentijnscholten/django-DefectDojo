@@ -149,7 +149,13 @@ CSV Report
 Checkmarx
 ---------
 
-Detailed XML Report
+- `Checkmarx Scan`, `Checkmarx Scan detailed`: XML report from Checkmarx SAST (source code analysis)
+- `Checkmarx OSA`: json report from Checkmarx Open Source Analysis (dependencies analysis)
+To generate the OSA report using Checkmarx CLI:
+`./runCxConsole.sh OsaScan -v -CxServer <...> -CxToken <..> -projectName <...>  -enableOsa -OsaLocationPath <lib_folder> -OsaJson <output_folder>`
+That will generate three files, two of which are needed for defectdojo. Build the file for defectdojo with the jq utility:
+`jq -s . CxOSAVulnerabilities.json CxOSALibraries.json`
+
 
 Choctaw Hog parser
 ------------------
@@ -332,7 +338,14 @@ Use the full XML export template from Nexpose.
 Nikto
 -----
 
-XML output
+Nikto web server scanner - https://cirt.net/Nikto2
+
+The current parser support 3 sources:
+ - XML output (old)
+ - new XML output (with nxvmlversion=\"1.2\" type)
+ - JSON output
+
+See: https://github.com/sullo/nikto
 
 Nmap
 ----
@@ -642,6 +655,23 @@ Wpscan Scanner
 --------------
 
 Import JSON report.
+
+Wfuzz JSON importer
+-------------------
+
+Import the result of Wfuzz (https://github.com/xmendez/wfuzz) if you export in JSON the result (`wfuzz  -o json -f myJSONReport.json,json ` ).
+
+The return code matching are directly put in Severity as follow(this is hardcoded in the parser actually). 
+
+```
+HTTP Return Code | Severity
+---------------------------
+200              |  High
+401              |  Medium
+403              |  Medium
+407              |  Medium
+500              |  Low
+```
 
 Xanitizer
 ---------
