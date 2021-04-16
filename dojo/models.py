@@ -876,7 +876,6 @@ class ToolConfigForm_Admin(forms.ModelForm):
             self.api_key = self.instance.api_key
 
     def clean(self):
-        # self.fields['endpoints'].queryset = Endpoint.objects.all()
         cleaned_data = super().clean()
         if not cleaned_data['password'] and not cleaned_data['ssh'] and not cleaned_data['api_key']:
             cleaned_data['password'] = self.password_from_db
@@ -2237,7 +2236,10 @@ class Finding(models.Model):
             return None
         if self.test.engagement.source_code_management_uri is None:
             return self.sast_source_file_path
-        return create_bleached_link(self.test.engagement.source_code_management_uri + '/' + self.sast_source_file_path, self.sast_source_file_path)
+        link = self.test.engagement.source_code_management_uri + '/' + self.sast_source_file_path
+        if self.sast_source_line:
+            link = link + '#L' + str(self.sast_source_line)
+        return create_bleached_link(link, self.sast_source_file_path)
 
     def get_file_path_with_link(self):
         from dojo.utils import create_bleached_link
@@ -2245,7 +2247,10 @@ class Finding(models.Model):
             return None
         if self.test.engagement.source_code_management_uri is None:
             return self.file_path
-        return create_bleached_link(self.test.engagement.source_code_management_uri + '/' + self.file_path, self.file_path)
+        link = self.test.engagement.source_code_management_uri + '/' + self.file_path
+        if self.line:
+            link = link + '#L' + str(self.line)
+        return create_bleached_link(link, self.file_path)
 
     def get_references_with_links(self):
         import re
@@ -2652,7 +2657,7 @@ class GITHUB_Issue(models.Model):
     finding = models.OneToOneField(Finding, null=True, blank=True, on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.github_issue_id) + '| GitHub Issue URL: ' + str(self.github_issue_url)
+        return str(self.issue_id) + '| GitHub Issue URL: ' + str(self.issue_url)
 
 
 class GITHUB_Clone(models.Model):
@@ -2759,7 +2764,6 @@ class JIRAForm_Admin(forms.ModelForm):
             self.fields['password'].required = False
 
     def clean(self):
-        # self.fields['endpoints'].queryset = Endpoint.objects.all()
         cleaned_data = super().clean()
         if not cleaned_data['password']:
             cleaned_data['password'] = self.password_from_db
@@ -2813,7 +2817,6 @@ class JIRAForm_Admin(forms.ModelForm):
             self.fields['password'].required = False
 
     def clean(self):
-        # self.fields['endpoints'].queryset = Endpoint.objects.all()
         cleaned_data = super().clean()
         if not cleaned_data['password']:
             cleaned_data['password'] = self.password_from_db
@@ -2826,7 +2829,7 @@ class JIRA_Conf_Admin(admin.ModelAdmin):
 
 
 class JIRA_Issue(models.Model):
-    jira_project = models.ForeignKey(JIRA_Project, on_delete=models.PROTECT, null=True)  # just to be sure we don't delete JIRA_Issue if a jira_project is deleted
+    jira_project = models.ForeignKey(JIRA_Project, on_delete=models.CASCADE, null=True)
     jira_id = models.CharField(max_length=200)
     jira_key = models.CharField(max_length=200)
     finding = models.OneToOneField(Finding, null=True, blank=True, on_delete=models.CASCADE)

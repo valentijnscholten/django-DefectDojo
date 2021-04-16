@@ -43,6 +43,7 @@ from django.conf import settings
 from dojo.authorization.roles_permissions import Permissions, Roles
 from dojo.product_type.queries import get_authorized_product_types
 from dojo.product.queries import get_authorized_products
+from dojo.finding.queries import get_authorized_findings
 
 logger = logging.getLogger(__name__)
 
@@ -186,7 +187,7 @@ class Delete_Product_TypeForm(forms.ModelForm):
 
     class Meta:
         model = Product_Type
-        exclude = ['name', 'description', 'critical_product', 'key_product', 'authorized_users', 'members']
+        fields = []
 
 
 class Edit_Product_Type_MemberForm(forms.ModelForm):
@@ -214,6 +215,15 @@ class Add_Product_Type_MemberForm(Edit_Product_Type_MemberForm):
         self.fields['user'].disabled = False
 
 
+class Add_Product_Type_Member_UserForm(Edit_Product_Type_MemberForm):
+    def __init__(self, *args, **kwargs):
+        super(Add_Product_Type_Member_UserForm, self).__init__(*args, **kwargs)
+        current_members = Product_Type_Member.objects.filter(user=self.initial['user']).values_list('product_type', flat=True)
+        self.fields['product_type'].queryset = get_authorized_product_types(Permissions.Product_Type_Member_Add_Owner) \
+            .exclude(id__in=current_members)
+        self.fields['product_type'].disabled = False
+
+
 class Delete_Product_Type_MemberForm(Edit_Product_Type_MemberForm):
     def __init__(self, *args, **kwargs):
         super(Delete_Product_Type_MemberForm, self).__init__(*args, **kwargs)
@@ -235,7 +245,7 @@ class Development_EnvironmentForm(forms.ModelForm):
 class Delete_Dev_EnvironmentForm(forms.ModelForm):
     class Meta:
         model = Development_Environment
-        exclude = ['name']
+        fields = []
 
 
 class ProductForm(forms.ModelForm):
@@ -286,12 +296,7 @@ class DeleteProductForm(forms.ModelForm):
 
     class Meta:
         model = Product
-        exclude = ['name', 'description', 'prod_manager', 'tech_contact', 'manager', 'created',
-                   'prod_type', 'updated', 'tid', 'authorized_users', 'product_manager',
-                   'technical_contact', 'team_manager', 'prod_numeric_grade', 'business_criticality',
-                   'platform', 'lifecycle', 'origin', 'user_records', 'revenue', 'external_audience',
-                   'internet_accessible', 'regulations', 'product_meta', 'members', 'tags',
-                   'enable_simple_risk_acceptance', 'enable_full_risk_acceptance']
+        fields = []
 
 
 class DeleteFindingGroupForm(forms.ModelForm):
@@ -300,7 +305,7 @@ class DeleteFindingGroupForm(forms.ModelForm):
 
     class Meta:
         model = Finding_Group
-        fields = ['id']
+        fields = []
 
 
 class Edit_Product_MemberForm(forms.ModelForm):
@@ -326,6 +331,15 @@ class Add_Product_MemberForm(Edit_Product_MemberForm):
             Q(is_superuser=True) |
             Q(id__in=current_members)).exclude(is_active=False).order_by('first_name', 'last_name')
         self.fields['user'].disabled = False
+
+
+class Add_Product_Member_UserForm(Edit_Product_MemberForm):
+    def __init__(self, *args, **kwargs):
+        super(Add_Product_Member_UserForm, self).__init__(*args, **kwargs)
+        current_members = Product_Member.objects.filter(user=self.initial["user"]).values_list('product', flat=True)
+        self.fields['product'].queryset = get_authorized_products(Permissions.Product_Member_Add_Owner) \
+            .exclude(id__in=current_members)
+        self.fields['product'].disabled = False
 
 
 class Delete_Product_MemberForm(Edit_Product_MemberForm):
@@ -412,6 +426,10 @@ class ImportScanForm(forms.Form):
         attrs={"accept": ".xml, .csv, .nessus, .json, .html, .js, .zip, .xlsx, .txt, .sarif"}),
         label="Choose report file",
         required=False)
+
+    close_old_findings = forms.BooleanField(help_text="Select if old findings no longer present in the report get mitigated when importing."
+                                                        "This affects the whole engagement/product depending on your deduplication scope.",
+                                            required=False, initial=False)
 
     def __init__(self, *args, **kwargs):
         super(ImportScanForm, self).__init__(*args, **kwargs)
@@ -565,7 +583,7 @@ class RiskAcceptanceForm(EditRiskAcceptanceForm):
     # path = forms.FileField(label="Proof", required=False, widget=forms.widgets.FileInput(attrs={"accept": ".jpg,.png,.pdf"}))
     # expiration_date = forms.DateTimeField(required=False, widget=forms.TextInput(attrs={'class': 'datepicker'}))
     accepted_findings = forms.ModelMultipleChoiceField(
-        queryset=Finding.objects.all(), required=True,
+        queryset=Finding.objects.none(), required=True,
         widget=forms.widgets.SelectMultiple(attrs={'size': 10}),
         help_text=('Active, verified findings listed, please select to add findings.'))
     notes = forms.CharField(required=False, max_length=2400,
@@ -585,6 +603,7 @@ class RiskAcceptanceForm(EditRiskAcceptanceForm):
             # logger.debug('setting default expiration_date: %s', expiration_date)
             self.fields['expiration_date'].initial = expiration_date
         # self.fields['path'].help_text = 'Existing proof uploaded: %s' % self.instance.filename() if self.instance.filename() else 'None'
+        self.fields['accepted_findings'].queryset = get_authorized_findings(Permissions.Risk_Acceptance)
 
 
 class UploadFileForm(forms.ModelForm):
@@ -607,7 +626,7 @@ class ReplaceRiskAcceptanceProofForm(forms.ModelForm):
 
 class AddFindingsRiskAcceptanceForm(forms.ModelForm):
     accepted_findings = forms.ModelMultipleChoiceField(
-        queryset=Finding.objects.all(), required=True,
+        queryset=Finding.objects.none(), required=True,
         widget=forms.widgets.SelectMultiple(attrs={'size': 10}),
         help_text=('Select to add findings.'), label="Add findings as accepted:")
 
@@ -615,6 +634,10 @@ class AddFindingsRiskAcceptanceForm(forms.ModelForm):
         model = Risk_Acceptance
         fields = ['accepted_findings']
         # exclude = ('name', 'owner', 'path', 'notes', 'accepted_by', 'expiration_date', 'compensating_control')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['accepted_findings'].queryset = get_authorized_findings(Permissions.Risk_Acceptance)
 
 
 class CheckForm(forms.ModelForm):
@@ -731,13 +754,7 @@ class DeleteEngagementForm(forms.ModelForm):
 
     class Meta:
         model = Engagement
-        exclude = ['name', 'version', 'eng_type', 'first_contacted', 'target_start',
-                   'target_end', 'lead', 'requester', 'reason', 'report_type',
-                   'product', 'test_strategy', 'threat_model', 'api_test', 'pen_test',
-                   'check_list', 'status', 'description', 'engagement_type', 'build_id',
-                   'commit_hash', 'branch_tag', 'build_server', 'source_code_management_server',
-                   'source_code_management_uri', 'orchestration_engine', 'preset', 'tracker',
-                   'deduplication_on_engagement', 'tags']
+        fields = []
 
 
 class TestForm(forms.ModelForm):
@@ -825,7 +842,6 @@ class AddFindingForm(forms.ModelForm):
             self.fields['response'].initial = req_resp[1]
 
     def clean(self):
-        # self.fields['endpoints'].queryset = Endpoint.objects.all()
         cleaned_data = super(AddFindingForm, self).clean()
         if ((cleaned_data['active'] or cleaned_data['verified']) and cleaned_data['duplicate']):
             raise forms.ValidationError('Duplicate findings cannot be'
@@ -883,7 +899,6 @@ class AdHocFindingForm(forms.ModelForm):
             self.fields['response'].initial = req_resp[1]
 
     def clean(self):
-        # self.fields['endpoints'].queryset = Endpoint.objects.all()
         cleaned_data = super(AdHocFindingForm, self).clean()
         if ((cleaned_data['active'] or cleaned_data['verified']) and cleaned_data['duplicate']):
             raise forms.ValidationError('Duplicate findings cannot be'
@@ -1171,7 +1186,7 @@ class DeleteFindingTemplateForm(forms.ModelForm):
 
     class Meta:
         model = Finding_Template
-        fields = ('id',)
+        fields = []
 
 
 class FindingBulkUpdateForm(forms.ModelForm):
@@ -1308,9 +1323,8 @@ class AddEndpointForm(forms.Form):
         if 'product' in kwargs:
             product = kwargs.pop('product')
         super(AddEndpointForm, self).__init__(*args, **kwargs)
-        if product is None:
-            self.fields['product'] = forms.ModelChoiceField(queryset=get_authorized_products(Permissions.Product_View))
-        else:
+        self.fields['product'] = forms.ModelChoiceField(queryset=get_authorized_products(Permissions.Endpoint_Add))
+        if product is not None:
             self.fields['product'].initial = product.id
 
         self.product = product
@@ -1396,14 +1410,7 @@ class DeleteEndpointForm(forms.ModelForm):
 
     class Meta:
         model = Endpoint
-        exclude = ('protocol',
-                   'fqdn',
-                   'port',
-                   'host',
-                   'path',
-                   'query',
-                   'fragment',
-                   'product')
+        fields = []
 
 
 class NoteForm(forms.ModelForm):
@@ -1433,7 +1440,7 @@ class DeleteNoteForm(forms.ModelForm):
 
     class Meta:
         model = Notes
-        fields = ('id',)
+        fields = []
 
 
 class CloseFindingForm(forms.ModelForm):
@@ -1586,19 +1593,25 @@ class DojoUserForm(forms.ModelForm):
 
 
 class AddDojoUserForm(forms.ModelForm):
-    authorized_products = forms.ModelMultipleChoiceField(
-        queryset=Product.objects.all(), required=False,
-        help_text='Select the products this user should have access to.')
-    authorized_product_types = forms.ModelMultipleChoiceField(
-        queryset=Product_Type.objects.all(), required=False,
-        help_text='Select the product types this user should have access to.')
+    if not settings.FEATURE_AUTHORIZATION_V2:
+        authorized_products = forms.ModelMultipleChoiceField(
+            queryset=Product.objects.all(), required=False,
+            help_text='Select the products this user should have access to.')
+        authorized_product_types = forms.ModelMultipleChoiceField(
+            queryset=Product_Type.objects.all(), required=False,
+            help_text='Select the product types this user should have access to.')
 
     class Meta:
         model = Dojo_User
         fields = ['username', 'first_name', 'last_name', 'email', 'is_active',
                   'is_staff', 'is_superuser']
-        exclude = ['password', 'last_login', 'groups',
-                   'date_joined', 'user_permissions']
+        if not settings.FEATURE_AUTHORIZATION_V2:
+            exclude = ['password', 'last_login', 'groups',
+                    'date_joined', 'user_permissions']
+        else:
+            exclude = ['password', 'last_login', 'groups',
+                    'date_joined', 'user_permissions',
+                    'authorized_products', 'authorized_product_types']
 
 
 class DeleteUserForm(forms.ModelForm):
@@ -1607,9 +1620,7 @@ class DeleteUserForm(forms.ModelForm):
 
     class Meta:
         model = User
-        exclude = ['username', 'first_name', 'last_name', 'email', 'is_active',
-                   'is_staff', 'is_superuser', 'password', 'last_login', 'groups',
-                   'date_joined', 'user_permissions']
+        fields = []
 
 
 class UserContactInfoForm(forms.ModelForm):
@@ -1676,7 +1687,7 @@ class DeleteReportForm(forms.ModelForm):
 
     class Meta:
         model = Report
-        fields = ('id',)
+        fields = []
 
 
 class DeleteFindingForm(forms.ModelForm):
@@ -1685,7 +1696,7 @@ class DeleteFindingForm(forms.ModelForm):
 
     class Meta:
         model = Finding
-        fields = ('id',)
+        fields = []
 
 
 class FindingFormID(forms.ModelForm):
@@ -1703,7 +1714,7 @@ class DeleteStubFindingForm(forms.ModelForm):
 
     class Meta:
         model = Stub_Finding
-        fields = ('id',)
+        fields = []
 
 
 class AddFindingImageForm(forms.ModelForm):
@@ -1736,7 +1747,7 @@ class DeleteGITHUBConfForm(forms.ModelForm):
 
     class Meta:
         model = GITHUB_Conf
-        fields = ('id',)
+        fields = []
 
 
 class ExpressGITHUBForm(forms.ModelForm):
@@ -1800,7 +1811,7 @@ class JIRAForm(forms.ModelForm):
         form_data = self.cleaned_data
 
         try:
-            jira = jira_helper.get_jira_connection_raw(form_data['url'], form_data['username'], form_data['password'], validate=True)
+            jira = jira_helper.get_jira_connection_raw(form_data['url'], form_data['username'], form_data['password'])
             logger.debug('valid JIRA config!')
         except Exception as e:
             # form only used by admins, so we can show full error message using str(e) which can help debug any problems
@@ -1827,7 +1838,7 @@ class ExpressJIRAForm(forms.ModelForm):
         form_data = self.cleaned_data
 
         try:
-            jira = jira_helper.get_jira_connection_raw(form_data['url'], form_data['username'], form_data['password'], validate=True)
+            jira = jira_helper.get_jira_connection_raw(form_data['url'], form_data['username'], form_data['password'],)
             logger.debug('valid JIRA config!')
         except Exception as e:
             # form only used by admins, so we can show full error message using str(e) which can help debug any problems
@@ -1851,7 +1862,7 @@ class DeleteBenchmarkForm(forms.ModelForm):
 
     class Meta:
         model = Benchmark_Product_Summary
-        exclude = ['product', 'benchmark_type', 'desired_level', 'current_level', 'asvs_level_1_benchmark', 'asvs_level_1_score', 'asvs_level_2_benchmark', 'asvs_level_2_score', 'asvs_level_3_benchmark', 'asvs_level_3_score', 'publish']
+        fields = []
 
 
 # class JIRA_ProjectForm(forms.ModelForm):
@@ -1884,7 +1895,7 @@ class DeleteJIRAInstanceForm(forms.ModelForm):
 
     class Meta:
         model = JIRA_Instance
-        fields = ('id',)
+        fields = []
 
 
 class ToolTypeForm(forms.ModelForm):
@@ -1946,7 +1957,7 @@ class DeleteObjectsSettingsForm(forms.ModelForm):
 
     class Meta:
         model = Objects_Product
-        exclude = ['tool_type']
+        fields = []
 
 
 class DeleteToolProductSettingsForm(forms.ModelForm):
@@ -1955,7 +1966,7 @@ class DeleteToolProductSettingsForm(forms.ModelForm):
 
     class Meta:
         model = Tool_Product_Settings
-        exclude = ['tool_type']
+        fields = []
 
 
 class ToolProductSettingsForm(forms.ModelForm):
@@ -2039,7 +2050,7 @@ class DeleteEngagementPresetsForm(forms.ModelForm):
 
     class Meta:
         model = Engagement_Presets
-        fields = ['id']
+        fields = []
 
 
 class SystemSettingsForm(forms.ModelForm):
@@ -2115,7 +2126,7 @@ class DeleteRuleForm(forms.ModelForm):
 
     class Meta:
         model = Rule
-        fields = ('id',)
+        fields = []
 
 
 class CredUserForm(forms.ModelForm):
@@ -2293,7 +2304,7 @@ class JIRAFindingForm(forms.Form):
 
         self.fields['jira_issue'].widget = forms.TextInput(attrs={'placeholder': 'Leave empty and check push to jira to create a new JIRA issue'})
 
-        if self.instance.has_jira_group_issue:
+        if self.instance and self.instance.has_jira_group_issue:
             self.fields['push_to_jira'].widget.attrs['checked'] = 'checked'
             self.fields['jira_issue'].help_text = 'Changing the linked JIRA issue for finding groups is not (yet) supported.'
             self.initial['jira_issue'] = self.instance.finding_group.jira_issue.jira_key
@@ -2670,12 +2681,7 @@ class Delete_Questionnaire_Form(forms.ModelForm):
 
     class Meta:
         model = Answered_Survey
-        exclude = ('responder',
-                   'completed',
-                   'engagement',
-                   'answered_on',
-                   'survey',
-                   'assignee')
+        fields = []
 
 
 class DeleteGeneralQuestionnaireForm(forms.ModelForm):
@@ -2684,10 +2690,7 @@ class DeleteGeneralQuestionnaireForm(forms.ModelForm):
 
     class Meta:
         model = General_Survey
-        exclude = ('num_responses',
-                   'generated',
-                   'expiration',
-                   'survey')
+        fields = []
 
 
 class Delete_Eng_Survey_Form(forms.ModelForm):
@@ -2696,10 +2699,7 @@ class Delete_Eng_Survey_Form(forms.ModelForm):
 
     class Meta:
         model = Engagement_Survey
-        exclude = ('name',
-                   'questions',
-                   'description',
-                   'active')
+        fields = []
 
 
 class CreateQuestionnaireForm(forms.ModelForm):

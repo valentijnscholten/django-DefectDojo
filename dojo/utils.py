@@ -15,7 +15,6 @@ from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.urls import get_resolver, reverse
 from django.db.models import Q, Sum, Case, When, IntegerField, Value, Count
-from django.template.defaultfilters import pluralize
 from django.utils import timezone
 from django.dispatch import receiver
 from django.db.models.signals import post_save
@@ -625,6 +624,22 @@ def add_breadcrumb(parent=None,
     request.session['dojo_breadcrumbs'] = crumbs
 
 
+def is_title_in_breadcrumbs(title):
+    request = crum.get_current_request()
+    if request is None:
+        return False
+
+    breadcrumbs = request.session.get('dojo_breadcrumbs')
+    if breadcrumbs is None:
+        return False
+
+    for breadcrumb in breadcrumbs:
+        if breadcrumb.get('title') == title:
+            return True
+
+    return False
+
+
 def get_punchcard_data(objs, start_date, weeks, view='Finding'):
     # use try catch to make sure any teething bugs in the bunchcard don't break the dashboard
     try:
@@ -1085,11 +1100,6 @@ def opened_in_period(start_date, end_date, pt):
         oip[o['numerical_severity']] = o['numerical_severity__count']
 
     return oip
-
-
-def message(count, noun, verb):
-    return ('{} ' + noun + '{} {} ' + verb).format(
-        count, pluralize(count), pluralize(count, 'was,were'))
 
 
 class FileIterWrapper(object):
