@@ -58,6 +58,9 @@ class DojoDefaultReImporter(object):
             component_name = item.component_name if hasattr(item, 'component_name') else None
             component_version = item.component_version if hasattr(item, 'component_version') else None
 
+            if not hasattr(item, 'test'):
+                item.test = test
+
             item.hash_code = item.compute_hash_code()
             deduplicationLogger.debug("item's hash_code: %s", item.hash_code)
 
@@ -70,10 +73,10 @@ class DojoDefaultReImporter(object):
                 finding = findings[0]
                 if finding.false_p or finding.out_of_scope or finding.risk_accepted:
                     logger.debug('%i: skipping existing finding (it is marked as false positive:%s and/or out of scope:%s or is a risk accepted:%s): %i:%s:%s:%s', i, finding.false_p, finding.out_of_scope, finding.risk_accepted, finding.id, finding, finding.component_name, finding.component_version)
-                elif finding.mitigated or finding.is_Mitigated:
+                elif finding.mitigated or finding.is_mitigated:
                     logger.debug('%i: reactivating: %i:%s:%s:%s', i, finding.id, finding, finding.component_name, finding.component_version)
                     finding.mitigated = None
-                    finding.is_Mitigated = False
+                    finding.is_mitigated = False
                     finding.mitigated_by = None
                     finding.active = True
                     finding.verified = verified
@@ -113,7 +116,6 @@ class DojoDefaultReImporter(object):
                     update_endpoint_status(finding, item, user)
             else:
                 # no existing finding found
-                item.test = test
                 item.reporter = user
                 item.last_reviewed = timezone.now()
                 item.last_reviewed_by = user
@@ -211,10 +213,10 @@ class DojoDefaultReImporter(object):
         logger.debug('IMPORT_SCAN: Closing findings no longer present in scan report')
         mitigated_findings = []
         for finding in to_mitigate:
-            if not finding.mitigated or not finding.is_Mitigated:
+            if not finding.mitigated or not finding.is_mitigated:
                 logger.debug('mitigating finding: %i:%s', finding.id, finding)
                 finding.mitigated = scan_date_time
-                finding.is_Mitigated = True
+                finding.is_mitigated = True
                 finding.mitigated_by = user
                 finding.active = False
 
