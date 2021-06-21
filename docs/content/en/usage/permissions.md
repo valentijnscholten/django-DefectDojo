@@ -5,19 +5,15 @@ weight: 3
 draft: false
 ---
 
-{{% alert title="Warning" color="warning" %}}
-The permissions described on this page only become active if you set the ``FEATURE_AUTHORIZATION_V2`` feature flag to ``True``. This feature is currently in beta, you should not use it in production environments.
-{{% /alert %}}
-
 ## System-wide permissions
 
 * Administrators (aka super users) have no limitations in the system. They can change all settings, manage users  and have read and write access to all data.
-* Staff users can add Product Types, and have access to data according to their role in a Product or Product Type. There is the parameter `AUTHORIZATION_STAFF_OVERRIDE` in the settings to give staff users full access to all Products and Product Types.
+* Staff users can add Product Types, and have access to data according to their role in a Product or Product Type. There is the parameter `AUTHORIZATION_STAFF_OVERRIDE` in the settings to give all staff users full access to all Products and Product Types.
 * Guest users have limited functionality available. They cannot add Product Types but have access to data according to their role in a Product or Product Type
 
 ## Product and Product Type permissions
 
-Users can be assigned as members to Products and Product Types, giving them one out of five predefined roles. The roles define what kind of access a user has to functions for interacting with data of that Product or Product Type:
+Users can be assigned as members to Products and Product Types, giving them one out of five predefined roles. The role defines what kind of access a user has to functions for interacting with data of that Product or Product Type:
 
 **Product / Product Type roles:**
 
@@ -84,3 +80,9 @@ Users can be assigned as members to Products and Product Types, giving them one 
 The role of a user within a Product Type is inherited by all Products of that Product Type, unless the user is explicitly defined as a member of a Product with a different role. In that case, if a user doesn't have a certain right for the Product Type, it is then checked if he has the right for the Product.
 
 A Product Type needs to have at least one owner. The last owner cannot be removed.
+
+## Global permissions
+
+Users can be assigned a global role in the *Edit User* dialog. A global role gives a user access to all Product Types and Products, including the underlying data, with permissions according to the respective role.
+
+A use case for a global role could be the Chief Information Security Officer of a company who needs an overview of all systems. If he gets the global role `Reader`, he can see the findings for all products and also all metrics.
