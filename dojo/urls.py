@@ -8,7 +8,6 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from django.http import HttpResponse
-import django_saml2_auth.views
 from dojo import views
 from dojo.api_v2.views import EndPointViewSet, EngagementViewSet, \
     FindingTemplatesViewSet, FindingViewSet, JiraInstanceViewSet, \
@@ -20,7 +19,7 @@ from dojo.api_v2.views import EndPointViewSet, EngagementViewSet, \
     AppAnalysisViewSet, EndpointStatusViewSet, SonarqubeIssueViewSet, SonarqubeIssueTransitionViewSet, \
     SonarqubeProductViewSet, RegulationsViewSet, ProductTypeMemberViewSet, ProductMemberViewSet, \
     DojoGroupViewSet, ProductGroupViewSet, ProductTypeGroupViewSet, RoleViewSet, GlobalRoleViewSet, \
-    DojoGroupUserViewSet
+    DojoGroupMemberViewSet
 
 from dojo.utils import get_system_setting
 from dojo.development_environment.urls import urlpatterns as dev_env_urls
@@ -37,6 +36,7 @@ from dojo.search.urls import urlpatterns as search_urls
 from dojo.test.urls import urlpatterns as test_urls
 from dojo.test_type.urls import urlpatterns as test_type_urls
 from dojo.user.urls import urlpatterns as user_urls
+from dojo.group.urls import urlpatterns as group_urls
 from dojo.jira_link.urls import urlpatterns as jira_urls
 from dojo.github_issue_link.urls import urlpatterns as github_urls
 from dojo.tool_type.urls import urlpatterns as tool_type_urls
@@ -81,7 +81,7 @@ v2_api.register(r'products', ProductViewSet)
 v2_api.register(r'product_types', ProductTypeViewSet)
 if settings.FEATURE_AUTHORIZATION_V2:
     v2_api.register(r'dojo_groups', DojoGroupViewSet)
-    v2_api.register(r'dojo_group_users', DojoGroupUserViewSet)
+    v2_api.register(r'dojo_group_members', DojoGroupMemberViewSet)
     v2_api.register(r'product_type_members', ProductTypeMemberViewSet)
     v2_api.register(r'product_members', ProductMemberViewSet)
     v2_api.register(r'product_type_groups', ProductTypeGroupViewSet)
@@ -122,6 +122,7 @@ ur += search_urls
 ur += test_type_urls
 ur += test_urls
 ur += user_urls
+ur += group_urls
 ur += jira_urls
 ur += github_urls
 ur += tool_type_urls
@@ -154,13 +155,6 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    # These are the SAML2 related URLs. You can change "^saml2_auth/" regex to
-    # any path you want, like "^sso_auth/", "^sso_login/", etc. (required)
-    url(r'^saml2/', include('django_saml2_auth.urls')),
-    # The following line will replace the default user login with SAML2 (optional)
-    # If you want to specific the after-login-redirect-URL, use parameter "?next=/the/path/you/want"
-    # with this view.
-    url(r'^saml2/login/$', django_saml2_auth.views.signin),
     #  Django Rest Framework API v2
     url(r'^%sapi/v2/' % get_system_setting('url_prefix'), include(v2_api.urls)),
     # action history
@@ -186,6 +180,11 @@ urlpatterns += survey_urls
 if hasattr(settings, 'DJANGO_METRICS_ENABLED'):
     if settings.DJANGO_METRICS_ENABLED:
         urlpatterns += [url(r'^%sdjango_metrics/' % get_system_setting('url_prefix'), include('django_prometheus.urls'))]
+
+if hasattr(settings, 'SAML2_ENABLED'):
+    if settings.SAML2_ENABLED:
+        # django saml2
+        urlpatterns += [url(r'^saml2/', include('djangosaml2.urls'))]
 
 if hasattr(settings, 'DJANGO_ADMIN_ENABLED'):
     if settings.DJANGO_ADMIN_ENABLED:

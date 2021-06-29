@@ -43,6 +43,14 @@ arachni_reporter --reporter 'json' js.com.afr
 Use the VulnerabilitiesSummary.xml file found in the zipped report
 download.
 
+### AuditJS (OSSIndex)
+
+AuditJS scanning tool using OSSIndex database and generated with `--json` or `-j` option (<https://www.npmjs.com/package/auditjs>).
+
+{{< highlight bash >}}
+auditjs ossi --json > auditjs_report.json
+{{< /highlight >}}
+
 ### AWS Security Hub
 
 The JSON output from AWS Security Hub exported with the `aws securityhub get-findings` (<https://docs.aws.amazon.com/cli/latest/reference/securityhub/get-findings.html>)
@@ -301,20 +309,6 @@ Example of JSON format:
 }
 ```
 
-### Hadolint
-
-Hadolint Dockerfile scan in json format.
-
-Harbor Vulnerability
---------------------
-
-Import findings from Harbor registry container scan:
-<https://github.com/goharbor/harbor>
-
-### JFrogXRay
-
-Import the JSON format for the \"Security Export\" file.
-
 ### Gosec Scanner
 
 Import Gosec Scanner findings in JSON format.
@@ -371,6 +365,15 @@ Github v4 graphql query to fetch data:
     }
   }
 {{< /highlight >}}
+
+### Hadolint
+
+Hadolint Dockerfile scan in json format.
+
+### Harbor Vulnerability
+
+Import findings from Harbor registry container scan:
+<https://github.com/goharbor/harbor>
 
 ### HuskyCI Report
 
@@ -447,9 +450,15 @@ Example:
       ]
     }
 
+### JFrogXRay
 
-Kiuwan Scanner
---------------
+Import the JSON format for the \"Security Export\" file. Use this importer for Xray version 2.X
+
+### JFrog XRay Unified
+
+Import the JSON format for the \"Security & Compliance | Reports\" export. Jfrog's Xray tool is an add-on to their Artifactory repository that does Software Composition Analysis, see https://www.jfrog.com/confluence/display/JFROG/JFrog+Xray for more information. \"Xray Unified\" refers to Xray Version 3.0 and later.
+
+### Kiuwan Scanner
 
 Import Kiuwan Scan in CSV format. Export as CSV Results on Kiuwan.
 
@@ -520,6 +529,10 @@ Node Security Platform (NSP) output file can be imported in JSON format.
 
 Node Package Manager (NPM) Audit plugin output file can be imported in
 JSON format. Only imports the \'advisories\' subtree.
+
+### Nuclei
+
+Import JSON output of nuclei scan report <https://github.com/projectdiscovery/nuclei>
 
 ### Openscap Vulnerability Scan
 
