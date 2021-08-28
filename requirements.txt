@@ -1,4 +1,4 @@
-django-cachalot==2.3.5
+django-cachalot==2.4.3
 # requirements.txt for DefectDojo using Python 3.x
 asteval==0.9.25
 bleach==4.1.0
