@@ -1,19 +1,21 @@
 from typing import List
 from drf_spectacular.utils import extend_schema_field
 from drf_yasg.utils import swagger_serializer_method
-from rest_framework.fields import DictField
+from rest_framework.fields import DictField, MultipleChoiceField
 
 from dojo.endpoint.utils import endpoint_filter
-from dojo.models import Finding_Group, Product, Engagement, Test, Finding, \
+from dojo.models import Dojo_User, Finding_Group, Product, Engagement, Test, Finding, \
     User, Stub_Finding, Risk_Acceptance, \
     Finding_Template, Test_Type, Development_Environment, NoteHistory, \
     JIRA_Issue, Tool_Product_Settings, Tool_Configuration, Tool_Type, \
     Product_Type, JIRA_Instance, Endpoint, JIRA_Project, \
-    Notes, DojoMeta, FindingImage, Note_Type, App_Analysis, Endpoint_Status, \
+    Notes, DojoMeta, Note_Type, App_Analysis, Endpoint_Status, \
     Sonarqube_Issue, Sonarqube_Issue_Transition, Sonarqube_Product, Regulation, \
     System_Settings, FileUpload, SEVERITY_CHOICES, Test_Import, \
     Test_Import_Finding_Action, Product_Type_Member, Product_Member, \
-    Product_Group, Product_Type_Group, Dojo_Group, Role, Global_Role, Dojo_Group_Member
+    Product_Group, Product_Type_Group, Dojo_Group, Role, Global_Role, Dojo_Group_Member, \
+    Language_Type, Languages, Notifications, NOTIFICATION_CHOICES, Engagement_Presets, \
+    Network_Locations
 
 from dojo.forms import ImportScanForm
 from dojo.tools.factory import requires_file
@@ -22,7 +24,6 @@ from django.conf import settings
 from rest_framework import serializers
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.utils import timezone
-import base64
 import datetime
 import six
 from django.utils.translation import ugettext_lazy as _
@@ -845,17 +846,6 @@ class RiskAcceptanceSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class FindingImageSerializer(serializers.ModelSerializer):
-    base64 = serializers.SerializerMethodField()
-
-    class Meta:
-        model = FindingImage
-        fields = ["base64", "caption", "id"]
-
-    def get_base64(self, obj) -> bytes:
-        return base64.b64encode(obj.image.read())
-
-
 class FindingMetaSerializer(serializers.ModelSerializer):
     class Meta:
         model = DojoMeta
@@ -925,7 +915,6 @@ class FindingRelatedFieldsSerializer(serializers.Serializer):
 
 
 class FindingSerializer(TaggitSerializer, serializers.ModelSerializer):
-    images = FindingImageSerializer(many=True, read_only=True)
     tags = TagListSerializerField(required=False)
     request_response = serializers.SerializerMethodField()
     accepted_risks = RiskAcceptanceSerializer(many=True, read_only=True, source='risk_acceptance_set')
@@ -1061,8 +1050,10 @@ class FindingCreateSerializer(TaggitSerializer, serializers.ModelSerializer):
 
     class Meta:
         model = Finding
-        exclude = ['images']
+        fields = '__all__'
         extra_kwargs = {
+            'active': {'required': True},
+            'verified': {'required': True},
             'reporter': {'default': serializers.CurrentUserDefault()},
         }
 
@@ -1191,6 +1182,8 @@ class ImportScanSerializer(serializers.Serializer):
     build_id = serializers.CharField(required=False)
     branch_tag = serializers.CharField(required=False)
     commit_hash = serializers.CharField(required=False)
+    sonarqube_config = serializers.PrimaryKeyRelatedField(allow_null=True, default=None,
+                                                          queryset=Sonarqube_Product.objects.all())
 
     test = serializers.IntegerField(read_only=True)  # not a modelserializer, so can't use related fields
 
@@ -1210,6 +1203,7 @@ class ImportScanSerializer(serializers.Serializer):
         build_id = data.get('build_id', None)
         branch_tag = data.get('branch_tag', None)
         commit_hash = data.get('commit_hash', None)
+        sonarqube_config = data.get('sonarqube_config', None)
 
         environment_name = data.get('environment', 'Development')
         environment = Development_Environment.objects.get(name=environment_name)
@@ -1237,7 +1231,8 @@ class ImportScanSerializer(serializers.Serializer):
                                                                              commit_hash=commit_hash,
                                                                              push_to_jira=push_to_jira,
                                                                              close_old_findings=close_old_findings,
-                                                                             group_by=group_by)
+                                                                             group_by=group_by,
+                                                                             sonarqube_config=sonarqube_config)
         # convert to exception otherwise django rest framework will swallow them as 400 error
         # exceptions are already logged in the importer
         except SyntaxError as se:
@@ -1291,6 +1286,8 @@ class ReImportScanSerializer(TaggitSerializer, serializers.Serializer):
     build_id = serializers.CharField(required=False)
     branch_tag = serializers.CharField(required=False)
     commit_hash = serializers.CharField(required=False)
+    sonarqube_config = serializers.PrimaryKeyRelatedField(allow_null=True, default=None,
+                                                          queryset=Sonarqube_Product.objects.all())
 
     group_by = serializers.ChoiceField(required=False, choices=Finding_Group.GROUP_BY_OPTIONS, help_text='Choose an option to automatically group new findings by the chosen option.')
 
@@ -1309,6 +1306,7 @@ class ReImportScanSerializer(TaggitSerializer, serializers.Serializer):
         build_id = data.get('build_id', None)
         branch_tag = data.get('branch_tag', None)
         commit_hash = data.get('commit_hash', None)
+        sonarqube_config = data.get('sonarqube_config', None)
 
         scan = data.get('file', None)
         endpoints_to_add = [endpoint_to_add] if endpoint_to_add else None
@@ -1324,7 +1322,7 @@ class ReImportScanSerializer(TaggitSerializer, serializers.Serializer):
                                             version=version, branch_tag=branch_tag, build_id=build_id,
                                             commit_hash=commit_hash, push_to_jira=push_to_jira,
                                             close_old_findings=close_old_findings,
-                                            group_by=group_by)
+                                            group_by=group_by, sonarqube_config=sonarqube_config)
         # convert to exception otherwise django rest framework will swallow them as 400 error
         # exceptions are already logged in the importer
         except SyntaxError as se:
@@ -1351,6 +1349,65 @@ class ReImportScanSerializer(TaggitSerializer, serializers.Serializer):
         return value
 
 
+class LanguageTypeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Language_Type
+        fields = '__all__'
+
+
+class LanguageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Languages
+        fields = '__all__'
+
+
+class ImportLanguagesSerializer(serializers.Serializer):
+    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all(), required=True)
+    file = serializers.FileField(required=True)
+
+    def save(self):
+        data = self.validated_data
+        product = data['product']
+        languages = data['file']
+
+        try:
+            data = languages.read()
+            try:
+                deserialized = json.loads(str(data, 'utf-8'))
+            except:
+                deserialized = json.loads(data)
+        except:
+            raise Exception("Invalid format")
+
+        Languages.objects.filter(product=product).delete()
+
+        for name in deserialized:
+            if name not in ['header', 'SUM']:
+                element = deserialized[name]
+
+                try:
+                    language_type, created = Language_Type.objects.get_or_create(language=name)
+                except Language_Type.MultipleObjectsReturned:
+                    language_type = Language_Type.objects.filter(language=name).first()
+
+                language = Languages()
+                language.product = product
+                language.language = language_type
+                language.files = element.get('nFiles', 0)
+                language.blank = element.get('blank', 0)
+                language.comment = element.get('comment', 0)
+                language.code = element.get('code', 0)
+                language.save()
+
+    def validate(self, data):
+        if is_scan_file_too_large(data['file']):
+            raise serializers.ValidationError(
+                'File is too large. Maximum supported size is {} MB'.format(settings.SCAN_FILE_MAX_SIZE))
+        return data
+
+
 class AddNewNoteOptionSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -1363,11 +1420,6 @@ class AddNewFileOptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = FileUpload
         fields = '__all__'
-
-
-class FindingToFindingImagesSerializer(serializers.Serializer):
-    finding_id = serializers.PrimaryKeyRelatedField(queryset=Finding.objects.all(), many=False, allow_null=True)
-    images = FindingImageSerializer(many=True)
 
 
 class FindingToNotesSerializer(serializers.Serializer):
@@ -1415,7 +1467,6 @@ class ReportGenerateSerializer(serializers.Serializer):
     title = serializers.CharField(max_length=200)
     user_id = serializers.IntegerField()
     host = serializers.CharField(max_length=200)
-    finding_images = FindingToFindingImagesSerializer(many=True, allow_null=True, required=False)
     finding_notes = FindingToNotesSerializer(many=True, allow_null=True, required=False)
 
 
@@ -1429,6 +1480,86 @@ class SystemSettingsSerializer(TaggitSerializer, serializers.ModelSerializer):
         model = System_Settings
         fields = '__all__'
 
+    def validate(self, data):
+
+        if self.instance is not None:
+            default_group = self.instance.default_group
+            default_group_role = self.instance.default_group_role
+
+        if 'default_group' in data:
+            default_group = data['default_group']
+        if 'default_group_role' in data:
+            default_group_role = data['default_group_role']
+
+        if (default_group is None and default_group_role is not None) or \
+           (default_group is not None and default_group_role is None):
+            raise ValidationError('default_group and default_group_role must either both be set or both be empty.')
+
+        return data
+
 
 class FindingNoteSerializer(serializers.Serializer):
     note_id = serializers.IntegerField()
+
+
+class NotificationsSerializer(serializers.ModelSerializer):
+    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all(),
+                                                 required=False,
+                                                 default=None,
+                                                 allow_null=True)
+    user = serializers.PrimaryKeyRelatedField(queryset=Dojo_User.objects.all(),
+                                                 required=False,
+                                                 default=None,
+                                                 allow_null=True)
+    product_type_added = MultipleChoiceField(choices=NOTIFICATION_CHOICES)
+    product_added = MultipleChoiceField(choices=NOTIFICATION_CHOICES)
+    engagement_added = MultipleChoiceField(choices=NOTIFICATION_CHOICES)
+    test_added = MultipleChoiceField(choices=NOTIFICATION_CHOICES)
+    scan_added = MultipleChoiceField(choices=NOTIFICATION_CHOICES)
+    jira_update = MultipleChoiceField(choices=NOTIFICATION_CHOICES)
+    upcoming_engagement = MultipleChoiceField(choices=NOTIFICATION_CHOICES)
+    stale_engagement = MultipleChoiceField(choices=NOTIFICATION_CHOICES)
+    auto_close_engagement = MultipleChoiceField(choices=NOTIFICATION_CHOICES)
+    close_engagement = MultipleChoiceField(choices=NOTIFICATION_CHOICES)
+    user_mentioned = MultipleChoiceField(choices=NOTIFICATION_CHOICES)
+    code_review = MultipleChoiceField(choices=NOTIFICATION_CHOICES)
+    review_requested = MultipleChoiceField(choices=NOTIFICATION_CHOICES)
+    other = MultipleChoiceField(choices=NOTIFICATION_CHOICES)
+    sla_breach = MultipleChoiceField(choices=NOTIFICATION_CHOICES)
+    risk_acceptance_expiration = MultipleChoiceField(choices=NOTIFICATION_CHOICES)
+
+    class Meta:
+        model = Notifications
+        fields = '__all__'
+
+    def validate(self, data):
+        user = None
+        product = None
+
+        if self.instance is not None:
+            user = self.instance.user
+            product = self.instance.product
+
+        if 'user' in data:
+            user = data.get('user')
+        if 'product' in data:
+            product = data.get('product')
+
+        if self.instance is None or user != self.instance.user or product != self.instance.product:
+            notifications = Notifications.objects.filter(user=user, product=product).count()
+            if notifications > 0:
+                raise ValidationError("Notification for user and product already exists")
+
+        return data
+
+
+class EngagementPresetsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Engagement_Presets
+        fields = '__all__'
+
+
+class NetworkLocationsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Network_Locations
+        fields = '__all__'

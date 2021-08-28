@@ -90,18 +90,19 @@ class FindingTest(BaseTestCase):
         # Click on the 'dropdownMenu1 button'
         driver.find_element_by_id("dropdownMenu1").click()
         # Click on `Edit Finding`
-        driver.find_element_by_link_text("Manage Images").click()
+        driver.find_element_by_link_text("Manage Files").click()
         # select first file input field: form-0-image
         # Set full image path for image file 'strange.png
         image_path = os.path.join(dir_path, 'finding_image.png')
-        driver.find_element_by_id("id_form-0-image").send_keys(image_path)
+        driver.find_element_by_id("id_form-0-file").send_keys(image_path)
+        driver.find_element_by_id("id_form-0-title").send_keys('Image Title')
         # Save uploaded image
         with WaitForPageLoad(driver, timeout=50):
             driver.find_element_by_css_selector("button.btn.btn-success").click()
         # Query the site to determine if the finding has been added
 
         # Assert ot the query to dtermine status of failure
-        self.assertTrue(self.is_success_message_present(text='Images updated successfully'))
+        self.assertTrue(self.is_success_message_present(text='Files updated successfully.'))
 
     def test_mark_finding_for_review(self):
         # login to site, password set to fetch from environ
@@ -119,7 +120,7 @@ class FindingTest(BaseTestCase):
         # set select element style from 'none' to 'inline'
 
         try:
-            WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'id_reviewers_chosen')))
+            WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'id_reviewers')))
         except TimeoutException:
             self.fail('Timed out waiting for reviewer dropdown to initialize ')
 
@@ -171,7 +172,7 @@ class FindingTest(BaseTestCase):
         # Click on the 'dropdownMenu1 button'
         driver.find_element_by_id("dropdownMenu1").click()
         # Click on `Edit Finding`
-        driver.find_element_by_link_text("Manage Images").click()
+        driver.find_element_by_link_text("Manage Files").click()
         # mark delete checkbox for first file input field: form-0-DELETE
         driver.find_element_by_id("id_form-0-DELETE").click()
         # Save selection(s) for image deletion
@@ -179,7 +180,7 @@ class FindingTest(BaseTestCase):
         # Query the site to determine if the finding has been added
 
         # Assert ot the query to dtermine status of failure
-        self.assertTrue(self.is_success_message_present(text='Images updated successfully'))
+        self.assertTrue(self.is_success_message_present(text='Files updated successfully.'))
 
     def test_close_finding(self):
         driver = self.driver
