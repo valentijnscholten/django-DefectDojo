@@ -120,4 +120,8 @@ EOD
   python3 manage.py migrate_textquestions
 
   initialize_test_types
+  
+  # checks the deduplication config at startup
+  echo "Startup Deduplication Configuration"
+  python3 manage.py validatededupeconfig
 fi
