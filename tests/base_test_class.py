@@ -49,7 +49,7 @@ def set_suite_settings(suite, jira=False, github=False, block_execution=False):
 class BaseTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-
+        super().setUpClass()
         chromedriver_autoinstaller.install()
 
         # Path for automatic downloads, mapped to the media path
