@@ -177,8 +177,8 @@ class UserHasImportPermission(permissions.BasePermission):
         if product_id and not product_id.isdigit():
             raise serializers.ValidationError('product must be an integer')
 
-        engagement = get_target_engagement_if_exists(engagement_id, engagement_name, product_id, product_name)
-        product = get_target_product_if_exists(engagement_id, engagement_name, product_id, product_name)
+        product = get_target_product_if_exists(product_id, product_name)
+        engagement = get_target_engagement_if_exists(engagement_id, engagement_name, product)
 
         if engagement:
             # existing engagement, nothing special to check
@@ -262,9 +262,9 @@ class UserHasReimportPermission(permissions.BasePermission):
         if product_id and not product_id.isdigit():
             raise serializers.ValidationError('product must be an integer')
 
-        test = get_target_test_if_exists(test_id, test_title, scan_type, None, engagement_name, product_id, product_name)
-        engagement = get_target_engagement_if_exists(None, engagement_name, product_id, product_name)
-        product = get_target_product_if_exists(None, engagement_name, product_id, product_name)
+        product = get_target_product_if_exists(product_id, product_name)
+        engagement = get_target_engagement_if_exists(None, engagement_name, product)
+        test = get_target_test_if_exists(test_id, test_title, scan_type, engagement)
 
         if test:
             # existing engagement, nothing special to check

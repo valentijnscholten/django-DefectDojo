@@ -103,7 +103,7 @@ def get_import_meta_data_from_dict(data):
     return test_id, test_title, scan_type, engagement_id, engagement_name, product_id, product_name
 
 
-def get_target_product_if_exists(engagement_id=None, engagement_name=None, product_id=None, product_name=None):
+def get_target_product_if_exists(product_id=None, product_name=None):
     if product_id:
         return get_object_or_none(Product, pk=product_id)
     elif product_name:
@@ -112,13 +112,12 @@ def get_target_product_if_exists(engagement_id=None, engagement_name=None, produ
         return None
 
 
-def get_target_engagement_if_exists(engagement_id=None, engagement_name=None, product_id=None, product_name=None):
+def get_target_engagement_if_exists(engagement_id=None, engagement_name=None, product=None):
     if engagement_id:
         engagement = get_object_or_none(Engagement, pk=engagement_id)
         logger.debug('Using existing engagement by id: %s', engagement_id)
         return engagement
 
-    product = get_target_product_if_exists(engagement_id, engagement_name, product_id, product_name)
     if not product:
         # if there's no product, then for sure there's no engagement either
         return None
@@ -127,13 +126,12 @@ def get_target_engagement_if_exists(engagement_id=None, engagement_name=None, pr
     return engagement
 
 
-def get_target_test_if_exists(test_id=None, test_title=None, scan_type=None, engagement_id=None, engagement_name=None, product_id=None, product_name=None):
+def get_target_test_if_exists(test_id=None, test_title=None, scan_type=None, engagement=None):
     if test_id:
         test = get_object_or_none(Test, pk=test_id)
         logger.debug('Using existing Test by id: %s', test_id)
         return test
 
-    engagement = get_target_engagement_if_exists(engagement_id, engagement_name, product_id, product_name)
     if not engagement:
         return None
 

@@ -1333,8 +1333,6 @@ class ImportScanTest(BaseClass.RESTEndpointTest):
     def test_create_not_authorized_product_name_engagement_name(self, mock):
         mock.return_value = False
 
-        logger.debug(vars(Engagement.objects.get(id=2)))
-
         payload = {
             "scan_date": '2017-12-30',
             "minimum_severity": 'Low',
@@ -1358,8 +1356,6 @@ class ImportScanTest(BaseClass.RESTEndpointTest):
     @patch('dojo.api_v2.permissions.user_has_permission')
     def test_create_not_authorized_product_id_engagement_name(self, mock):
         mock.return_value = False
-
-        logger.debug(vars(Engagement.objects.get(id=2)))
 
         payload = {
             "scan_date": '2017-12-30',
@@ -1433,8 +1429,6 @@ class ReimportScanTest(DojoAPITestCase):
     def test_create_not_authorized_product_name_engagement_name_scan_type(self, mock):
         mock.return_value = False
 
-        logger.debug(vars(Engagement.objects.get(id=2)))
-
         payload = {
             "scan_date": '2017-12-30',
             "minimum_severity": 'Low',
@@ -1501,8 +1495,6 @@ class ReimportScanTest(DojoAPITestCase):
     @patch('dojo.api_v2.permissions.user_has_permission')
     def test_create_not_authorized_product_id_engagement_name_scan_type_title(self, mock):
         mock.return_value = False
-
-        logger.debug(vars(Engagement.objects.get(id=2)))
 
         payload = {
             "scan_date": '2017-12-30',

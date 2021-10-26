@@ -358,7 +358,7 @@ class FlexibleReimportTestAPI(DojoAPITestCase):
                 product='bla bla', expected_http_status_code=400)
 
 
-# TODO Authz test cases
+# TODO optimize getting of targets
 # TODO update docs and docstrings
 # TODO Reimport create initial empty test? notification? call import? update title?
 
