@@ -1,6 +1,6 @@
 from django.utils import timezone
 from vcr_unittest import VCRTestCase
-from dojo.models import Product_Type, User, Endpoint, Notes, Finding, Endpoint_Status, Test, JIRA_Issue, JIRA_Project, \
+from dojo.models import Product_Type, Test_Type, User, Endpoint, Notes, Finding, Endpoint_Status, Test, JIRA_Issue, JIRA_Project, \
                         Product
 from dojo.models import System_Settings, Engagement
 from django.urls import reverse
@@ -54,6 +54,11 @@ class DojoTestUtilsMixin(object):
         engagement = Engagement(name=name, description=description, product=product, target_start=timezone.now(), target_end=timezone.now())
         engagement.save()
         return engagement
+
+    def create_test(self, engagement=None, scan_type=None, title=None, *args, description=None, **kwargs):
+        test = Test(title=title, scan_type=scan_type, engagement=engagement, test_type=Test_Type.objects.get(name=scan_type), target_start=timezone.now(), target_end=timezone.now())
+        test.save()
+        return test
 
     def get_test(self, id):
         return Test.objects.get(id=id)
@@ -380,10 +385,11 @@ class DojoAPITestCase(APITestCase, DojoTestUtilsMixin):
         self.assertEqual(expected_http_status_code, response.status_code, response.content[:1000])
         return json.loads(response.content)
 
-    def reimport_scan(self, payload):
+    def reimport_scan(self, payload, expected_http_status_code):
+        logger.debug('import_scan payload %s', payload)
         response = self.client.post(reverse('reimportscan-list'), payload)
-        # print(response.content)
-        self.assertEqual(201, response.status_code, response.content[:1000])
+        print(response.content)
+        self.assertEqual(expected_http_status_code, response.status_code, response.content[:1000])
         return json.loads(response.content)
 
     def get_test_api(self, test_id):
@@ -394,8 +400,7 @@ class DojoAPITestCase(APITestCase, DojoTestUtilsMixin):
 
     def import_scan_with_params(self, filename, scan_type='ZAP Scan', engagement=1, minimum_severity='Low', active=True, verified=True,
                                 push_to_jira=None, endpoint_to_add=None, tags=None, close_old_findings=False, group_by=None, engagement_name=None,
-                                product_name=None, product=None, product_type=None, product_type_name=None, auto_create_engagement=None,
-                                auto_create_product=None, expected_http_status_code=201):
+                                product_name=None, product=None, expected_http_status_code=201, test_title=None):
         payload = {
                 "scan_date": '2020-06-04',
                 "minimum_severity": minimum_severity,
@@ -419,12 +424,6 @@ class DojoAPITestCase(APITestCase, DojoTestUtilsMixin):
         if product_name:
             payload['product_name'] = product_name
 
-        if product_type:
-            payload['product_type'] = product_type
-
-        if product_type_name:
-            payload['product_type_name'] = product_type_name
-
         if push_to_jira is not None:
             payload['push_to_jira'] = push_to_jira
 
@@ -437,28 +436,39 @@ class DojoAPITestCase(APITestCase, DojoTestUtilsMixin):
         if group_by is not None:
             payload['group_by'] = group_by
 
-        if auto_create_engagement is not None:
-            payload['auto_create_engagement'] = auto_create_engagement
-
-        if auto_create_product is not None:
-            payload['auto_create_product'] = auto_create_product
+        if test_title is not None:
+            payload['test_title'] = test_title
 
         return self.import_scan(payload, expected_http_status_code)
 
     def reimport_scan_with_params(self, test_id, filename, scan_type='ZAP Scan', engagement=1, minimum_severity='Low', active=True, verified=True, push_to_jira=None,
-                                  tags=None, close_old_findings=True, group_by=None):
+                                  tags=None, close_old_findings=True, group_by=None, engagement_name=None,
+                                  product_name=None, product=None, expected_http_status_code=201, test_title=None):
         payload = {
-                "test": test_id,
                 "scan_date": '2020-06-04',
                 "minimum_severity": minimum_severity,
                 "active": active,
                 "verified": verified,
                 "scan_type": scan_type,
                 "file": open(filename),
-                "engagement": engagement,
                 "version": "1.0.1",
                 "close_old_findings": close_old_findings,
         }
+
+        if test_id is not None:
+            payload['test'] = test_id
+
+        if engagement:
+            payload['engagement'] = engagement
+
+        if engagement_name:
+            payload['engagement_name'] = engagement_name
+
+        if product:
+            payload['product'] = product
+
+        if product_name:
+            payload['product_name'] = product_name
 
         if push_to_jira is not None:
             payload['push_to_jira'] = push_to_jira
@@ -469,7 +479,10 @@ class DojoAPITestCase(APITestCase, DojoTestUtilsMixin):
         if group_by is not None:
             payload['group_by'] = group_by
 
-        return self.reimport_scan(payload)
+        if test_title is not None:
+            payload['test_title'] = test_title
+
+        return self.reimport_scan(payload, expected_http_status_code=expected_http_status_code)
 
     def get_finding_api(self, finding_id):
         response = self.client.get(reverse('finding-list') + '%s/' % finding_id, format='json')

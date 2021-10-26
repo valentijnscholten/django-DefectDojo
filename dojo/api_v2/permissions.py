@@ -1,8 +1,6 @@
 import re
-from django.conf import settings
-from django.core.exceptions import PermissionDenied
 from rest_framework.exceptions import ParseError
-from dojo.importers.reimporter.utils import PRODUCT_TYPE_NAME_AUTO, get_import_meta_data_from_dict, get_target_engagement_if_exists, get_target_product_if_exists, get_target_product_type_if_exists
+from dojo.importers.reimporter.utils import get_import_meta_data_from_dict, get_target_engagement_if_exists, get_target_product_if_exists, get_target_test_if_exists
 from dojo.models import Endpoint, Engagement, Finding, Product_Type, Product, Test, Dojo_Group
 from django.shortcuts import get_object_or_404
 from rest_framework import permissions, serializers
@@ -171,10 +169,7 @@ class UserHasImportPermission(permissions.BasePermission):
         # permission check takes place before validation, so we don't have access to serializer.validated_data()
         # and we have to validate ourselves unfortunately
 
-        engagement_id, engagement_name, product_id, product_name, product_type_id, product_type_name, auto_create_engagement, auto_create_product = get_import_meta_data_from_dict(request.data)
-
-        if (auto_create_engagement or auto_create_product) and not settings.ALLOW_IMPORT_AUTO_CREATE:
-            raise PermissionDenied('auto create is disabled, ALLOW_IMPORT_AUTO_CREATE==False')
+        _, _, _, engagement_id, engagement_name, product_id, product_name = get_import_meta_data_from_dict(request.data)
 
         if engagement_id and not engagement_id.isdigit():
             raise serializers.ValidationError('engagement must be an integer')
@@ -182,68 +177,25 @@ class UserHasImportPermission(permissions.BasePermission):
         if product_id and not product_id.isdigit():
             raise serializers.ValidationError('product must be an integer')
 
-        if product_type_id and not product_type_id.isdigit():
-            raise serializers.ValidationError('product_type_id must be an integer')
-
-        engagement = get_target_engagement_if_exists(engagement_id, engagement_name, product_id, product_name, product_type_id, product_type_name)
-        product = get_target_product_if_exists(engagement_id, engagement_name, product_id, product_name, product_type_id, product_type_name)
-        product_type = get_target_product_type_if_exists(engagement_id, engagement_name, product_id, product_name, product_type_id, product_type_name)
+        engagement = get_target_engagement_if_exists(engagement_id, engagement_name, product_id, product_name)
+        product = get_target_product_if_exists(engagement_id, engagement_name, product_id, product_name)
 
         if engagement:
             # existing engagement, nothing special to check
             return user_has_permission(request.user, engagement, Permissions.Import_Scan_Result)
         elif engagement_id:
             # engagement_id doesn't exist
-            raise serializers.ValidationError('Engagement ''%s'' doesn''t exist' % engagement_id)
-        elif product:
-            # existing product, but user also needs permission to (auto)create a new engagement
-            if not auto_create_engagement:
-                raise serializers.ValidationError('Engagement ''%s'' doesn''t exist and auto_create_engagement==False' % engagement_name)
-            if settings.ALLOW_IMPORT_AUTO_CREATE:
-                return True
-            if not user_has_permission(request.user, product, Permissions.Import_Scan_Result):
-                raise PermissionDenied('Permissions.Import_Scan_Result needed')
-            if not user_has_permission(request.user, product, Permissions.Engagement_Add):
-                raise PermissionDenied('Permissions.Engagement_Add needed')
-            return True
-        elif product_id:
-            # product_id doesn't exist
-            raise serializers.ValidationError('Product ''%s'' doesn''t exist' % product_id)
-        elif product_type:
-            if not auto_create_product:
-                raise serializers.ValidationError('Product ''%s'' doesn''t exist and auto_create_product==False' % product_name)
-
-            if settings.ALLOW_IMPORT_AUTO_CREATE:
-                return True
-            if not user_has_permission(request.user, product_type, Permissions.Product_Type_Add_Product):
-                raise PermissionDenied('Permissions.Product_Type_Add_Product needed')
-            if not user_has_permission(request.user, product_type, Permissions.Engagement_Add):
-                raise PermissionDenied('Permissions.Engagement_Add needed')
-            if not user_has_permission(request.user, product_type, Permissions.Import_Scan_Result):
-                raise PermissionDenied('Permissions.Import_Scan_Result needed')
-            return True
-        elif product_type_id:
-            # product_type_id doesn't exist
-            raise serializers.ValidationError('Product Type ''%s'' doesn''t exist' % product_type_id)
+            raise serializers.ValidationError("Engagement '%s' doesn''t exist" % engagement_id)
+        elif product and product_id and engagement_name:
+            raise serializers.ValidationError("Engagement '%s' doesn't exist in Product %s" % (engagement_name, product_id))
+        elif product and product_name and engagement_name:
+            raise serializers.ValidationError("Engagement '%s' doesn't exist in Product %s" % (engagement_name, product_name))
+        elif not product and product_id:
+            raise serializers.ValidationError("Product '%s' doesn't exist" % product_id)
+        elif not product and product_name:
+            raise serializers.ValidationError("Product '%s' doesn't exist" % product_name)
         else:
-            # Here the scan will be uploaded into a new engagement, new product and product_type "Auto Created via API"
-            # There is no permission suitable for this, so we use a settings.py entry
-            # This is temporary as there will be permission/authorization improvements coming along which
-            # can be used to make this better/nicer
-            # For now new product_types cannot be created from here
-            if product_type_name and product_type_name != PRODUCT_TYPE_NAME_AUTO:
-                raise PermissionDenied('New Product Type cannot be created via auto created')
-
-            if not product_name:
-                raise serializers.ValidationError('Import needs engagement_id or product_id/name with engagement_name')
-
-            if not auto_create_product:
-                raise serializers.ValidationError('Product ''%s'' doesn''t exist and auto_create_product==False' % product_name)
-
-            if settings.ALLOW_IMPORT_EVERYONE:
-                return True
-
-            raise PermissionDenied('Import denied as product cannot be created, ALLOW_IMPORT_EVERYONE==False')
+            raise serializers.ValidationError("Need engagement_id or product_id/name + engagement_name to perform import")
 
 
 class UserHasProductPermission(permissions.BasePermission):
@@ -299,7 +251,41 @@ class UserHasProductTypeGroupPermission(permissions.BasePermission):
 
 class UserHasReimportPermission(permissions.BasePermission):
     def has_permission(self, request, view):
-        return check_post_permission(request, Test, 'test', Permissions.Import_Scan_Result)
+        # permission check takes place before validation, so we don't have access to serializer.validated_data()
+        # and we have to validate ourselves unfortunately
+
+        test_id, test_title, scan_type, _, engagement_name, product_id, product_name = get_import_meta_data_from_dict(request.data)
+
+        if test_id and not test_id.isdigit():
+            raise serializers.ValidationError('test must be an integer')
+
+        if product_id and not product_id.isdigit():
+            raise serializers.ValidationError('product must be an integer')
+
+        test = get_target_test_if_exists(test_id, test_title, scan_type, None, engagement_name, product_id, product_name)
+        engagement = get_target_engagement_if_exists(None, engagement_name, product_id, product_name)
+        product = get_target_product_if_exists(None, engagement_name, product_id, product_name)
+
+        if test:
+            # existing engagement, nothing special to check
+            return user_has_permission(request.user, test, Permissions.Import_Scan_Result)
+        elif test_id:
+            # engagement_id doesn't exist
+            raise serializers.ValidationError("Test '%s' doesn't exist" % test_id)
+        elif engagement and engagement_name and test_title:
+            raise serializers.ValidationError("Test '%s' with scan_type '%s'  doesn't exist in Engagement %s" % (scan_type, test_title, engagement_name))
+        elif engagement and engagement_name and scan_type:
+            raise serializers.ValidationError("Test with scan_type '%s' doesn't exist in Engagement %s" % (scan_type, engagement_name))
+        elif product and product_id and engagement_name:
+            raise serializers.ValidationError("Engagement '%s' doesn''t exist in Product %s" % (engagement_name, product_id))
+        elif product and product_name and engagement_name:
+            raise serializers.ValidationError("Engagement '%s' doesn''t exist in Product %s" % (engagement_name, product_name))
+        elif not product and product_id:
+            raise serializers.ValidationError("Product '%s' doesn't exist" % product_id)
+        elif not product and product_name:
+            raise serializers.ValidationError("Product '%s' doesn't exist" % product_name)
+        else:
+            raise serializers.ValidationError("Need test_id or product_id/name + engagement_id/name + test_title to perform reimport")
 
 
 class UserHasTestPermission(permissions.BasePermission):

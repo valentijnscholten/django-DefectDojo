@@ -17,6 +17,7 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema, no_body
 import base64
 from dojo.engagement.services import close_engagement, reopen_engagement
+from dojo.importers.reimporter.utils import get_import_meta_data_from_dict, get_target_engagement_if_exists, get_target_test_if_exists
 from dojo.models import Language_Type, Languages, Notifications, Product, Product_Type, Engagement, Test, Test_Import, Test_Type, Finding, \
     User, Stub_Finding, Finding_Template, Notes, \
     JIRA_Issue, Tool_Product_Settings, Tool_Configuration, Tool_Type, \
@@ -38,7 +39,7 @@ from dojo.risk_acceptance import api as ra_api
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from datetime import datetime
-from dojo.utils import get_object_or_none, get_period_counts_legacy, get_system_setting
+from dojo.utils import get_period_counts_legacy, get_system_setting
 from dojo.api_v2 import serializers, permissions, prefetch, schema
 import dojo.jira_link.helper as jira_helper
 import logging
@@ -1944,10 +1945,9 @@ class ImportScanView(mixins.CreateModelMixin,
         permission_classes = (IsAuthenticated, DjangoModelPermissions)
 
     def perform_create(self, serializer):
-        logger.debug('valdata:', serializer.validated_data)
-        engagement_name = serializer.validated_data.get('engagement_name')
-        engagement = serializer.validated_data.get('engagement', get_object_or_none(Engagement, name=engagement_name) if engagement_name else None)
-        jira_project = jira_helper.get_jira_project(engagement) if engagement else None
+        _, _, _, engagement_id, engagement_name, product_id, product_name = get_import_meta_data_from_dict(serializer.validated_data)
+        engagement = get_target_engagement_if_exists(engagement_id, engagement_name, product_id, product_name)
+        jira_project = jira_helper.get_jira_project(engagement)
 
         push_to_jira = serializer.validated_data.get('push_to_jira')
         if get_system_setting('enable_jira') and jira_project:
@@ -2060,7 +2060,8 @@ class ReImportScanView(mixins.CreateModelMixin,
         return get_authorized_tests(Permissions.Import_Scan_Result)
 
     def perform_create(self, serializer):
-        test = serializer.validated_data['test']
+        test_id, test_title, scan_type, engagement_id, engagement_name, product_id, product_name = get_import_meta_data_from_dict(serializer.validated_data)
+        test = get_target_test_if_exists(test_id, test_title, scan_type, engagement_id, engagement_name, product_id, product_name)
         jira_project = jira_helper.get_jira_project(test)
 
         push_to_jira = serializer.validated_data.get('push_to_jira')

@@ -4,7 +4,7 @@ from drf_yasg.utils import swagger_serializer_method
 from rest_framework.fields import DictField, MultipleChoiceField
 
 from dojo.endpoint.utils import endpoint_filter
-from dojo.importers.reimporter.utils import get_import_meta_data_from_dict, get_or_create_engagement_for_import
+from dojo.importers.reimporter.utils import get_import_meta_data_from_dict, get_target_engagement_if_exists, get_target_test_if_exists
 from dojo.models import Dojo_User, Finding_Group, Product, Engagement, Test, Finding, \
     User, Stub_Finding, Risk_Acceptance, \
     Finding_Template, Test_Type, Development_Environment, NoteHistory, \
@@ -1158,6 +1158,7 @@ class ProductSerializer(TaggitSerializer, serializers.ModelSerializer):
 
 
 class ImportScanSerializer(serializers.Serializer):
+    title = serializers.CharField(max_length=255, required=False)
     scan_date = serializers.DateField(default=datetime.date.today)
 
     minimum_severity = serializers.ChoiceField(
@@ -1173,17 +1174,13 @@ class ImportScanSerializer(serializers.Serializer):
                                                          default=None)
     file = serializers.FileField(required=False)
     # with the smart import it cannot be a primarykeyrelated field as that is always mandatory
+
+    test_title = serializers.CharField(required=False)
     engagement = serializers.PrimaryKeyRelatedField(
         queryset=Engagement.objects.all(), required=False)
-    # engagement = serializers.IntegerField()
     engagement_name = serializers.CharField(required=False)
     product = serializers.IntegerField(required=False)
     product_name = serializers.CharField(required=False)
-    product_type = serializers.IntegerField(required=False)
-    product_type_name = serializers.CharField(required=False)
-
-    auto_create_engagement = serializers.BooleanField(default=False)
-    auto_create_product = serializers.BooleanField(default=False)
 
     lead = serializers.PrimaryKeyRelatedField(
         allow_null=True,
@@ -1211,7 +1208,6 @@ class ImportScanSerializer(serializers.Serializer):
         active = data['active']
         verified = data['verified']
         minimum_severity = data['minimum_severity']
-        scan_type = data['scan_type']
         endpoint_to_add = data['endpoint_to_add']
         scan_date = data['scan_date']
         # Will save in the provided environment or in the `Development` one if absent
@@ -1235,10 +1231,9 @@ class ImportScanSerializer(serializers.Serializer):
 
         group_by = data.get('group_by', None)
 
-        engagement, engagement_name, product_id, product_name, product_type_id, product_type_name, auto_create_engagement, auto_create_product = get_import_meta_data_from_dict(data)
-
-        # TODO VS : Pass version, commit, etc?
-        engagement = get_or_create_engagement_for_import(engagement, engagement_name, product_id, product_name, product_type_id, product_type_name, auto_create_engagement, auto_create_product)
+        _, test_title, scan_type, engagement_id, engagement_name, product_id, product_name = get_import_meta_data_from_dict(data)
+        # we passed validation, so the engagement is present
+        engagement = get_target_engagement_if_exists(engagement_id, engagement_name, product_id, product_name)
 
         importer = Importer()
         try:
@@ -1252,7 +1247,8 @@ class ImportScanSerializer(serializers.Serializer):
                                                                              push_to_jira=push_to_jira,
                                                                              close_old_findings=close_old_findings,
                                                                              group_by=group_by,
-                                                                             api_scan_configuration=api_scan_configuration)
+                                                                             api_scan_configuration=api_scan_configuration,
+                                                                             title=test_title)
         # convert to exception otherwise django rest framework will swallow them as 400 error
         # exceptions are already logged in the importer
         except SyntaxError as se:
@@ -1305,8 +1301,14 @@ class ReImportScanSerializer(TaggitSerializer, serializers.Serializer):
                                                           default=None,
                                                           required=False)
     file = serializers.FileField(required=False)
-    test = serializers.PrimaryKeyRelatedField(
+    test = serializers.PrimaryKeyRelatedField(required=False,
         queryset=Test.objects.all())
+    test_title = serializers.CharField(required=False)
+    engagement_id = serializers.IntegerField(required=False)
+    engagement_name = serializers.CharField(required=False)
+    product = serializers.IntegerField(required=False)
+    product_name = serializers.CharField(required=False)
+
     push_to_jira = serializers.BooleanField(default=False)
     # Close the old findings if the parameter is not provided. This is to
     # mentain the old API behavior after reintroducing the close_old_findings parameter
@@ -1324,7 +1326,6 @@ class ReImportScanSerializer(TaggitSerializer, serializers.Serializer):
     def save(self, push_to_jira=False):
         logger.debug('push_to_jira: %s', push_to_jira)
         data = self.validated_data
-        test = data['test']
         scan_type = data['scan_type']
         endpoint_to_add = data['endpoint_to_add']
         minimum_severity = data['minimum_severity']
@@ -1343,6 +1344,10 @@ class ReImportScanSerializer(TaggitSerializer, serializers.Serializer):
 
         group_by = data.get('group_by', None)
 
+        test_id, test_title, scan_type, engagement_id, engagement_name, product_id, product_name = get_import_meta_data_from_dict(data)
+        # we passed validation, so the engagement is present
+        test = get_target_test_if_exists(test_id, test_title, scan_type, engagement_id, engagement_name, product_id, product_name)
+
         reimporter = ReImporter()
         try:
             test, finding_count, new_finding_count, closed_finding_count, reactivated_finding_count, untouched_finding_count = \
@@ -1359,6 +1364,13 @@ class ReImportScanSerializer(TaggitSerializer, serializers.Serializer):
             raise Exception(se)
         except ValueError as ve:
             raise Exception(ve)
+
+        # return the id of the created test, can't find a better way because this is not a ModelSerializer....
+        if test:
+            data['test'] = test
+            data['id'] = test.id
+            data['engagement'] = test.engagement
+            data['product'] = test.engagement.product.id
 
     def validate(self, data):
         scan_type = data.get("scan_type")

@@ -1,10 +1,8 @@
-from datetime import timedelta
-from time import strftime
 from django.conf import settings
-from dojo.models import Engagement, Finding, Q, Product, Product_Type
+from dojo.models import Engagement, Finding, Q, Product, Test
 from django.utils import timezone
 import logging
-from dojo.utils import get_object_or_none
+from dojo.utils import get_last_object_or_none, get_object_or_none
 
 
 ENGAGEMENT_NAME_AUTO = 'Auto Created via API'
@@ -89,49 +87,23 @@ def mitigate_endpoint_status(endpoint_status, user):
 
 
 def get_import_meta_data_from_dict(data):
+    test_id = data.get('test', None)
+    if isinstance(test_id, Test):
+        test_id = test_id.id
+    scan_type = data.get('scan_type', None)
+
+    test_title = data.get('test_title', None)
     engagement_id = data.get('engagement', None)
     if isinstance(engagement_id, Engagement):
         engagement_id = engagement_id.id
     engagement_name = data.get('engagement_name', None)
     product_id = data.get('product', None)
     product_name = data.get('product_name', None)
-    product_type_id = data.get('product_type', None)
-    product_type_name = data.get('product_type_name', None)
-    auto_create_engagement = data.get('auto_create_engagement', None)
-    auto_create_product = data.get('auto_create_product', None)
 
-    return engagement_id, engagement_name, product_id, product_name, product_type_id, product_type_name, auto_create_engagement, auto_create_product
+    return test_id, test_title, scan_type, engagement_id, engagement_name, product_id, product_name
 
 
-def _auto_create_engagement(engagement_name, product):
-    # TODO VS: Set lead as current user?
-    engagement, _ = Engagement.objects.get_or_create(name=engagement_name, product=product, target_start=timezone.now(), target_end=timezone.now() + timedelta(days=365))
-    return engagement
-
-
-def _auto_create_product(engagement_id=None, engagement_name=None, product_id=None, product_name=None, product_type_id=None, product_type_name=None):
-    product_type = get_target_product_type_if_exists(engagement_id, engagement_name, product_id, product_name, product_type_id, product_type_name)
-    if not product_type:
-        product_type, created = Product_Type.objects.get_or_create(name=PRODUCT_TYPE_NAME_AUTO)
-        if created:
-            logger.info('Created new product_type %i:%s', product_type.id, product_type.name)
-
-    product, _ = Product.objects.get_or_create(name=product_name, prod_type=product_type)
-    return product
-
-
-def get_target_product_type_if_exists(engagement_id=None, engagement_name=None, product_id=None, product_name=None, product_type_id=None, product_type_name=None):
-    if product_type_id:
-        logger.debug('looking up product_type by id %s', product_type_id)
-        return get_object_or_none(Product_Type, pk=product_type_id)
-    elif product_type_name:
-        logger.debug('looking up product_type by name %s', product_type_name)
-        return get_object_or_none(Product_Type, name=product_type_name)
-    else:
-        return None
-
-
-def get_target_product_if_exists(engagement_id=None, engagement_name=None, product_id=None, product_name=None, product_type_id=None, product_type_name=None):
+def get_target_product_if_exists(engagement_id=None, engagement_name=None, product_id=None, product_name=None):
     if product_id:
         return get_object_or_none(Product, pk=product_id)
     elif product_name:
@@ -140,56 +112,32 @@ def get_target_product_if_exists(engagement_id=None, engagement_name=None, produ
         return None
 
 
-def get_engagement_name(engagement_id=None, engagement_name=None, product_id=None, product_name=None, product_type_id=None, product_type_name=None, use_time_stamp_for_new_engagement=False):
-    # for import we create a timestamped engagement if the target engagement doesn't yet exist
-    if not engagement_name:
-        engagement_name = ENGAGEMENT_NAME_AUTO
-        if use_time_stamp_for_new_engagement:
-            engagement_name += ' - ' + strftime("%a, %d %b %Y %X", timezone.now().timetuple())
-
-    return engagement_name
-
-
-def get_target_engagement_if_exists(engagement_id=None, engagement_name=None, product_id=None, product_name=None, product_type_id=None, product_type_name=None):
+def get_target_engagement_if_exists(engagement_id=None, engagement_name=None, product_id=None, product_name=None):
     if engagement_id:
         engagement = get_object_or_none(Engagement, pk=engagement_id)
         logger.debug('Using existing engagement by id: %s', engagement_id)
         return engagement
 
-    product = get_target_product_if_exists(engagement_id, engagement_name, product_id, product_name, product_type_id, product_type_name)
+    product = get_target_product_if_exists(engagement_id, engagement_name, product_id, product_name)
     if not product:
         # if there's no product, then for sure there's no engagement either
         return None
 
-    engagement = get_object_or_none(Engagement, product=product, name=get_engagement_name(engagement_id, engagement_name, product_id, product_name, product_type_id, product_type_name))
+    engagement = get_last_object_or_none(Engagement, product=product, name=engagement_name)
     return engagement
 
 
-def get_or_create_engagement_for_import(engagement_id=None, engagement_name=None, product_id=None, product_name=None, product_type_id=None, product_type_name=None, auto_create_engagement=None, auto_create_product=None):
-    return get_or_create_engagement(engagement_id, engagement_name, product_id, product_name, product_type_id, product_type_name, auto_create_engagement, auto_create_product, True)
+def get_target_test_if_exists(test_id=None, test_title=None, scan_type=None, engagement_id=None, engagement_name=None, product_id=None, product_name=None):
+    if test_id:
+        test = get_object_or_none(Test, pk=test_id)
+        logger.debug('Using existing Test by id: %s', test_id)
+        return test
 
-
-def get_or_create_engagement(engagement_id=None, engagement_name=None, product_id=None, product_name=None, product_type_id=None, product_type_name=None, auto_create_engagement=None, auto_create_product=None, use_time_stamp_for_new_engagement=False):
-    engagement = get_target_engagement_if_exists(engagement_id, engagement_name, product_id, product_name, product_type_id, product_type_name)
-
+    engagement = get_target_engagement_if_exists(engagement_id, engagement_name, product_id, product_name)
     if not engagement:
-        product = get_target_product_if_exists(engagement_id, engagement_name, product_id, product_name, product_type_id, product_type_name)
+        return None
 
-        if not product:
-            if auto_create_product:
-                if product_name:
-                    product = _auto_create_product(engagement_id, engagement_name, product_id, product_name, product_type_id, product_type_name)
-                else:
-                    raise ValueError('unable to create product, missing product_name')
-            else:
-                raise ValueError('product not found')
+    if test_title:
+        return get_last_object_or_none(Test, engagement=engagement, title=test_title, scan_type=scan_type)
 
-        logger.info('Creating new engagement: %s', get_engagement_name(engagement_id, engagement_name, product_id, product_name, product_type_id, product_type_name))
-        if auto_create_engagement:
-            return _auto_create_engagement(get_engagement_name(engagement_id, engagement_name, product_id, product_name, product_type_id, product_type_name, use_time_stamp_for_new_engagement), product)
-        else:
-            raise ValueError('engagement not found')
-    else:
-        logger.debug('Using existing engagement %i:%s', engagement.id, engagement.name)
-
-    return engagement
+    return get_last_object_or_none(Test, engagement=engagement, scan_type=scan_type)
