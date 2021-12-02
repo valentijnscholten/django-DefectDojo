@@ -232,6 +232,7 @@ def get_finding_filter_fields(metrics=False, similar=False):
                 'file_path',
                 'unique_id_from_tool',
                 'vuln_id_from_tool',
+                'service',
     ])
 
     if similar:
@@ -2092,10 +2093,7 @@ class ProductTypeFilter(DojoFilter):
 
     class Meta:
         model = Product_Type
-        if settings.FEATURE_AUTHORIZATION_V2:
-            exclude = ['authorized_users']
-        else:
-            exclude = ['members', 'authorization_groups']
+        exclude = ['authorized_users']
         include = ('name',)
 
 

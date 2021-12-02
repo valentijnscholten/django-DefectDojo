@@ -20,6 +20,7 @@ from django.utils.deconstruct import deconstructible
 from django.utils.timezone import now
 from django.utils.functional import cached_property
 from django.utils import timezone
+from django.utils.html import escape
 from pytz import all_timezones
 from polymorphic.models import PolymorphicModel
 from multiselectfield import MultiSelectField
@@ -224,6 +225,8 @@ class System_Settings(models.Model):
                                               "number of duplicates, the "
                                               "oldest will be deleted. Duplicate will not be deleted when left empty. A value of 0 will remove all duplicates.")
 
+    email_from = models.CharField(max_length=200, default='no-reply@example.com', blank=True)
+
     enable_jira = models.BooleanField(default=False,
                                       verbose_name='Enable JIRA integration',
                                       blank=False)
@@ -277,9 +280,6 @@ class System_Settings(models.Model):
                                     help_text='The full URL of the '
                                               'incoming webhook')
     enable_mail_notifications = models.BooleanField(default=False, blank=False)
-    mail_notifications_from = models.CharField(max_length=200,
-                                               default='from@example.com',
-                                               blank=True)
     mail_notifications_to = models.CharField(max_length=200, default='',
                                              blank=True)
     false_positive_history = models.BooleanField(default=False, help_text="DefectDojo will automatically mark the finding as a false positive if the finding has been previously marked as a false positive. Not needed when using deduplication, advised to not combine these two.")
@@ -388,17 +388,22 @@ class System_Settings(models.Model):
         blank=False,
         verbose_name='Enable checklists',
         help_text="With this setting turned off, checklists will be disabled in the user interface.")
+    enable_endpoint_metadata_import = models.BooleanField(
+        default=True,
+        blank=False,
+        verbose_name='Enable Endpoint Metadata Import',
+        help_text="With this setting turned off, endpoint metadata import will be disabled in the user interface.")
     default_group = models.ForeignKey(
         Dojo_Group,
         null=True,
         blank=True,
-        help_text="New users created by OAuth2 will be assigned to this group.",
+        help_text="New users will be assigned to this group.",
         on_delete=models.RESTRICT)
     default_group_role = models.ForeignKey(
         Role,
         null=True,
         blank=True,
-        help_text="New users created by OAuth2 will be assigned to their default group with this role.",
+        help_text="New users will be assigned to their default group with this role.",
         on_delete=models.RESTRICT)
     staff_user_email_pattern = models.CharField(
         max_length=200,
@@ -1457,39 +1462,6 @@ class Sonarqube_Issue_Transition(models.Model):
         ordering = ('-created', )
 
 
-# This class is not used anymore, but can't be deleted because it's referenced in dojo/db_migrations/0131_migrate_sonarcube_cobalt.py
-class Sonarqube_Product(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    sonarqube_project_key = models.CharField(
-        max_length=200, null=True, blank=True, verbose_name="SonarQube Project Key"
-    )
-    sonarqube_tool_config = models.ForeignKey(
-        Tool_Configuration, verbose_name="SonarQube Configuration",
-        null=False, blank=False, on_delete=models.CASCADE
-    )
-
-    def __str__(self):
-        return '{} | {}'.format(self.sonarqube_tool_config.name if hasattr(self, 'sonarqube_tool_config') else '', self.sonarqube_project_key)
-
-
-# This class is not used anymore, but can't be deleted because it's referenced in dojo/db_migrations/0131_migrate_sonarcube_cobalt.py
-class Cobaltio_Product(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    cobaltio_asset_id = models.CharField(
-        max_length=200, null=True, blank=True, verbose_name="Cobalt.io Asset Id"
-    )
-    cobaltio_asset_name = models.CharField(
-        max_length=200, null=True, blank=True, verbose_name="Cobalt.io Asset Name"
-    )
-    cobaltio_tool_config = models.ForeignKey(
-        Tool_Configuration, verbose_name="Cobalt.io Configuration",
-        null=False, blank=False, on_delete=models.CASCADE
-    )
-
-    def __str__(self):
-        return "{} ({})".format(self.cobaltio_asset_name, self.cobaltio_asset_id)
-
-
 class Test(models.Model):
     engagement = models.ForeignKey(Engagement, editable=False, on_delete=models.CASCADE)
     lead = models.ForeignKey(User, editable=True, null=True, on_delete=models.RESTRICT)
@@ -1916,6 +1888,13 @@ class Finding(models.Model):
                                          verbose_name="Publish date",
                                          help_text="Date when this vulnerability was made publicly available.")
 
+    # The service is used to generate the hash_code, so that it gets part of the deduplication of findings.
+    service = models.CharField(null=True,
+                               blank=True,
+                               max_length=200,
+                               verbose_name="Service",
+                               help_text="A service is a self-contained piece of functionality within a Product. This is an optional field which is used in deduplication of findings when set.")
+
     tags = TagField(blank=True, force_lowercase=True, help_text="Add tags that help describe this finding. Choose from the list or add new tags. Press Enter key to add.")
 
     SEVERITIES = {'Info': 4, 'Low': 3, 'Medium': 2,
@@ -2085,6 +2064,11 @@ class Finding(models.Model):
 
     # Compute the hash_code from the fields to hash
     def hash_fields(self, fields_to_hash):
+        if hasattr(settings, 'HASH_CODE_FIELDS_ALWAYS'):
+            for field in settings.HASH_CODE_FIELDS_ALWAYS:
+                if getattr(self, field):
+                    fields_to_hash += str(getattr(self, field))
+
         logger.debug('fields_to_hash      : %s', fields_to_hash)
         logger.debug('fields_to_hash lower: %s', fields_to_hash.lower())
         return hashlib.sha256(fields_to_hash.casefold().encode('utf-8').strip()).hexdigest()
@@ -2312,8 +2296,6 @@ class Finding(models.Model):
 
         from dojo.finding import helper as finding_helper
 
-        system_settings = System_Settings.objects.get()
-
         if not user:
             from dojo.utils import get_current_user
             user = get_current_user()
@@ -2437,7 +2419,7 @@ class Finding(models.Model):
         if self.sast_source_file_path is None:
             return None
         if self.test.engagement.source_code_management_uri is None:
-            return self.sast_source_file_path
+            return escape(self.sast_source_file_path)
         link = self.test.engagement.source_code_management_uri + '/' + self.sast_source_file_path
         if self.sast_source_line:
             link = link + '#L' + str(self.sast_source_line)
@@ -2448,7 +2430,7 @@ class Finding(models.Model):
         if self.file_path is None:
             return None
         if self.test.engagement.source_code_management_uri is None:
-            return self.file_path
+            return escape(self.file_path)
         link = self.test.engagement.source_code_management_uri + '/' + self.file_path
         if self.line:
             link = link + '#L' + str(self.line)
@@ -3727,7 +3709,9 @@ admin.site.register(Cred_Mapping)
 admin.site.register(System_Settings, System_SettingsAdmin)
 admin.site.register(CWE)
 admin.site.register(Regulation)
-admin.site.register(Notifications)
+admin.site.register(Global_Role)
+admin.site.register(Role)
+admin.site.register(Dojo_Group)
 
 # SonarQube Integration
 admin.site.register(Sonarqube_Issue)
