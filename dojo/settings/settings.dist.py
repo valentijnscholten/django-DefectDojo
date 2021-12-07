@@ -134,14 +134,6 @@ env = environ.Env(
     # merging findings doesn't always work well with dedupe and reimport etc.
     # disable it if you see any issues (and report them on github)
     DD_DISABLE_FINDING_MERGE=(bool, False),
-    # Set to True if you want to allow authorized users to make changes to findings or delete them
-    # These parameters are only used for the legacy authorization, which is not active per default anymore.
-    DD_AUTHORIZED_USERS_ALLOW_CHANGE=(bool, False),
-    DD_AUTHORIZED_USERS_ALLOW_DELETE=(bool, False),
-    # Set to True if you want to allow authorized users staff access only on specific products
-    # This will only apply to users with 'active' status
-    # This parameter is only used for the legacy authorization, which is not active per default anymore.
-    DD_AUTHORIZED_USERS_ALLOW_STAFF=(bool, False),
     # SLA Notifications via alerts and JIRA comments
     # enable either DD_SLA_NOTIFY_ACTIVE or DD_SLA_NOTIFY_ACTIVE_VERIFIED_ONLY to enable the feature
     DD_SLA_NOTIFY_ACTIVE=(bool, False),
@@ -202,6 +194,10 @@ env = environ.Env(
     DD_SONARQUBE_API_PARSER_HOTSPOTS=(bool, True),
     # when enabled standard users can't change their profile information, default True
     DD_USER_PROFILE_EDITABLE=(bool, True),
+    # when enabled, finding importing will occur asynchronously, default False
+    DD_ASYNC_FINDING_IMPORT=(bool, False),
+    # The number fo findings to be processed per celeryworker
+    DD_ASYNC_FINDING_IMPORT_CHUNK_SIZE=(int, 100),
 )
 
 
@@ -308,6 +304,10 @@ else:
 # Track migrations through source control rather than making migrations locally
 if env('DD_TRACK_MIGRATIONS'):
     MIGRATION_MODULES = {'dojo': 'dojo.db_migrations'}
+
+# Default for automatically created id fields,
+# see https://docs.djangoproject.com/en/3.2/releases/3.2/#customizing-type-of-auto-created-primary-keys
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 # ------------------------------------------------------------------------------
 # MEDIA
@@ -472,10 +472,6 @@ SOCIAL_AUTH_AUTH0_SECRET = env('DD_SOCIAL_AUTH_AUTH0_SECRET')
 SOCIAL_AUTH_AUTH0_DOMAIN = env('DD_SOCIAL_AUTH_AUTH0_DOMAIN')
 SOCIAL_AUTH_AUTH0_SCOPE = env('DD_SOCIAL_AUTH_AUTH0_SCOPE')
 SOCIAL_AUTH_TRAILING_SLASH = env('DD_SOCIAL_AUTH_TRAILING_SLASH')
-
-AUTHORIZED_USERS_ALLOW_CHANGE = env('DD_AUTHORIZED_USERS_ALLOW_CHANGE')
-AUTHORIZED_USERS_ALLOW_DELETE = env('DD_AUTHORIZED_USERS_ALLOW_DELETE')
-AUTHORIZED_USERS_ALLOW_STAFF = env('DD_AUTHORIZED_USERS_ALLOW_STAFF')
 
 # Setting SLA_NOTIFY_ACTIVE and SLA_NOTIFY_ACTIVE_VERIFIED to False will disable the feature
 # If you import thousands of Active findings through your pipeline everyday,
@@ -1341,3 +1337,8 @@ SONARQUBE_API_PARSER_HOTSPOTS = env("DD_SONARQUBE_API_PARSER_HOTSPOTS")
 
 # when enabled standard users can't change their profile information, default False
 USER_PROFILE_EDITABLE = env("DD_USER_PROFILE_EDITABLE")
+
+# when enabled, finding importing will occur asynchronously, default False
+ASYNC_FINDING_IMPORT = env("DD_ASYNC_FINDING_IMPORT")
+# The number fo findings to be processed per celeryworker
+ASYNC_FINDING_IMPORT_CHUNK_SIZE = env("DD_ASYNC_FINDING_IMPORT_CHUNK_SIZE")

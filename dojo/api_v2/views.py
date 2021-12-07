@@ -367,14 +367,14 @@ class EngagementViewSet(mixins.ListModelMixin,
     )
     @swagger_auto_schema(
         method='get',
-        responses={status.HTTP_200_OK: serializers.FileSerializer}
+        responses={status.HTTP_200_OK: serializers.EngagementToFilesSerializer}
     )
     @swagger_auto_schema(
-        methods=['post', 'patch'],
+        method='post',
         request_body=serializers.AddNewFileOptionSerializer,
-        responses={status.HTTP_200_OK: serializers.FileSerializer}
+        responses={status.HTTP_201_CREATED: serializers.FileSerializer}
     )
-    @action(detail=True, methods=["get", "post", "patch"])
+    @action(detail=True, methods=["get", "post"], parser_classes=(MultiPartParser,))
     def files(self, request, pk=None):
         engagement = self.get_object()
         if request.method == 'POST':
@@ -383,33 +383,20 @@ class EngagementViewSet(mixins.ListModelMixin,
                 title = new_file.validated_data['title']
                 file = new_file.validated_data['file']
             else:
-                return Response(new_file.errors,
-                    status=status.HTTP_400_BAD_REQUEST)
+                return Response(new_file.errors, status=status.HTTP_400_BAD_REQUEST)
 
             file = FileUpload(title=title, file=file)
             file.save()
             engagement.files.add(file)
 
-            serialized_file = serializers.FileSerializer({
-                "title": title, "file": file,
-            })
-            result = serializers.EngagementToFilesSerializer({
-                "engagement_id": engagement, "files": [serialized_file.data]
-            })
-            return Response(serialized_file.data,
-                status=status.HTTP_200_OK)
+            serialized_file = serializers.FileSerializer(file)
+            return Response(serialized_file.data, status=status.HTTP_201_CREATED)
+
         files = engagement.files.all()
-
-        serialized_files = []
-        if files:
-            serialized_files = serializers.EngagementToFilesSerializer({
-                    "engagement_id": engagement, "files": files
-            })
-            return Response(serialized_files.data,
-                    status=status.HTTP_200_OK)
-
-        return Response(serialized_files,
-                status=status.HTTP_200_OK)
+        serialized_files = serializers.EngagementToFilesSerializer({
+            "engagement_id": engagement, "files": files
+        })
+        return Response(serialized_files.data, status=status.HTTP_200_OK)
 
 
 # These are technologies in the UI and the API!
@@ -677,18 +664,18 @@ class FindingViewSet(prefetch.PrefetchListMixin,
     @extend_schema(
         methods=['POST'],
         request=serializers.AddNewFileOptionSerializer,
-        responses={status.HTTP_201_CREATED: serializers.FindingToFilesSerializer}
+        responses={status.HTTP_201_CREATED: serializers.FileSerializer}
     )
     @swagger_auto_schema(
         method='get',
         responses={status.HTTP_200_OK: serializers.FindingToFilesSerializer}
     )
     @swagger_auto_schema(
-        methods=['post', 'patch'],
+        method='post',
         request_body=serializers.AddNewFileOptionSerializer,
-        responses={status.HTTP_200_OK: serializers.FindingToFilesSerializer}
+        responses={status.HTTP_201_CREATED: serializers.FileSerializer}
     )
-    @action(detail=True, methods=["get", "post", "patch"])
+    @action(detail=True, methods=["get", "post"], parser_classes=(MultiPartParser,))
     def files(self, request, pk=None):
         finding = self.get_object()
         if request.method == 'POST':
@@ -697,33 +684,20 @@ class FindingViewSet(prefetch.PrefetchListMixin,
                 title = new_file.validated_data['title']
                 file = new_file.validated_data['file']
             else:
-                return Response(new_file.errors,
-                    status=status.HTTP_400_BAD_REQUEST)
+                return Response(new_file.errors, status=status.HTTP_400_BAD_REQUEST)
 
             file = FileUpload(title=title, file=file)
             file.save()
             finding.files.add(file)
 
-            serialized_file = serializers.FileSerializer({
-                "title": title, "file": file,
-            })
-            result = serializers.FindingToFilesSerializer({
-                "finding_id": finding, "files": [serialized_file.data]
-            })
-            return Response(serialized_file.data,
-                status=status.HTTP_200_OK)
+            serialized_file = serializers.FileSerializer(file)
+            return Response(serialized_file.data, status=status.HTTP_201_CREATED)
+
         files = finding.files.all()
-
-        serialized_files = []
-        if files:
-            serialized_files = serializers.FindingToFilesSerializer({
-                    "finding_id": finding, "files": files
-            })
-            return Response(serialized_files.data,
-                    status=status.HTTP_200_OK)
-
-        return Response(serialized_files,
-                status=status.HTTP_200_OK)
+        serialized_files = serializers.FindingToFilesSerializer({
+            "finding_id": finding, "files": files
+        })
+        return Response(serialized_files.data, status=status.HTTP_200_OK)
 
     @extend_schema(
         request=serializers.FindingNoteSerializer,
@@ -1663,11 +1637,11 @@ class TestsViewSet(mixins.ListModelMixin,
         responses={status.HTTP_200_OK: serializers.TestToFilesSerializer}
     )
     @swagger_auto_schema(
-        methods=['post', 'patch'],
+        method='post',
         request_body=serializers.AddNewFileOptionSerializer,
-        responses={status.HTTP_200_OK: serializers.FileSerializer}
+        responses={status.HTTP_201_CREATED: serializers.FileSerializer}
     )
-    @action(detail=True, methods=["get", "post", "patch"])
+    @action(detail=True, methods=["get", "post"], parser_classes=(MultiPartParser,))
     def files(self, request, pk=None):
         test = self.get_object()
         if request.method == 'POST':
@@ -1676,33 +1650,20 @@ class TestsViewSet(mixins.ListModelMixin,
                 title = new_file.validated_data['title']
                 file = new_file.validated_data['file']
             else:
-                return Response(new_file.errors,
-                    status=status.HTTP_400_BAD_REQUEST)
+                return Response(new_file.errors, status=status.HTTP_400_BAD_REQUEST)
 
             file = FileUpload(title=title, file=file)
             file.save()
             test.files.add(file)
 
-            serialized_file = serializers.FileSerializer({
-                "title": title, "file": file,
-            })
-            result = serializers.TestToFilesSerializer({
-                "test_id": test, "files": [serialized_file.data]
-            })
-            return Response(serialized_file.data,
-                status=status.HTTP_200_OK)
+            serialized_file = serializers.FileSerializer(file)
+            return Response(serialized_file.data, status=status.HTTP_201_CREATED)
+
         files = test.files.all()
-
-        serialized_files = []
-        if files:
-            serialized_files = serializers.TestToFilesSerializer({
-                    "test_id": test, "files": files
-            })
-            return Response(serialized_files.data,
-                    status=status.HTTP_200_OK)
-
-        return Response(serialized_files,
-                status=status.HTTP_200_OK)
+        serialized_files = serializers.TestToFilesSerializer({
+            "test_id": test, "files": files
+        })
+        return Response(serialized_files.data, status=status.HTTP_200_OK)
 
 
 # Authorization: authenticated users
@@ -1935,8 +1896,12 @@ class ImportScanView(mixins.CreateModelMixin,
     - Create an Engagement inside the product
     - Provide `product_name`
     - Provide `engagement_name`
+    - Optionally provide `product_type_name`
 
-    In this scenario Defect Dojo will look up the engagment by the provided details.
+    In this scenario Defect Dojo will look up the Engagement by the provided details.
+
+    When using names you can let the importer automatically create Engagements, Products and Product_Types
+    by using `auto_create_context=True`.
     """
     serializer_class = serializers.ImportScanSerializer
     parser_classes = [MultiPartParser]
@@ -1944,10 +1909,13 @@ class ImportScanView(mixins.CreateModelMixin,
     permission_classes = (IsAuthenticated, permissions.UserHasImportPermission)
 
     def perform_create(self, serializer):
-        _, _, _, engagement_id, engagement_name, product_name = serializers.get_import_meta_data_from_dict(serializer.validated_data)
+        _, _, _, engagement_id, engagement_name, product_name, product_type_name, auto_create_context = serializers.get_import_meta_data_from_dict(serializer.validated_data)
         product = get_target_product_if_exists(product_name)
         engagement = get_target_engagement_if_exists(engagement_id, engagement_name, product)
-        jira_project = jira_helper.get_jira_project(engagement)
+
+        # when using auto_create_context, the engagement or product may not have been created yet
+        jira_driver = engagement if engagement else product if product else None
+        jira_project = jira_helper.get_jira_project(jira_driver) if jira_driver else None
 
         push_to_jira = serializer.validated_data.get('push_to_jira')
         if get_system_setting('enable_jira') and jira_project:
@@ -2065,8 +2033,11 @@ class ReImportScanView(mixins.CreateModelMixin,
     - Provide `engagement_name`
     - Optional: Provide `test_title`
 
-    In this scenario Defect Dojo will look up the test by the provided details.
+    In this scenario Defect Dojo will look up the Test by the provided details.
     If no `test_title` is provided, the latest test inside the engagement will be chosen based on scan_type.
+
+    When using names you can let the importer automatically create Engagements, Products and Product_Types
+    by using `auto_create_context=True`.
     """
     serializer_class = serializers.ReImportScanSerializer
     parser_classes = [MultiPartParser]
@@ -2077,11 +2048,14 @@ class ReImportScanView(mixins.CreateModelMixin,
         return get_authorized_tests(Permissions.Import_Scan_Result)
 
     def perform_create(self, serializer):
-        test_id, test_title, scan_type, _, engagement_name, product_name = serializers.get_import_meta_data_from_dict(serializer.validated_data)
+        test_id, test_title, scan_type, _, engagement_name, product_name, product_type_name, auto_create_context = serializers.get_import_meta_data_from_dict(serializer.validated_data)
         product = get_target_product_if_exists(product_name)
         engagement = get_target_engagement_if_exists(None, engagement_name, product)
         test = get_target_test_if_exists(test_id, test_title, scan_type, engagement)
-        jira_project = jira_helper.get_jira_project(test)
+
+        # when using auto_create_context, the engagement or product may not have been created yet
+        jira_driver = test if test else engagement if engagement else product if product else None
+        jira_project = jira_helper.get_jira_project(jira_driver) if jira_driver else None
 
         push_to_jira = serializer.validated_data.get('push_to_jira')
         if get_system_setting('enable_jira') and jira_project:

@@ -192,7 +192,8 @@ class TestCheckmarxParser(DojoTestCase):
         self.assertEqual(bool, type(item.active))
         self.assertEqual(True, item.active)
         self.assertEqual(bool, type(item.verified))
-        self.assertEqual(True, item.verified)
+        # state 0 in checkmarx = "To verify"
+        self.assertEqual(False, item.verified)
         self.assertEqual(bool, type(item.false_p))
         self.assertEqual(False, item.false_p)
         self.assertEqual(str, type(item.severity))
@@ -247,9 +248,9 @@ class TestCheckmarxParser(DojoTestCase):
         # check content
         item = findings[0]
         self.assertEqual(bool, type(item.active))
-        self.assertEqual(True, item.active)
+        self.assertEqual(False, item.active)
         self.assertEqual(bool, type(item.verified))
-        self.assertEqual(True, item.verified)
+        self.assertEqual(False, item.verified)
         self.assertEqual(bool, type(item.false_p))
         self.assertEqual(True, item.false_p)
 
@@ -269,12 +270,14 @@ class TestCheckmarxParser(DojoTestCase):
         self.assertEqual(1, len(findings))
         # check content for aggregated finding
         item = findings[0]
-        # finding is never active/verified yet at this time
+        # if any of the findings in the aggregate is active, the aggregated finding is active
         self.assertEqual(bool, type(item.active))
         self.assertEqual(True, item.active)
         self.assertEqual(bool, type(item.verified))
-        self.assertEqual(True, item.verified)
+        # state 0 in checkmarx = "To verify"
+        self.assertEqual(False, item.verified)
         self.assertEqual(bool, type(item.false_p))
+        # If at least one of the findings in the aggregate is exploitable, the defectdojo finding should not be "false positive"
         self.assertEqual(False, item.false_p)
         mock.assert_called_with(product, 'Java')
 
@@ -494,7 +497,8 @@ class TestCheckmarxParser(DojoTestCase):
         self.assertEqual(bool, type(item.active))
         self.assertEqual(True, item.active)
         self.assertEqual(bool, type(item.verified))
-        self.assertEqual(True, item.verified)
+        # state 0 in checkmarx = "To verify"
+        self.assertEqual(False, item.verified)
         self.assertEqual(bool, type(item.false_p))
         self.assertEqual(False, item.false_p)
         self.assertEqual(str, type(item.severity))
@@ -648,7 +652,8 @@ class TestCheckmarxParser(DojoTestCase):
         self.assertEqual(bool, type(item.active))
         self.assertEqual(True, item.active)
         self.assertEqual(bool, type(item.verified))
-        self.assertEqual(True, item.verified)
+        # state 0 in checkmarx = "To verify"
+        self.assertEqual(False, item.verified)
         self.assertEqual(bool, type(item.false_p))
         self.assertEqual(False, item.false_p)
         self.assertEqual(str, type(item.severity))
@@ -673,7 +678,7 @@ class TestCheckmarxParser(DojoTestCase):
     @patch('dojo.tools.checkmarx.parser.add_language')
     def test_file_with_multiple_findings_is_aggregated_with_query_id(self, mock):
         my_file_handle, product, engagement, test = self.init(
-            "dojo/unittests/scans/checkmarx/multiple_findings_same_query_id.xml"
+            get_unit_tests_path() + "/scans/checkmarx/multiple_findings_same_query_id.xml"
         )
         parser = CheckmarxParser()
         findings = parser.get_findings(my_file_handle, test)
