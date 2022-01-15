@@ -47,8 +47,8 @@ jobs:
       - name: Update version numbers in key files
         run: |
           sed -ri "s/__version__ = '.*'/__version__ = '${{ github.event.inputs.release_number }}'/" dojo/__init__.py
-          sed -ri "s/appVersion: \".*\"/appVersion: \"${{ github.event.inputs.release_number }}\"/" helm/defectdojo/Chart.yaml
           sed -ri "s/\"version\": \".*\"/\"version\": \"${{ github.event.inputs.release_number }}\"/" components/package.json
+          sed -ri "s/appVersion: \".*\"/appVersion: \"${{ github.event.inputs.release_number }}\"/" helm/defectdojo/Chart.yaml
 
           if grep "\-dev" helm/defectdojo/Chart.yaml; then
               echo "x.y.z-dev found in Chart.yaml, probably releasing a new minor version"
@@ -64,10 +64,10 @@ jobs:
 
       - name: Check numbers
         run: |
-          grep version dojo/__init__.py
-          grep appVersion helm/defectdojo/Chart.yaml
-          grep version components/package.json
-          grep version helm/defectdojo/Chart.yaml
+          grep -n version dojo/__init__.py
+          grep -n version components/package.json
+          grep -n appVersion helm/defectdojo/Chart.yaml
+          grep -n version helm/defectdojo/Chart.yaml
 
       - name: Push version changes
         uses: stefanzweifel/git-auto-commit-action@v4.13.1
