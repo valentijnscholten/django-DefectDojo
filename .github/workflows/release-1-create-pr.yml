@@ -64,10 +64,10 @@ jobs:
 
       - name: Check numbers
         run: |
-          grep -l version dojo/__init__.py
-          grep -l version components/package.json
-          grep -l appVersion helm/defectdojo/Chart.yaml
-          grep -l version helm/defectdojo/Chart.yaml
+          grep -H version dojo/__init__.py
+          grep -H version components/package.json
+          grep -H appVersion helm/defectdojo/Chart.yaml
+          grep -H version helm/defectdojo/Chart.yaml
 
       - name: Push version changes
         uses: stefanzweifel/git-auto-commit-action@v4.13.1
