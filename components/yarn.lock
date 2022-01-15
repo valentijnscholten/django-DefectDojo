@@ -277,10 +277,10 @@ datatables.net-bs@>=1.11.3:
     datatables.net ">=1.10.25"
     jquery ">=1.7"
 
-datatables.net-buttons-bs@^2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/datatables.net-buttons-bs/-/datatables.net-buttons-bs-2.1.1.tgz#c90fb44bb2e96e45b4c66c423a89a5625edb1f4d"
-  integrity sha512-fKCyJs4vy3kXn/ztWdUfhc/nABDgwp7va36epRgRN0bFwLCOdZSlH7HeYKrWGvNuPf1ZCZ9OG4CgTHjcO6XW3g==
+datatables.net-buttons-bs@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/datatables.net-buttons-bs/-/datatables.net-buttons-bs-2.2.1.tgz#f2038b9fb6dc4f15d80cf0d6c13373dd14f654c4"
+  integrity sha512-tVAqZbGULoHo+XbnDJuYjx/RSFc+WZgghY/5O3c2WxtZ7UFXqnKYj9YG1c3NaZlz/73Xjz4eaI10i73Da+fvkA==
   dependencies:
     datatables.net-bs ">=1.11.3"
     datatables.net-buttons ">=2.0.1"
@@ -608,13 +608,6 @@ get-assigned-identifiers@^1.1.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/get-assigned-identifiers/-/get-assigned-identifiers-1.2.0.tgz#6dbf411de648cbaf8d9169ebb0d2d576191e2ff1"
   integrity sha512-mBBwmeGTrxEMO4pMaaf/uUEFHnYtwr8FTe8Y/mer4rcV/bye0qGm6pw1bGZFGStxC5O76c5ZAVBGnqHmOaJpdQ==
-
-good-listener@^1.2.2:
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/good-listener/-/good-listener-1.2.2.tgz#d53b30cdf9313dffb7dc9a0d477096aa6d145c50"
-  integrity sha1-1TswzfkxPf+33JoNR3CWqm0UXFA=
-  dependencies:
-    delegate "^3.1.2"
 
 good-listener@^1.2.2:
   version "1.2.2"
