@@ -1272,7 +1272,6 @@ class Endpoint(models.Model):
                                           "be omitted. For example 'section-13', 'paragraph-2'."))
     product = models.ForeignKey(Product, null=True, blank=True, on_delete=models.CASCADE)
     endpoint_params = models.ManyToManyField(Endpoint_Params, blank=True, editable=False)
-    mitigated = models.BooleanField(default=False, blank=True)
     endpoint_status = models.ManyToManyField(Endpoint_Status, blank=True, related_name='endpoint_endpoint_status')
 
     tags = TagField(blank=True, force_lowercase=True, help_text=_("Add tags that help describe this endpoint. Choose from the list or add new tags. Press Enter key to add."))
@@ -1280,7 +1279,7 @@ class Endpoint(models.Model):
     class Meta:
         ordering = ['product', 'host', 'protocol', 'port', 'userinfo', 'path', 'query', 'fragment']
         indexes = [
-            models.Index(fields=['product', 'mitigated']),
+            models.Index(fields=['product']),
         ]
 
     def clean(self):
@@ -1430,6 +1429,10 @@ class Endpoint(models.Model):
             else:
                 return True
 
+    @property
+    def mitigated(self):
+        return not self.vulnerable()
+
     def vulnerable(self):
         return self.active_findings_count() > 0
 
@@ -1460,9 +1463,8 @@ class Endpoint(models.Model):
         return self.host_endpoints().count()
 
     def host_mitigated_endpoints(self):
-        return Endpoint.objects.filter(host=self.host,
-                                       product=self.product,
-                                       mitigated=True).distinct()
+        meps = Endpoint_Status.objects.filter(endpoint__in=self.host_endpoints(), mitigated=True)
+        return Endpoint.objects.filter(endpoint_status__in=meps).distinct()
 
     def host_mitigated_endpoints_count(self):
         return self.host_mitigated_endpoints().count()
@@ -3169,6 +3171,7 @@ class Notifications(models.Model):
     other = MultiSelectField(choices=NOTIFICATION_CHOICES, default=DEFAULT_NOTIFICATION, blank=True)
     user = models.ForeignKey(Dojo_User, default=None, null=True, editable=False, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, default=None, null=True, editable=False, on_delete=models.CASCADE)
+    template = models.BooleanField(default=False)
     sla_breach = MultiSelectField(choices=NOTIFICATION_CHOICES, default=DEFAULT_NOTIFICATION, blank=True,
         verbose_name=_('SLA breach'),
         help_text=_('Get notified of (upcoming) SLA breaches'))
