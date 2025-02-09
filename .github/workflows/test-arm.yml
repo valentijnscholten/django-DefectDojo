@@ -23,7 +23,7 @@ jobs:
       matrix:
           docker-image: [django, nginx]
           os: [alpine, debian]
-          platform: [amd64, arm64]
+        #   platform: [amd64, arm64]
     steps:
       - name: Login to DockerHub
         uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3.3.0
@@ -54,6 +54,7 @@ jobs:
           REPO_ORG: ${{ env.repoorg }}
           docker-image: ${{ matrix.docker-image }}
         with:
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ env.REPO_ORG }}/defectdojo-${{ env.docker-image}}:${{ github.event.inputs.release_number }}-${{ matrix.os }}, ${{ env.REPO_ORG }}/defectdojo-${{ env.docker-image}}:${{ github.event.inputs.release_number }}, ${{ env.REPO_ORG }}/defectdojo-${{ env.docker-image}}:latest
           file: ./Dockerfile.${{ env.docker-image }}-${{ matrix.os }}
@@ -67,6 +68,7 @@ jobs:
           REPO_ORG: ${{ env.repoorg }}
           docker-image: ${{ matrix.docker-image }}
         with:
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ env.REPO_ORG }}/defectdojo-${{ env.docker-image}}:${{ github.event.inputs.release_number }}-${{ matrix.os }}
           file: ./Dockerfile.${{ env.docker-image }}-${{ matrix.os }}
