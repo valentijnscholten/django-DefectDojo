@@ -12,7 +12,9 @@ on:
         release_number:
           type: string
           description: 'Release version (x.y.z format)'
+          default: '0.0.1'
           required: true
+
 
 jobs:
   job-build-and-push:
