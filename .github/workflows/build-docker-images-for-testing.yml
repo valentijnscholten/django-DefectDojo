@@ -57,6 +57,7 @@ jobs:
 
       # we won't run the test suite for ARM64, but we do want to see if the images can be built
       # sometimes packages/libraries are not available for ARM64 and won't compile while under Qemu
+      # if we ever need to run the tests on ARM64, see https://github.com/orgs/community/discussions/26801 to override runs-on
       - name: Build ARM64
         if: ${{ matrix.platform  == 'arm64' }}
         id: docker_build_arm64

@@ -54,7 +54,8 @@ jobs:
           REPO_ORG: ${{ env.repoorg }}
           docker-image: ${{ matrix.docker-image }}
         with:
-          platforms: linux/amd64,linux/arm64
+        #   platforms: linux/amd64,linux/arm64
+          platforms: linux/arm64
           push: true
           tags: ${{ env.REPO_ORG }}/defectdojo-${{ env.docker-image}}:${{ github.event.inputs.release_number }}-${{ matrix.os }}, ${{ env.REPO_ORG }}/defectdojo-${{ env.docker-image}}:${{ github.event.inputs.release_number }}, ${{ env.REPO_ORG }}/defectdojo-${{ env.docker-image}}:latest
           file: ./Dockerfile.${{ env.docker-image }}-${{ matrix.os }}
@@ -68,7 +69,8 @@ jobs:
           REPO_ORG: ${{ env.repoorg }}
           docker-image: ${{ matrix.docker-image }}
         with:
-          platforms: linux/amd64,linux/arm64
+        #   platforms: linux/amd64,linux/arm64
+          platforms: linux/arm64
           push: true
           tags: ${{ env.REPO_ORG }}/defectdojo-${{ env.docker-image}}:${{ github.event.inputs.release_number }}-${{ matrix.os }}
           file: ./Dockerfile.${{ env.docker-image }}-${{ matrix.os }}
