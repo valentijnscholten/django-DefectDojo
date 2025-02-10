@@ -37,6 +37,7 @@ jobs:
         env:
           DOCKER_BUILD_CHECKS_ANNOTATIONS: false
         with:
+          platforms: linux/amd64,linux/arm64
           context: .
           push: false
           tags: defectdojo/defectdojo-${{ matrix.docker-image }}:${{ matrix.os }}
