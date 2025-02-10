@@ -34,7 +34,7 @@ services:
       context: ./
       dockerfile: "Dockerfile.django-${DEFECT_DOJO_OS:-debian}"
       target: django
-    image: "valentijnscholtenvalentijnscholten/defectdojo-django:${DJANGO_VERSION:-latest}"
+    image: "valentijnscholten/defectdojo-django:${DJANGO_VERSION:-latest}"
     depends_on:
       - postgres
     entrypoint: ['/wait-for-it.sh', '${DD_DATABASE_HOST:-postgres}:${DD_DATABASE_PORT:-5432}', '-t', '30', '--', '/entrypoint-uwsgi.sh']
