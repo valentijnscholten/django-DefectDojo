@@ -58,7 +58,7 @@ jobs:
       # we won't run the test suite for ARM64, but we do want to see if the images can be built
       # sometimes packages/libraries are not available for ARM64 and won't compile while under Qemu
       - name: Build ARM64
-        if: ${{ matrix.platform  == 'ard64' }}
+        if: ${{ matrix.platform  == 'arm64' }}
         id: docker_build_arm64
         uses: docker/build-push-action@ca877d9245402d1537745e0e356eab47c3520991 # v6.13.0
         timeout-minutes: 10
