@@ -18,7 +18,8 @@ on:
 
 jobs:
   job-build-and-push:
-    runs-on: ubuntu-latest
+    # runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04-arm
     strategy:
       matrix:
           docker-image: [django, nginx]
