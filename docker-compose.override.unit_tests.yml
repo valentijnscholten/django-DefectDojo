@@ -22,13 +22,14 @@ services:
       DD_DATABASE_PORT: ${DD_DATABASE_PORT:-5432}
       DD_DATABASE_USER: ${DD_DATABASE_USER:-defectdojo}
       DD_DATABASE_PASSWORD: ${DD_DATABASE_PASSWORD:-defectdojo}
-      DD_CELERY_BROKER_SCHEME: 'sqla+sqlite'
-      DD_CELERY_BROKER_USER: ''
-      DD_CELERY_BROKER_PASSWORD: ''
-      DD_CELERY_BROKER_HOST: ''
-      DD_CELERY_BROKER_PORT: "-1"
-      DD_CELERY_BROKER_PATH: '/dojo.celerydb.sqlite'
-      DD_CELERY_BROKER_PARAMS: ''
+      DD_CELERY_BROKER_URL: 'memory://localhost/'
+      # DD_CELERY_BROKER_SCHEME: 'sqla+sqlite'
+      # DD_CELERY_BROKER_USER: ''
+      # DD_CELERY_BROKER_PASSWORD: ''
+      # DD_CELERY_BROKER_HOST: ''
+      # DD_CELERY_BROKER_PORT: "-1"
+      # DD_CELERY_BROKER_PATH: '/dojo.celerydb.sqlite'
+      # DD_CELERY_BROKER_PARAMS: ''
   celerybeat:
     image: busybox:1.37.0-musl
     entrypoint: ['echo', 'skipping', 'celery beat']
