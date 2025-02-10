@@ -42,13 +42,13 @@ jobs:
           push: false
           tags: defectdojo/defectdojo-${{ matrix.docker-image }}:${{ matrix.os }}
           file: Dockerfile.${{ matrix.docker-image }}-${{ matrix.os }}
-          outputs: type=docker,dest=${{ matrix.docker-image }}-${{ matrix.os }}-${{ env.TARGETARCH }}_img
+          outputs: type=docker,dest=${{ matrix.docker-image }}-${{ matrix.os }}-${{ env.TARGETPLATFORM  }}_img
 
       # export docker images to be used in next jobs below
       - name: Upload image ${{ matrix.docker-image }} as artifact
         timeout-minutes: 10
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
         with:
-          name: built-docker-image-${{ matrix.docker-image }}-${{ matrix.os }}-${{ env.TARGETARCH }}
-          path: ${{ matrix.docker-image }}-${{ matrix.os }}-${{ env.TARGETARCH }}_img
+          name: built-docker-image-${{ matrix.docker-image }}-${{ matrix.os }}-${{ env.TARGETPLATFORM  }}
+          path: ${{ matrix.docker-image }}-${{ matrix.os }}-${{ env.TARGETPLATFORM  }}_img
           retention-days: 1
