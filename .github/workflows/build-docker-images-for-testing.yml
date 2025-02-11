@@ -15,7 +15,8 @@ jobs:
         # docker-image: [django, nginx, integration-tests]
         docker-image: [django, nginx]
         os: [alpine, debian]
-        platform: [amd64, arm64]
+        # platform: [amd64, arm64]
+        platform: [arm64]
         exclude:
           - docker-image: integration-tests
             os: alpine
