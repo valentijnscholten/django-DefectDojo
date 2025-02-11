@@ -64,6 +64,8 @@ RUN export PYCURL_SSL_LIBRARY=openssl && \
   --find-links=/tmp/wheels \
   -r ./requirements.txt
 
+RUN pip3 freeze | awk '{print $1}' | cut -d '=' -f1 | xargs pip3 show
+
 COPY \
   docker/entrypoint-celery-beat.sh \
   docker/entrypoint-celery-worker.sh \
