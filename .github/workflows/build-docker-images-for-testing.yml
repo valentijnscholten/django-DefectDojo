@@ -12,7 +12,8 @@ jobs:
     runs-on: ubuntu-22.04-arm
     strategy:
       matrix:
-        docker-image: [django, nginx, integration-tests]
+        # docker-image: [django, nginx, integration-tests]
+        docker-image: [django, nginx]
         os: [alpine, debian]
         platform: [amd64, arm64]
         exclude:
