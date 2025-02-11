@@ -39,7 +39,7 @@ jobs:
         if: ${{ matrix.platform  == 'arm64' }}
         id: docker_build
         uses: docker/build-push-action@ca877d9245402d1537745e0e356eab47c3520991 # v6.13.0
-        timeout-minutes: 10
+        timeout-minutes: 15
         env:
           DOCKER_BUILD_CHECKS_ANNOTATIONS: false
         with:
@@ -53,7 +53,7 @@ jobs:
       - name: Upload image ${{ matrix.docker-image }} as artifact
         # if: ${{ matrix.platform  == 'amd64' }}
         if: ${{ matrix.platform  == 'arm64' }}
-        timeout-minutes: 10
+        timeout-minutes: 15
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
         with:
           name: built-docker-image-${{ matrix.docker-image }}-${{ matrix.os }}
@@ -67,7 +67,7 @@ jobs:
     #     if: ${{ matrix.platform  == 'arm64' }}
     #     id: docker_build_arm64
     #     uses: docker/build-push-action@ca877d9245402d1537745e0e356eab47c3520991 # v6.13.0
-    #     timeout-minutes: 10
+    #     timeout-minutes: 15
     #     env:
     #         DOCKER_BUILD_CHECKS_ANNOTATIONS: false
     #     with:

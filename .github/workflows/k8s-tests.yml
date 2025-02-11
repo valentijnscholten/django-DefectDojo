@@ -55,7 +55,7 @@ jobs:
           merge-multiple: true
 
       - name: Load docker images
-        timeout-minutes: 10
+        timeout-minutes: 15
         run: |-
              eval $(minikube docker-env)
              docker load -i built-docker-image/nginx-${{ matrix.os }}_img
@@ -75,7 +75,7 @@ jobs:
               echo "redis=${{ env.HELM_REDIS_BROKER_SETTINGS }}" >> $GITHUB_ENV
 
       - name: Deploying Django application with ${{ matrix.databases }} ${{ matrix.brokers }}
-        timeout-minutes: 15 
+        timeout-minutes: 15
         run: |-
              helm install \
                --timeout 800s \
@@ -98,7 +98,7 @@ jobs:
              helm history defectdojo
 
       - name: Check Application
-        timeout-minutes: 10
+        timeout-minutes: 15
         run: |-
              to_complete () {
                kubectl wait --for=$1 $2 --timeout=500s --selector=$3 2>/tmp/test || true

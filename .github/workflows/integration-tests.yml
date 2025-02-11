@@ -52,7 +52,7 @@ jobs:
           merge-multiple: true
 
       - name: Load docker images
-        timeout-minutes: 10
+        timeout-minutes: 15
         run: |-
              docker load -i built-docker-image/nginx-${{ matrix.os }}_img
              docker load -i built-docker-image/django-${{ matrix.os }}_img
@@ -62,21 +62,21 @@ jobs:
       - name: Set integration-test mode
         run: ln -s docker-compose.override.integration_tests.yml docker-compose.override.yml
 
-      - name: Start Dojo 
+      - name: Start Dojo
         run: docker compose up --no-deps -d postgres nginx celerybeat celeryworker mailhog uwsgi redis
         env:
           DJANGO_VERSION: ${{ matrix.os }}
           NGINX_VERSION: ${{ matrix.os }}
 
       - name: Initialize
-        timeout-minutes: 10
+        timeout-minutes: 15
         run: docker compose up --no-deps --exit-code-from initializer initializer
         env:
           DJANGO_VERSION: ${{ matrix.os }}
           NGINX_VERSION: ${{ matrix.os }}
 
       - name: Integration tests
-        timeout-minutes: 10
+        timeout-minutes: 15
         run: docker compose up --no-deps --exit-code-from integration-tests integration-tests
         env:
           DD_INTEGRATION_TEST_FILENAME: ${{ matrix.test-case }}
