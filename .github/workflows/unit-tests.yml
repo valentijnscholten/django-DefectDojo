@@ -18,7 +18,7 @@ jobs:
     uses: ./.github/workflows/build-docker-images-for-testing.yml
     secrets: inherit
     with:
-      runs-on: ${{ matrix.runs-on }}
+      runs-on: '["${{ matrix.runs-on }}"]'
 
   test-rest-framework:
     strategy:
@@ -28,7 +28,7 @@ jobs:
     uses: ./.github/workflows/rest-framework-tests.yml
     secrets: inherit
     with:
-        runs-on: ${{ matrix.runs-on }}
+      runs-on: '["${{ matrix.runs-on }}"]'
 
   # only run integration tests on ubuntu-latest (x64)
   test-user-interface:
