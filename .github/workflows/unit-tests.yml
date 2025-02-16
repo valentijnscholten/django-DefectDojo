@@ -14,21 +14,21 @@ jobs:
   build-docker-containers:
     strategy:
         matrix:
-          runs-on: ["ubuntu-latest", "ubuntu-22.04-arm"]
+          runner: ["ubuntu-latest", "ubuntu-22.04-arm"]
     uses: ./.github/workflows/build-docker-images-for-testing.yml
     secrets: inherit
     with:
-      runs-on: '["${{ matrix.runs-on }}"]'
+      runner: ${{ matrix.runner }}
 
   test-rest-framework:
     strategy:
         matrix:
-          runs-on: ["ubuntu-latest", "ubuntu-22.04-arm"]
+          runner: ["ubuntu-latest", "ubuntu-22.04-arm"]
     needs: build-docker-containers
     uses: ./.github/workflows/rest-framework-tests.yml
     secrets: inherit
     with:
-      runs-on: '["${{ matrix.runs-on }}"]'
+        runner: ${{ matrix.runner }}
 
   # only run integration tests on ubuntu-latest (x64)
   test-user-interface:
