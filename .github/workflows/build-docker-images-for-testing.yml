@@ -22,7 +22,7 @@ jobs:
         # integration tests are only build (and run) on debian x64
         docker-image: [django, nginx, integration-tests]
         os: [alpine, debian]
-        runs-on: ${{ inputs.runs-on }}
+        runs-on: ["${{ inputs.runs-on }}"]
         exclude:
             - docker-image: integration-tests
               os: alpine
