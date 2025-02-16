@@ -1,6 +1,7 @@
 name: "Build Docker Images For Testing"
 
 on:
+  # inspired by https://github.com/orgs/community/discussions/26801 we take the runs-on as parameter so we can run arm64 on native hardwarde
   workflow_dispatch:
     inputs:
         runs-on:
@@ -18,18 +19,14 @@ jobs:
     runs-on: ${{fromJSON(inputs.runs-on)}}
     strategy:
       matrix:
+        # integration tests are only build (and run) on debian x64
         docker-image: [django, nginx, integration-tests]
         os: [alpine, debian]
         runs-on: ${{fromJSON(inputs.runs-on)}}
-        exclude:
+        include:
             - docker-image: integration-tests
-              os: alpine
-            - docker-image: integration-tests
-              runs-on: ubuntu-22.04-arm
-              os: alpine
-            - docker-image: integration-tests
-              runs-on: ubuntu-22.04-arm
               os: debian
+              runs-on: ubuntu-latest
 
     steps:
       - name: Show Platform
@@ -69,20 +66,3 @@ jobs:
           name: built-docker-image-${{ matrix.docker-image }}-${{ matrix.os }}-${{ fromJSON(inputs.runs-on)[0] }}
           path: ${{ matrix.docker-image }}-${{ matrix.os }}-${{ fromJSON(inputs.runs-on)[0] }}_img
           retention-days: 1
-
-
-          #TODO REMOVE comments
-      # we won't run the test suite for ARM64, but we do want to see if the images can be built
-      # sometimes packages/libraries are not available for ARM64 and won't compile while under Qemu
-      # if we ever need to run the tests on ARM64, see https://github.com/orgs/community/discussions/26801 to override runs-on
-    #   - name: Build ARM64
-    #     id: docker_build_arm64
-    #     uses: docker/build-push-action@ca877d9245402d1537745e0e356eab47c3520991 # v6.13.0
-    #     timeout-minutes: 15
-    #     env:
-    #         DOCKER_BUILD_CHECKS_ANNOTATIONS: false
-    #     with:
-    #         context: .
-    #         push: false
-    #         file: Dockerfile.${{ matrix.docker-image }}-${{ matrix.os }}
-
