@@ -6,12 +6,12 @@ on:
     inputs:
         runs-on:
           type: string
-          default: '["ubuntu-latest"]'
+          default: "ubuntu-latest"
   workflow_call:
     inputs:
         runs-on:
           type: string
-          default: '["ubuntu-latest"]'
+          default: "ubuntu-latest"
 
 jobs:
   build:
