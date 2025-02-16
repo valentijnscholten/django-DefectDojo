@@ -27,7 +27,7 @@ jobs:
             - docker-image: integration-tests
               os: alpine
             - docker-image: integration-tests
-              runs-on: ubuntu-22.04-arm
+              runs-on: ubuntu-24.04-arm
 
     steps:
       - name: Show Platform
