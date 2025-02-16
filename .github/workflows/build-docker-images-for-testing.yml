@@ -25,6 +25,9 @@ jobs:
           - docker-image: integration-tests
 
     steps:
+      - name: Show Platform
+        run: echo hallo ${{ fromJSON(inputs.runs-on)[0] }}
+
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
