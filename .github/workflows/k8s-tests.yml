@@ -3,9 +3,9 @@ name: k8s Deployment
 on:
   workflow_call:
     inputs:
-        runner:
+        runs-on:
           type: string
-          default: ubuntu-latest
+          default: '["ubuntu-latest"]'
 
 env:
   DD_HOSTNAME: defectdojo.default.minikube.local
@@ -62,8 +62,8 @@ jobs:
         timeout-minutes: 15
         run: |-
              eval $(minikube docker-env)
-             docker load -i built-docker-image/nginx-${{ matrix.os }}-${{ inputs.runner }}_img
-             docker load -i built-docker-image/django-${{ matrix.os }}-${{ inputs.runner }}_img
+             docker load -i built-docker-image/nginx-${{ matrix.os }}-${{ fromJSON(inputs.runs-on)[0] }}_img
+             docker load -i built-docker-image/django-${{ matrix.os }}-${{ fromJSON(inputs.runs-on)[0] }}_img
              docker images
 
       - name: Configure HELM repos
