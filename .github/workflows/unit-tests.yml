@@ -23,7 +23,7 @@ jobs:
   test-rest-framework:
     strategy:
         matrix:
-          runner: ["ubuntu-latest", "ubuntu-24.04-arm"]
+          runner: ["ubuntu-latest", "ubuntu-24.04-arm"] # There's no ubuntu-latest-arm (yet?)
     needs: build-docker-containers
     uses: ./.github/workflows/rest-framework-tests.yml
     secrets: inherit
