@@ -2,10 +2,6 @@ name: k8s Deployment
 
 on:
   workflow_call:
-    inputs:
-        runs-on:
-          type: string
-          default: '["ubuntu-latest"]'
 
 env:
   DD_HOSTNAME: defectdojo.default.minikube.local
