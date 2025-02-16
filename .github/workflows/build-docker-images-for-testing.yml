@@ -20,13 +20,14 @@ jobs:
     strategy:
       matrix:
         # integration tests are only build (and run) on debian x64
-        docker-image: [django, nginx]
+        docker-image: [django, nginx, integration-tests]
         os: [alpine, debian]
         runs-on: ${{fromJSON(inputs.runs-on)}}
-        include:
+        exclude:
             - docker-image: integration-tests
-              os: debian
-              runs-on: ubuntu-latest
+              os: alpine
+            - docker-image: integration-tests
+              runs-on: ubuntu-22.04-arm
 
     steps:
       - name: Show Platform
