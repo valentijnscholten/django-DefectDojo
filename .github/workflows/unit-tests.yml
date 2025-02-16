@@ -14,7 +14,7 @@ jobs:
   build-docker-containers:
     strategy:
         matrix:
-          runner: ["ubuntu-latest", "ubuntu-24.04-arm"]
+          runner: ["ubuntu-latest", "ubuntu-24.04-arm"]  # There's no ubuntu-latest-arm (yet?)
     uses: ./.github/workflows/build-docker-images-for-testing.yml
     secrets: inherit
     with:
