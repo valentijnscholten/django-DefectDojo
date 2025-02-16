@@ -31,7 +31,7 @@ jobs:
 
     steps:
       - name: Show Platform
-        run: echo Runs-On value for this run = ${{ inputs.runs-on }}
+        run: echo Runner value for this run = ${{ inputs.runs-on }}
 
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
