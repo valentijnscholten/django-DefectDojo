@@ -3,7 +3,7 @@ entries:
   defectdojo:
   - apiVersion: v2
     appVersion: 2.44.0-dev
-    created: "2025-02-26T18:29:20.478979554Z"
+    created: "2025-02-26T18:36:51.469408539Z"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
@@ -19,7 +19,7 @@ entries:
       repository: https://charts.bitnami.com/bitnami
       version: ~19.6.0
     description: A Helm chart for Kubernetes to install DefectDojo
-    digest: b4d29b30784a50bff1425c04a2722020ddce103220308ac03ca8bc95916cde58
+    digest: 7d1be7087141070b7ffc2a9c2b736e4acd7eeb339683b3aa3f11ff190d4667ad
     icon: https://www.defectdojo.org/img/favicon.ico
     maintainers:
     - email: defectdojo-project@owasp.org
@@ -60,4 +60,4 @@ entries:
     urls:
     - https://github.com/valentijnscholten/django-DefectDojo/releases/download/2.7.0/defectdojo-1.6.25.tgz
     version: 1.6.25
-generated: "2025-02-26T18:29:20.46424283Z"
+generated: "2025-02-26T18:36:51.45352664Z"
