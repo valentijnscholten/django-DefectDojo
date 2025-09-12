@@ -13,7 +13,7 @@ from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Count, JSONField, Q
 from django.forms import HiddenInput
-from django.utils.timezone import now, tzinfo
+from django.utils.timezone import make_aware, now, tzinfo
 from django.utils.translation import gettext_lazy as _
 from django_filters import (
     BooleanFilter,
@@ -30,7 +30,8 @@ from django_filters import (
     RangeFilter,
 )
 from django_filters import rest_framework as filters
-from django_filters.filters import ChoiceFilter, _truncate
+from django_filters.filters import ChoiceFilter
+from django_filters.filters import _truncate as _django_truncate
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_field
 from polymorphic.base import ManagerInheritanceWarning
@@ -98,6 +99,38 @@ logger = logging.getLogger(__name__)
 
 BOOLEAN_CHOICES = (("false", "No"), ("true", "Yes"))
 EARLIEST_FINDING = None
+
+
+def _truncate(dt):
+    """
+    Fixed version of django_filters._truncate that returns timezone-aware datetime objects.
+
+    The original _truncate returns datetime.date objects which breaks timezone-aware
+    DateTimeField comparisons. This wrapper ensures we return proper datetime objects.
+    """
+    if dt is None:
+        return None
+
+    # Get the truncated date from django_filters
+    truncated_date = _django_truncate(dt)
+
+    # Convert date back to datetime at midnight
+    from datetime import datetime, time
+    if isinstance(truncated_date, datetime):
+        # If it's already a datetime, use it
+        truncated_dt = truncated_date
+    else:
+        # Convert date to datetime at midnight
+        truncated_dt = datetime.combine(truncated_date, time.min)
+
+    # Preserve timezone info from original datetime
+    if hasattr(dt, "tzinfo") and dt.tzinfo is not None:
+        truncated_dt = truncated_dt.replace(tzinfo=dt.tzinfo)
+    elif settings.USE_TZ:
+        # Make timezone-aware if USE_TZ is True
+        truncated_dt = make_aware(truncated_dt)
+
+    return truncated_dt
 
 
 def custom_filter(queryset, name, value):
