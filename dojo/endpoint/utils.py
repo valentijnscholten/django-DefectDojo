@@ -56,20 +56,20 @@ def endpoint_filter(**kwargs):
 
 def endpoint_get_or_create(**kwargs):
     with transaction.atomic():
-        qs = endpoint_filter(**kwargs)
-        count = qs.count()
-        if count == 0:
-            return Endpoint.objects.get_or_create(**kwargs)
-        if count == 1:
-            return qs.order_by("id").first(), False
+        # Single round-trip for existence and multiplicity: fetch up to 2
+        qs = endpoint_filter(**kwargs).order_by("id")
+        endpoints = list(qs[:2])
+        if not endpoints:
+            # Happy path: create directly to avoid an extra SELECT
+            return Endpoint.objects.create(**kwargs), True
+        if len(endpoints) == 1:
+            return endpoints[0], False
         logger.warning(
             f"Endpoints in your database are broken. "
             f"Please access {reverse('endpoint_migrate')} and migrate them to new format or remove them.",
         )
-        # Get the oldest endpoint first, and return that instead
-        # a datetime is not captured on the endpoint model, so ID
-        # will have to work here instead
-        return qs.order_by("id").first(), False
+        # Multiple entries found: return the oldest (lowest id)
+        return endpoints[0], False
 
 
 def clean_hosts_run(apps, change):
