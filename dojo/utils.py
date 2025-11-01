@@ -19,7 +19,6 @@ import cvss
 import hyperlink
 import vobject
 from asteval import Interpreter
-from auditlog.models import LogEntry
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cvss import CVSS2, CVSS3, CVSS4
@@ -52,6 +51,7 @@ from dojo.github import (
     update_external_issue_github,
 )
 from dojo.labels import get_labels
+from dojo.legacy_auditlog import LogEntry
 from dojo.models import (
     NOTIFICATION_CHOICES,
     Benchmark_Type,

@@ -1,6 +1,5 @@
 import contextlib
 
-from auditlog.models import LogEntry
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
@@ -10,6 +9,7 @@ from django.urls import reverse
 from django.utils.translation import gettext as _
 
 from dojo.file_uploads.helper import delete_related_files
+from dojo.legacy_auditlog import LogEntry
 from dojo.models import Engagement, Product
 from dojo.notes.helper import delete_related_notes
 from dojo.notifications.helper import create_notification

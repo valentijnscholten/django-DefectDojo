@@ -6,7 +6,6 @@ from datetime import datetime, timedelta
 
 import six
 import tagulous
-from auditlog.models import LogEntry
 from django import forms
 from django.apps import apps
 from django.conf import settings
@@ -55,6 +54,7 @@ from dojo.finding.helper import (
 from dojo.finding.queries import get_authorized_findings
 from dojo.finding_group.queries import get_authorized_finding_groups
 from dojo.labels import get_labels
+from dojo.legacy_auditlog import LogEntry
 from dojo.models import (
     EFFORT_FOR_FIXING_CHOICES,
     ENGAGEMENT_STATUS_CHOICES,

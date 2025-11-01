@@ -1,4 +1,4 @@
-from auditlog.models import LogEntry
+from dojo.legacy_auditlog import LogEntry
 from django.db import migrations
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist

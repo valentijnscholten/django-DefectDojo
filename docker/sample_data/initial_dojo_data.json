@@ -2470,7 +2470,7 @@
       "changes": "{\"prod_type\": [\"None\", \"Research and Development\"], \"description\": [\"None\", \"Test\"], \"manager\": [\"None\", \"0\"], \"tech_contact\": [\"None\", \"0\"], \"tid\": [\"None\", \"0\"], \"prod_manager\": [\"None\", \"0\"], \"id\": [\"None\", \"1\"], \"name\": [\"None\", \"Aaron Test Product\"]}",
       "object_repr": "Aaron Test Product"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 1
   },
   {
@@ -2486,7 +2486,7 @@
       "changes": "{\"pen_test\": [\"None\", \"True\"], \"status\": [\"None\", \"In Progress\"], \"product\": [\"None\", \"Aaron Test Product\"], \"name\": [\"None\", \"Test\"], \"lead\": [\"None\", \"admin\"], \"check_list\": [\"None\", \"False\"], \"test_strategy\": [\"None\", \"\"], \"id\": [\"None\", \"1\"], \"active\": [\"None\", \"True\"], \"target_start\": [\"None\", \"2016-08-24\"], \"tmodel_path\": [\"None\", \"none\"], \"eng_for_check\": [\"None\", \"dojo.Check_List.None\"], \"api_test\": [\"None\", \"False\"], \"risk_path\": [\"None\", \"none\"], \"progress\": [\"None\", \"other\"], \"threat_model\": [\"None\", \"False\"], \"done_testing\": [\"None\", \"False\"], \"target_end\": [\"None\", \"2016-08-31\"]}",
       "object_repr": "Engagement: Test (Aug 24, 2016)"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 2
   },
   {
@@ -2502,7 +2502,7 @@
       "changes": "{\"manager\": [\"0\", \"Aaron Weaver\"], \"prod_manager\": [\"0\", \"John Smith\"], \"name\": [\"Aaron Test Product\", \"Bodgeit\"], \"tech_contact\": [\"0\", \"Jeffrey Williams\"], \"description\": [\"Test\", \"The BodgeIt Store is a vulnerable web application which is currently aimed at people who are new to pen testing.\"]}",
       "object_repr": "Bodgeit"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 3
   },
   {
@@ -2518,7 +2518,7 @@
       "changes": "{\"test_type\": [\"None\", \"Burp Scan\"], \"engagement\": [\"None\", \"Engagement: Test (Aug 24, 2016)\"], \"environment\": [\"None\", \"Development\"], \"target_start\": [\"None\", \"2016-08-26 00:00:00-05:00\"], \"percent_complete\": [\"None\", \"100\"], \"id\": [\"None\", \"1\"], \"target_end\": [\"None\", \"2016-08-26 00:00:00-05:00\"]}",
       "object_repr": "Burp Scan (Aug 26, 2016)"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 4
   },
   {
@@ -2534,7 +2534,7 @@
       "changes": "{\"impact\": [\"None\", \"No impact provided\"], \"false_p\": [\"None\", \"False\"], \"verified\": [\"None\", \"False\"], \"description\": [\"None\", \"Most browsers have a facility to remember user credentials that are entered\\ninto HTML forms. This function can be configured by the user and also by\\napplications that employ user credentials. If the function is enabled, then\\ncredentials entered by the user are stored on their local computer and\\nretrieved by the browser on future visits to the same application.\\n\\nThe stored credentials can be captured by an attacker who gains control over\\nthe user's computer. Further, an attacker who finds a separate application\\nvulnerability such as cross-site scripting may be able to exploit this to\\nretrieve a user's browser-stored credentials.\\n\\n\\n\\nThe page contains a form with the following action URL:\\n\\n  * http://localhost:8888/bodgeit/login.jsp\\n\\nThe form contains the following password field with autocomplete enabled:\\n\\n  * password\\n\\n\"], \"title\": [\"None\", \"Password field with autocomplete enabled\"], \"thread_id\": [\"None\", \"0\"], \"id\": [\"None\", \"1\"], \"reporter\": [\"None\", \"admin\"], \"duplicate\": [\"None\", \"False\"], \"last_reviewed\": [\"None\", \"2016-08-26 21:21:27.523491-05:00\"], \"test\": [\"None\", \"Burp Scan (Aug 26, 2016)\"], \"is_template\": [\"None\", \"False\"], \"mitigation\": [\"None\", \"To prevent browsers from storing credentials entered into HTML forms, include\\nthe attribute **autocomplete=\\\"off\\\"** within the FORM tag (to protect all form\\nfields) or within the relevant INPUT tags (to protect specific individual\\nfields).\\n\\nPlease note that modern web browsers may ignore this directive. In spite of\\nthis there is a chance that not disabling autocomplete may cause problems\\nobtaining PCI compliance.\\n\\n\"], \"references\": [\"None\", \"\"], \"numerical_severity\": [\"None\", \"S3\"], \"date\": [\"None\", \"2016-08-26 00:00:00-05:00\"], \"out_of_scope\": [\"None\", \"False\"], \"last_reviewed_by\": [\"None\", \"admin\"], \"cwe\": [\"None\", \"0\"], \"active\": [\"None\", \"True\"], \"severity\": [\"None\", \"Low\"]}",
       "object_repr": "Password field with autocomplete enabled"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 5
   },
   {
@@ -2550,7 +2550,7 @@
       "changes": "{\"product\": [\"None\", \"Bodgeit\"], \"path\": [\"None\", \"/bodgeit/login.jsp\"], \"host\": [\"None\", \"localhost:8888\"], \"protocol\": [\"None\", \"http\"], \"id\": [\"None\", \"1\"]}",
       "object_repr": "http://localhost:8888/bodgeit/login.jsp"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 6
   },
   {
@@ -2566,7 +2566,7 @@
       "changes": "{\"product\": [\"None\", \"Bodgeit\"], \"host\": [\"None\", \"127.0.0.1\"], \"id\": [\"None\", \"2\"]}",
       "object_repr": "127.0.0.1"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 7
   },
   {
@@ -2582,7 +2582,7 @@
       "changes": "{\"product\": [\"None\", \"Bodgeit\"], \"path\": [\"None\", \"/bodgeit/register.jsp\"], \"host\": [\"None\", \"localhost:8888\"], \"protocol\": [\"None\", \"http\"], \"id\": [\"None\", \"3\"]}",
       "object_repr": "http://localhost:8888/bodgeit/register.jsp"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 8
   },
   {
@@ -2598,7 +2598,7 @@
       "changes": "{\"product\": [\"None\", \"Bodgeit\"], \"path\": [\"None\", \"/bodgeit/password.jsp\"], \"host\": [\"None\", \"localhost:8888\"], \"protocol\": [\"None\", \"http\"], \"id\": [\"None\", \"4\"]}",
       "object_repr": "http://localhost:8888/bodgeit/password.jsp"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 9
   },
   {
@@ -2614,7 +2614,7 @@
       "changes": "{\"impact\": [\"None\", \"No impact provided\"], \"false_p\": [\"None\", \"False\"], \"verified\": [\"None\", \"False\"], \"description\": [\"None\", \"If a page fails to set an appropriate X-Frame-Options or Content-Security-\\nPolicy HTTP header, it might be possible for a page controlled by an attacker\\nto load it within an iframe. This may enable a clickjacking attack, in which\\nthe attacker's page overlays the target application's interface with a\\ndifferent interface provided by the attacker. By inducing victim users to\\nperform actions such as mouse clicks and keystrokes, the attacker can cause\\nthem to unwittingly carry out actions within the application that is being\\ntargeted. This technique allows the attacker to circumvent defenses against\\ncross-site request forgery, and may result in unauthorized actions.\\n\\nNote that some applications attempt to prevent these attacks from within the\\nHTML page itself, using \\\"framebusting\\\" code. However, this type of defense is\\nnormally ineffective and can usually be circumvented by a skilled attacker.\\n\\nYou should determine whether any functions accessible within frameable pages\\ncan be used by application users to perform any sensitive actions within the\\napplication.\\n\\n\\n\\n\"], \"title\": [\"None\", \"Frameable response (potential Clickjacking)\"], \"thread_id\": [\"None\", \"0\"], \"id\": [\"None\", \"2\"], \"reporter\": [\"None\", \"admin\"], \"duplicate\": [\"None\", \"False\"], \"last_reviewed\": [\"None\", \"2016-08-26 21:21:27.567481-05:00\"], \"test\": [\"None\", \"Burp Scan (Aug 26, 2016)\"], \"is_template\": [\"None\", \"False\"], \"mitigation\": [\"None\", \"To effectively prevent framing attacks, the application should return a\\nresponse header with the name **X-Frame-Options** and the value **DENY** to\\nprevent framing altogether, or the value **SAMEORIGIN** to allow framing only\\nby pages on the same origin as the response itself. Note that the SAMEORIGIN\\nheader can be partially bypassed if the application itself can be made to\\nframe untrusted websites.\\n\\n\"], \"references\": [\"None\", \"  * [X-Frame-Options](https://developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options)\\n\\n\"], \"numerical_severity\": [\"None\", \"S4\"], \"date\": [\"None\", \"2016-08-26 00:00:00-05:00\"], \"out_of_scope\": [\"None\", \"False\"], \"last_reviewed_by\": [\"None\", \"admin\"], \"cwe\": [\"None\", \"0\"], \"active\": [\"None\", \"True\"], \"severity\": [\"None\", \"Info\"]}",
       "object_repr": "Frameable response (potential Clickjacking)"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 10
   },
   {
@@ -2630,7 +2630,7 @@
       "changes": "{\"product\": [\"None\", \"Bodgeit\"], \"path\": [\"None\", \"/bodgeit/\"], \"host\": [\"None\", \"localhost:8888\"], \"protocol\": [\"None\", \"http\"], \"id\": [\"None\", \"5\"]}",
       "object_repr": "http://localhost:8888/bodgeit/"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 11
   },
   {
@@ -2646,7 +2646,7 @@
       "changes": "{\"product\": [\"None\", \"Bodgeit\"], \"path\": [\"None\", \"/bodgeit/basket.jsp\"], \"host\": [\"None\", \"localhost:8888\"], \"protocol\": [\"None\", \"http\"], \"id\": [\"None\", \"6\"]}",
       "object_repr": "http://localhost:8888/bodgeit/basket.jsp"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 12
   },
   {
@@ -2662,7 +2662,7 @@
       "changes": "{\"product\": [\"None\", \"Bodgeit\"], \"path\": [\"None\", \"/bodgeit/advanced.jsp\"], \"host\": [\"None\", \"localhost:8888\"], \"protocol\": [\"None\", \"http\"], \"id\": [\"None\", \"7\"]}",
       "object_repr": "http://localhost:8888/bodgeit/advanced.jsp"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 13
   },
   {
@@ -2678,7 +2678,7 @@
       "changes": "{\"product\": [\"None\", \"Bodgeit\"], \"path\": [\"None\", \"/bodgeit/admin.jsp\"], \"host\": [\"None\", \"localhost:8888\"], \"protocol\": [\"None\", \"http\"], \"id\": [\"None\", \"8\"]}",
       "object_repr": "http://localhost:8888/bodgeit/admin.jsp"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 14
   },
   {
@@ -2694,7 +2694,7 @@
       "changes": "{\"product\": [\"None\", \"Bodgeit\"], \"path\": [\"None\", \"/bodgeit/about.jsp\"], \"host\": [\"None\", \"localhost:8888\"], \"protocol\": [\"None\", \"http\"], \"id\": [\"None\", \"9\"]}",
       "object_repr": "http://localhost:8888/bodgeit/about.jsp"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 15
   },
   {
@@ -2710,7 +2710,7 @@
       "changes": "{\"product\": [\"None\", \"Bodgeit\"], \"path\": [\"None\", \"/bodgeit/contact.jsp\"], \"host\": [\"None\", \"localhost:8888\"], \"protocol\": [\"None\", \"http\"], \"id\": [\"None\", \"10\"]}",
       "object_repr": "http://localhost:8888/bodgeit/contact.jsp"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 16
   },
   {
@@ -2726,7 +2726,7 @@
       "changes": "{\"product\": [\"None\", \"Bodgeit\"], \"path\": [\"None\", \"/bodgeit/home.jsp\"], \"host\": [\"None\", \"localhost:8888\"], \"protocol\": [\"None\", \"http\"], \"id\": [\"None\", \"11\"]}",
       "object_repr": "http://localhost:8888/bodgeit/home.jsp"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 17
   },
   {
@@ -2742,7 +2742,7 @@
       "changes": "{\"product\": [\"None\", \"Bodgeit\"], \"path\": [\"None\", \"/bodgeit/product.jsp\"], \"host\": [\"None\", \"localhost:8888\"], \"protocol\": [\"None\", \"http\"], \"id\": [\"None\", \"12\"]}",
       "object_repr": "http://localhost:8888/bodgeit/product.jsp"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 18
   },
   {
@@ -2758,7 +2758,7 @@
       "changes": "{\"product\": [\"None\", \"Bodgeit\"], \"path\": [\"None\", \"/bodgeit/score.jsp\"], \"host\": [\"None\", \"localhost:8888\"], \"protocol\": [\"None\", \"http\"], \"id\": [\"None\", \"13\"]}",
       "object_repr": "http://localhost:8888/bodgeit/score.jsp"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 19
   },
   {
@@ -2774,7 +2774,7 @@
       "changes": "{\"product\": [\"None\", \"Bodgeit\"], \"path\": [\"None\", \"/bodgeit/search.jsp\"], \"host\": [\"None\", \"localhost:8888\"], \"protocol\": [\"None\", \"http\"], \"id\": [\"None\", \"14\"]}",
       "object_repr": "http://localhost:8888/bodgeit/search.jsp"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 20
   },
   {
@@ -2790,7 +2790,7 @@
       "changes": "{\"product\": [\"None\", \"Bodgeit\"], \"path\": [\"None\", \"/\"], \"host\": [\"None\", \"localhost:8888\"], \"protocol\": [\"None\", \"http\"], \"id\": [\"None\", \"15\"]}",
       "object_repr": "http://localhost:8888/"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 21
   },
   {
@@ -2806,7 +2806,7 @@
       "changes": "{\"product\": [\"None\", \"Bodgeit\"], \"path\": [\"None\", \"/bodgeit/logout.jsp\"], \"host\": [\"None\", \"localhost:8888\"], \"protocol\": [\"None\", \"http\"], \"id\": [\"None\", \"16\"]}",
       "object_repr": "http://localhost:8888/bodgeit/logout.jsp"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 22
   },
   {
@@ -2822,7 +2822,7 @@
       "changes": "{\"impact\": [\"None\", \"No impact provided\"], \"false_p\": [\"None\", \"False\"], \"verified\": [\"None\", \"False\"], \"description\": [\"None\", \"Reflected cross-site scripting vulnerabilities arise when data is copied from\\na request and echoed into the application's immediate response in an unsafe\\nway. An attacker can use the vulnerability to construct a request that, if\\nissued by another application user, will cause JavaScript code supplied by the\\nattacker to execute within the user's browser in the context of that user's\\nsession with the application.\\n\\nThe attacker-supplied code can perform a wide variety of actions, such as\\nstealing the victim's session token or login credentials, performing arbitrary\\nactions on the victim's behalf, and logging their keystrokes.\\n\\nUsers can be induced to issue the attacker's crafted request in various ways.\\nFor example, the attacker can send a victim a link containing a malicious URL\\nin an email or instant message. They can submit the link to popular web sites\\nthat allow content authoring, for example in blog comments. And they can\\ncreate an innocuous looking web site that causes anyone viewing it to make\\narbitrary cross-domain requests to the vulnerable application (using either\\nthe GET or the POST method).\\n\\nThe security impact of cross-site scripting vulnerabilities is dependent upon\\nthe nature of the vulnerable application, the kinds of data and functionality\\nthat it contains, and the other applications that belong to the same domain\\nand organization. If the application is used only to display non-sensitive\\npublic content, with no authentication or access control functionality, then a\\ncross-site scripting flaw may be considered low risk. However, if the same\\napplication resides on a domain that can access cookies for other more\\nsecurity-critical applications, then the vulnerability could be used to attack\\nthose other applications, and so may be considered high risk. Similarly, if\\nthe organization that owns the application is a likely target for phishing\\nattacks, then the vulnerability could be leveraged to lend credibility to such\\nattacks, by injecting Trojan functionality into the vulnerable application and\\nexploiting users' trust in the organization in order to capture credentials\\nfor other applications that it owns. In many kinds of application, such as\\nthose providing online banking functionality, cross-site scripting should\\nalways be considered high risk.\\n\\n\\n\\nThe value of the **username** request parameter is copied into the HTML\\ndocument as plain text between tags. The payload\\n**yf136&lt;script&gt;alert(1)&lt;/script&gt;jledu** was submitted in the\\nusername parameter. This input was echoed unmodified in the application's\\nresponse.  \\n  \\nThis proof-of-concept attack demonstrates that it is possible to inject\\narbitrary JavaScript into the application's response.\\n\\n\"], \"title\": [\"None\", \"Cross-site scripting (reflected)\"], \"thread_id\": [\"None\", \"0\"], \"id\": [\"None\", \"3\"], \"reporter\": [\"None\", \"admin\"], \"duplicate\": [\"None\", \"False\"], \"last_reviewed\": [\"None\", \"2016-08-26 21:21:27.690856-05:00\"], \"test\": [\"None\", \"Burp Scan (Aug 26, 2016)\"], \"is_template\": [\"None\", \"False\"], \"mitigation\": [\"None\", \"In most situations where user-controllable data is copied into application\\nresponses, cross-site scripting attacks can be prevented using two layers of\\ndefenses:\\n\\n  * Input should be validated as strictly as possible on arrival, given the kind of content that it is expected to contain. For example, personal names should consist of alphabetical and a small range of typographical characters, and be relatively short; a year of birth should consist of exactly four numerals; email addresses should match a well-defined regular expression. Input which fails the validation should be rejected, not sanitized.\\n  * User input should be HTML-encoded at any point where it is copied into application responses. All HTML metacharacters, including &lt; &gt; \\\" ' and =, should be replaced with the corresponding HTML entities (&amp;lt; &amp;gt; etc).\\n\\nIn cases where the application's functionality allows users to author content\\nusing a restricted subset of HTML tags and attributes (for example, blog\\ncomments which allow limited formatting and linking), it is necessary to parse\\nthe supplied HTML to validate that it does not use any dangerous syntax; this\\nis a non-trivial task.\\n\\n\"], \"references\": [\"None\", \"  * [Using Burp to Find XSS issues](https://support.portswigger.net/customer/portal/articles/1965737-Methodology_XSS.html)\\n\\n\"], \"numerical_severity\": [\"None\", \"S1\"], \"date\": [\"None\", \"2016-08-26 00:00:00-05:00\"], \"out_of_scope\": [\"None\", \"False\"], \"last_reviewed_by\": [\"None\", \"admin\"], \"cwe\": [\"None\", \"0\"], \"active\": [\"None\", \"True\"], \"severity\": [\"None\", \"High\"]}",
       "object_repr": "Cross-site scripting (reflected)"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 23
   },
   {
@@ -2838,7 +2838,7 @@
       "changes": "{\"impact\": [\"None\", \"No impact provided\"], \"false_p\": [\"None\", \"False\"], \"verified\": [\"None\", \"False\"], \"description\": [\"None\", \"The application allows users to connect to it over unencrypted connections. An\\nattacker suitably positioned to view a legitimate user's network traffic could\\nrecord and monitor their interactions with the application and obtain any\\ninformation the user supplies. Furthermore, an attacker able to modify traffic\\ncould use the application as a platform for attacks against its users and\\nthird-party websites. Unencrypted connections have been exploited by ISPs and\\ngovernments to track users, and to inject adverts and malicious JavaScript.\\nDue to these concerns, web browser vendors are planning to visually flag\\nunencrypted connections as hazardous.\\n\\nTo exploit this vulnerability, an attacker must be suitably positioned to\\neavesdrop on the victim's network traffic. This scenario typically occurs when\\na client communicates with the server over an insecure connection such as\\npublic Wi-Fi, or a corporate or home network that is shared with a compromised\\ncomputer. Common defenses such as switched networks are not sufficient to\\nprevent this. An attacker situated in the user's ISP or the application's\\nhosting infrastructure could also perform this attack. Note that an advanced\\nadversary could potentially target any connection made over the Internet's\\ncore infrastructure.\\n\\nPlease note that using a mixture of encrypted and unencrypted communications\\nis an ineffective defense against active attackers, because they can easily\\nremove references to encrypted resources when these references are transmitted\\nover an unencrypted connection.\\n\\n\\n\\n\"], \"title\": [\"None\", \"Unencrypted communications\"], \"thread_id\": [\"None\", \"0\"], \"id\": [\"None\", \"4\"], \"reporter\": [\"None\", \"admin\"], \"duplicate\": [\"None\", \"False\"], \"last_reviewed\": [\"None\", \"2016-08-26 21:21:27.711032-05:00\"], \"test\": [\"None\", \"Burp Scan (Aug 26, 2016)\"], \"is_template\": [\"None\", \"False\"], \"mitigation\": [\"None\", \"Applications should use transport-level encryption (SSL/TLS) to protect all\\ncommunications passing between the client and the server. The Strict-\\nTransport-Security HTTP header should be used to ensure that clients refuse to\\naccess the server over an insecure connection.\\n\\n\"], \"references\": [\"None\", \"  * [Marking HTTP as non-secure](https://www.chromium.org/Home/chromium-security/marking-http-as-non-secure)\\n  * [Configuring Server-Side SSL/TLS](https://wiki.mozilla.org/Security/Server_Side_TLS)\\n  * [HTTP Strict Transport Security](https://developer.mozilla.org/en-US/docs/Web/Security/HTTP_strict_transport_security)\\n\\n\"], \"numerical_severity\": [\"None\", \"S3\"], \"date\": [\"None\", \"2016-08-26 00:00:00-05:00\"], \"out_of_scope\": [\"None\", \"False\"], \"last_reviewed_by\": [\"None\", \"admin\"], \"cwe\": [\"None\", \"0\"], \"active\": [\"None\", \"True\"], \"severity\": [\"None\", \"Low\"]}",
       "object_repr": "Unencrypted communications"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 24
   },
   {
@@ -2854,7 +2854,7 @@
       "changes": "{\"impact\": [\"None\", \"No impact provided\"], \"false_p\": [\"None\", \"False\"], \"verified\": [\"None\", \"False\"], \"description\": [\"None\", \"Some applications return passwords submitted to the application in clear form\\nin later responses. This behavior increases the risk that users' passwords\\nwill be captured by an attacker. Many types of vulnerability, such as\\nweaknesses in session handling, broken access controls, and cross-site\\nscripting, could enable an attacker to leverage this behavior to retrieve the\\npasswords of other application users. This possibility typically exacerbates\\nthe impact of those other vulnerabilities, and in some situations can enable\\nan attacker to quickly compromise the entire application.\\n\\nVulnerabilities that result in the disclosure of users' passwords can result\\nin compromises that are extremely difficult to investigate due to obscured\\naudit trails. Even if the application itself only handles non-sensitive\\ninformation, exposing passwords puts users who have re-used their password\\nelsewhere at risk.\\n\\n\\n\\n\"], \"title\": [\"None\", \"Password returned in later response\"], \"thread_id\": [\"None\", \"0\"], \"id\": [\"None\", \"5\"], \"reporter\": [\"None\", \"admin\"], \"duplicate\": [\"None\", \"False\"], \"last_reviewed\": [\"None\", \"2016-08-26 21:21:27.727214-05:00\"], \"test\": [\"None\", \"Burp Scan (Aug 26, 2016)\"], \"is_template\": [\"None\", \"False\"], \"mitigation\": [\"None\", \"There is usually no good reason for an application to return users' passwords\\nin its responses. If user impersonation is a business requirement this would\\nbe better implemented as a custom function with associated logging.\\n\\n\"], \"references\": [\"None\", \"\"], \"numerical_severity\": [\"None\", \"S2\"], \"date\": [\"None\", \"2016-08-26 00:00:00-05:00\"], \"out_of_scope\": [\"None\", \"False\"], \"last_reviewed_by\": [\"None\", \"admin\"], \"cwe\": [\"None\", \"0\"], \"active\": [\"None\", \"True\"], \"severity\": [\"None\", \"Medium\"]}",
       "object_repr": "Password returned in later response"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 25
   },
   {
@@ -2870,7 +2870,7 @@
       "changes": "{\"impact\": [\"None\", \"No impact provided\"], \"false_p\": [\"None\", \"False\"], \"verified\": [\"None\", \"False\"], \"description\": [\"None\", \"The presence of email addresses within application responses does not\\nnecessarily constitute a security vulnerability. Email addresses may appear\\nintentionally within contact information, and many applications (such as web\\nmail) include arbitrary third-party email addresses within their core content.\\n\\nHowever, email addresses of developers and other individuals (whether\\nappearing on-screen or hidden within page source) may disclose information\\nthat is useful to an attacker; for example, they may represent usernames that\\ncan be used at the application's login, and they may be used in social\\nengineering attacks against the organization's personnel. Unnecessary or\\nexcessive disclosure of email addresses may also lead to an increase in the\\nvolume of spam email received.\\n\\n\\n\\nThe following email address was disclosed in the response:\\n\\n  * test@test.com\\n\\n\"], \"title\": [\"None\", \"Email addresses disclosed\"], \"thread_id\": [\"None\", \"0\"], \"id\": [\"None\", \"6\"], \"reporter\": [\"None\", \"admin\"], \"duplicate\": [\"None\", \"False\"], \"last_reviewed\": [\"None\", \"2016-08-26 21:21:27.742212-05:00\"], \"test\": [\"None\", \"Burp Scan (Aug 26, 2016)\"], \"is_template\": [\"None\", \"False\"], \"mitigation\": [\"None\", \"Consider removing any email addresses that are unnecessary, or replacing\\npersonal addresses with anonymous mailbox addresses (such as\\nhelpdesk@example.com).\\n\\nTo reduce the quantity of spam sent to anonymous mailbox addresses, consider\\nhiding the email address and instead providing a form that generates the email\\nserver-side, protected by a CAPTCHA if necessary.\\n\\n\"], \"references\": [\"None\", \"\"], \"numerical_severity\": [\"None\", \"S4\"], \"date\": [\"None\", \"2016-08-26 00:00:00-05:00\"], \"out_of_scope\": [\"None\", \"False\"], \"last_reviewed_by\": [\"None\", \"admin\"], \"cwe\": [\"None\", \"0\"], \"active\": [\"None\", \"True\"], \"severity\": [\"None\", \"Info\"]}",
       "object_repr": "Email addresses disclosed"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 26
   },
   {
@@ -2886,7 +2886,7 @@
       "changes": "{\"impact\": [\"None\", \"No impact provided\"], \"false_p\": [\"None\", \"False\"], \"verified\": [\"None\", \"False\"], \"description\": [\"None\", \"Cross-site request forgery (CSRF) vulnerabilities may arise when applications\\nrely solely on HTTP cookies to identify the user that has issued a particular\\nrequest. Because browsers automatically add cookies to requests regardless of\\ntheir origin, it may be possible for an attacker to create a malicious web\\nsite that forges a cross-domain request to the vulnerable application. For a\\nrequest to be vulnerable to CSRF, the following conditions must hold:\\n\\n  * The request can be issued cross-domain, for example using an HTML form. If the request contains non-standard headers or body content, then it may only be issuable from a page that originated on the same domain.\\n  * The application relies solely on HTTP cookies or Basic Authentication to identify the user that issued the request. If the application places session-related tokens elsewhere within the request, then it may not be vulnerable.\\n  * The request performs some privileged action within the application, which modifies the application's state based on the identity of the issuing user.\\n  * The attacker can determine all the parameters required to construct a request that performs the action. If the request contains any values that the attacker cannot determine or predict, then it is not vulnerable.\\n\\n\\n\\nThe request appears to be vulnerable to cross-site request forgery (CSRF)\\nattacks against unauthenticated functionality. This is unlikely to constitute\\na security vulnerability in its own right, however it may facilitate\\nexploitation of other vulnerabilities affecting application users.\\n\\n\"], \"title\": [\"None\", \"Cross-site request forgery\"], \"thread_id\": [\"None\", \"0\"], \"id\": [\"None\", \"7\"], \"reporter\": [\"None\", \"admin\"], \"duplicate\": [\"None\", \"False\"], \"last_reviewed\": [\"None\", \"2016-08-26 21:21:27.793097-05:00\"], \"test\": [\"None\", \"Burp Scan (Aug 26, 2016)\"], \"is_template\": [\"None\", \"False\"], \"mitigation\": [\"None\", \"The most effective way to protect against CSRF vulnerabilities is to include\\nwithin relevant requests an additional token that is not transmitted in a\\ncookie: for example, a parameter in a hidden form field. This additional token\\nshould contain sufficient entropy, and be generated using a cryptographic\\nrandom number generator, such that it is not feasible for an attacker to\\ndetermine or predict the value of any token that was issued to another user.\\nThe token should be associated with the user's session, and the application\\nshould validate that the correct token is received before performing any\\naction resulting from the request.\\n\\nAn alternative approach, which may be easier to implement, is to validate that\\nHost and Referer headers in relevant requests are both present and contain the\\nsame domain name. However, this approach is somewhat less robust:\\nhistorically, quirks in browsers and plugins have often enabled attackers to\\nforge cross-domain requests that manipulate these headers to bypass such\\ndefenses.\\n\\n\"], \"references\": [\"None\", \"  * [Using Burp to Test for Cross-Site Request Forgery](https://support.portswigger.net/customer/portal/articles/1965674-using-burp-to-test-for-cross-site-request-forgery-csrf-)\\n  * [The Deputies Are Still Confused](https://media.blackhat.com/eu-13/briefings/Lundeen/bh-eu-13-deputies-still-confused-lundeen-wp.pdf)\\n\\n\"], \"numerical_severity\": [\"None\", \"S4\"], \"date\": [\"None\", \"2016-08-26 00:00:00-05:00\"], \"out_of_scope\": [\"None\", \"False\"], \"last_reviewed_by\": [\"None\", \"admin\"], \"cwe\": [\"None\", \"0\"], \"active\": [\"None\", \"True\"], \"severity\": [\"None\", \"Info\"]}",
       "object_repr": "Cross-site request forgery"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 27
   },
   {
@@ -2902,7 +2902,7 @@
       "changes": "{\"impact\": [\"None\", \"No impact provided\"], \"false_p\": [\"None\", \"False\"], \"verified\": [\"None\", \"False\"], \"description\": [\"None\", \"SQL injection vulnerabilities arise when user-controllable data is\\nincorporated into database SQL queries in an unsafe manner. An attacker can\\nsupply crafted input to break out of the data context in which their input\\nappears and interfere with the structure of the surrounding query.\\n\\nA wide range of damaging attacks can often be delivered via SQL injection,\\nincluding reading or modifying critical application data, interfering with\\napplication logic, escalating privileges within the database and taking\\ncontrol of the database server.\\n\\n\\n\\nThe **b_id** cookie appears to be vulnerable to SQL injection attacks. The\\npayload **'** was submitted in the b_id cookie, and a database error message\\nwas returned. You should review the contents of the error message, and the\\napplication's handling of other input, to confirm whether a vulnerability is\\npresent.  \\n  \\nThe database appears to be Microsoft SQL Server.\\n\\n\"], \"title\": [\"None\", \"SQL injection\"], \"thread_id\": [\"None\", \"0\"], \"id\": [\"None\", \"8\"], \"reporter\": [\"None\", \"admin\"], \"duplicate\": [\"None\", \"False\"], \"last_reviewed\": [\"None\", \"2016-08-26 21:21:27.812889-05:00\"], \"test\": [\"None\", \"Burp Scan (Aug 26, 2016)\"], \"is_template\": [\"None\", \"False\"], \"mitigation\": [\"None\", \"The most effective way to prevent SQL injection attacks is to use\\nparameterized queries (also known as prepared statements) for all database\\naccess. This method uses two steps to incorporate potentially tainted data\\ninto SQL queries: first, the application specifies the structure of the query,\\nleaving placeholders for each item of user input; second, the application\\nspecifies the contents of each placeholder. Because the structure of the query\\nhas already been defined in the first step, it is not possible for malformed\\ndata in the second step to interfere with the query structure. You should\\nreview the documentation for your database and application platform to\\ndetermine the appropriate APIs which you can use to perform parameterized\\nqueries. It is strongly recommended that you parameterize _every_ variable\\ndata item that is incorporated into database queries, even if it is not\\nobviously tainted, to prevent oversights occurring and avoid vulnerabilities\\nbeing introduced by changes elsewhere within the code base of the application.\\n\\nYou should be aware that some commonly employed and recommended mitigations\\nfor SQL injection vulnerabilities are not always effective:\\n\\n  * One common defense is to double up any single quotation marks appearing within user input before incorporating that input into a SQL query. This defense is designed to prevent malformed data from terminating the string into which it is inserted. However, if the data being incorporated into queries is numeric, then the defense may fail, because numeric data may not be encapsulated within quotes, in which case only a space is required to break out of the data context and interfere with the query. Further, in second-order SQL injection attacks, data that has been safely escaped when initially inserted into the database is subsequently read from the database and then passed back to it again. Quotation marks that have been doubled up initially will return to their original form when the data is reused, allowing the defense to be bypassed.\\n  * Another often cited defense is to use stored procedures for database access. While stored procedures can provide security benefits, they are not guaranteed to prevent SQL injection attacks. The same kinds of vulnerabilities that arise within standard dynamic SQL queries can arise if any SQL is dynamically constructed within stored procedures. Further, even if the procedure is sound, SQL injection can arise if the procedure is invoked in an unsafe manner using user-controllable data.\\n\\n\"], \"references\": [\"None\", \"  * [Using Burp to Test for Injection Flaws](https://support.portswigger.net/customer/portal/articles/1965677-using-burp-to-test-for-injection-flaws)\\n  * [SQL Injection Cheat Sheet](http://websec.ca/kb/sql_injection)\\n  * [SQL Injection Prevention Cheat Sheet](https://www.owasp.org/index.php/SQL_Injection_Prevention_Cheat_Sheet)\\n\\n\"], \"numerical_severity\": [\"None\", \"S1\"], \"date\": [\"None\", \"2016-08-26 00:00:00-05:00\"], \"out_of_scope\": [\"None\", \"False\"], \"last_reviewed_by\": [\"None\", \"admin\"], \"cwe\": [\"None\", \"0\"], \"active\": [\"None\", \"True\"], \"severity\": [\"None\", \"High\"]}",
       "object_repr": "SQL injection"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 28
   },
   {
@@ -2918,7 +2918,7 @@
       "changes": "{\"impact\": [\"None\", \"No impact provided\"], \"false_p\": [\"None\", \"False\"], \"verified\": [\"None\", \"False\"], \"description\": [\"None\", \"Path-relative style sheet import vulnerabilities arise when the following\\nconditions hold:\\n\\n  1. A response contains a style sheet import that uses a path-relative URL (for example, the page at \\\"/original-path/file.php\\\" might import \\\"styles/main.css\\\").\\n  2. When handling requests, the application or platform tolerates superfluous path-like data following the original filename in the URL (for example, \\\"/original-path/file.php/extra-junk/\\\"). When superfluous data is added to the original URL, the application's response still contains a path-relative stylesheet import.\\n  3. The response in condition 2 can be made to render in a browser's quirks mode, either because it has a missing or old doctype directive, or because it allows itself to be framed by a page under an attacker's control.\\n  4. When a browser requests the style sheet that is imported in the response from the modified URL (using the URL \\\"/original-path/file.php/extra-junk/styles/main.css\\\"), the application returns something other than the CSS response that was supposed to be imported. Given the behavior described in condition 2, this will typically be the same response that was originally returned in condition 1.\\n  5. An attacker has a means of manipulating some text within the response in condition 4, for example because the application stores and displays some past input, or echoes some text within the current URL.\\n\\nGiven the above conditions, an attacker can execute CSS injection within the\\nbrowser of the target user. The attacker can construct a URL that causes the\\nvictim's browser to import as CSS a different URL than normal, containing text\\nthat the attacker can manipulate. Being able to inject arbitrary CSS into the\\nvictim's browser may enable various attacks, including:\\n\\n  * Executing arbitrary JavaScript using IE's expression() function.\\n  * Using CSS selectors to read parts of the HTML source, which may include sensitive data such as anti-CSRF tokens.\\n  * Capturing any sensitive data within the URL query string by making a further style sheet import to a URL on the attacker's domain, and monitoring the incoming Referer header.\\n\\n\\n\\nThe application may be vulnerable to path-relative style sheet import (PRSSI)\\nattacks. The response contains a path-relative style sheet import, and so\\ncondition 1 for an exploitable vulnerability is present (see issue\\nbackground). The response can also be made to render in a browser's quirks\\nmode. The page does not contain a doctype directive, and so it will always be\\nrendered in quirks mode. Further, the response does not prevent itself from\\nbeing framed, so an attacker can frame the response within a page that they\\ncontrol, to force it to be rendered in quirks mode. (Note that this technique\\nis IE-specific and due to P3P restrictions might sometimes limit the impact of\\na successful attack.) This means that condition 3 for an exploitable\\nvulnerability is probably present if condition 2 is present.  \\n  \\nBurp was not able to confirm that the other conditions hold, and you should\\nmanually investigate this issue to confirm whether they do hold.\\n\\n\"], \"title\": [\"None\", \"Path-relative style sheet import\"], \"thread_id\": [\"None\", \"0\"], \"id\": [\"None\", \"9\"], \"reporter\": [\"None\", \"admin\"], \"duplicate\": [\"None\", \"False\"], \"last_reviewed\": [\"None\", \"2016-08-26 21:21:27.840903-05:00\"], \"test\": [\"None\", \"Burp Scan (Aug 26, 2016)\"], \"is_template\": [\"None\", \"False\"], \"mitigation\": [\"None\", \"The root cause of the vulnerability can be resolved by not using path-relative\\nURLs in style sheet imports. Aside from this, attacks can also be prevented by\\nimplementing all of the following defensive measures:\\n\\n  * Setting the HTTP response header \\\"X-Frame-Options: deny\\\" in all responses. One method that an attacker can use to make a page render in quirks mode is to frame it within their own page that is rendered in quirks mode. Setting this header prevents the page from being framed.\\n  * Setting a modern doctype (e.g. \\\"&lt;!doctype html&gt;\\\") in all HTML responses. This prevents the page from being rendered in quirks mode (unless it is being framed, as described above).\\n  * Setting the HTTP response header \\\"X-Content-Type-Options: no sniff\\\" in all responses. This prevents the browser from processing a non-CSS response as CSS, even if another page loads the response via a style sheet import.\\n\\n\"], \"references\": [\"None\", \"  * [Detecting and exploiting path-relative stylesheet import (PRSSI) vulnerabilities](http://blog.portswigger.net/2015/02/prssi.html)\\n\\n\"], \"numerical_severity\": [\"None\", \"S4\"], \"date\": [\"None\", \"2016-08-26 00:00:00-05:00\"], \"out_of_scope\": [\"None\", \"False\"], \"last_reviewed_by\": [\"None\", \"admin\"], \"cwe\": [\"None\", \"0\"], \"active\": [\"None\", \"True\"], \"severity\": [\"None\", \"Info\"]}",
       "object_repr": "Path-relative style sheet import"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 29
   },
   {
@@ -2934,7 +2934,7 @@
       "changes": "{\"impact\": [\"None\", \"No impact provided\"], \"false_p\": [\"None\", \"False\"], \"verified\": [\"None\", \"False\"], \"description\": [\"None\", \"Some applications transmit passwords over unencrypted connections, making them\\nvulnerable to interception. To exploit this vulnerability, an attacker must be\\nsuitably positioned to eavesdrop on the victim's network traffic. This\\nscenario typically occurs when a client communicates with the server over an\\ninsecure connection such as public Wi-Fi, or a corporate or home network that\\nis shared with a compromised computer. Common defenses such as switched\\nnetworks are not sufficient to prevent this. An attacker situated in the\\nuser's ISP or the application's hosting infrastructure could also perform this\\nattack. Note that an advanced adversary could potentially target any\\nconnection made over the Internet's core infrastructure.\\n\\nVulnerabilities that result in the disclosure of users' passwords can result\\nin compromises that are extremely difficult to investigate due to obscured\\naudit trails. Even if the application itself only handles non-sensitive\\ninformation, exposing passwords puts users who have re-used their password\\nelsewhere at risk.\\n\\n\\n\\nThe page contains a form with the following action URL, which is submitted\\nover clear-text HTTP:\\n\\n  * http://localhost:8888/bodgeit/login.jsp\\n\\nThe form contains the following password field:\\n\\n  * password\\n\\n\"], \"title\": [\"None\", \"Cleartext submission of password\"], \"thread_id\": [\"None\", \"0\"], \"id\": [\"None\", \"10\"], \"reporter\": [\"None\", \"admin\"], \"duplicate\": [\"None\", \"False\"], \"last_reviewed\": [\"None\", \"2016-08-26 21:21:27.922449-05:00\"], \"test\": [\"None\", \"Burp Scan (Aug 26, 2016)\"], \"is_template\": [\"None\", \"False\"], \"mitigation\": [\"None\", \"Applications should use transport-level encryption (SSL or TLS) to protect all\\nsensitive communications passing between the client and the server.\\nCommunications that should be protected include the login mechanism and\\nrelated functionality, and any functions where sensitive data can be accessed\\nor privileged actions can be performed. These areas should employ their own\\nsession handling mechanism, and the session tokens used should never be\\ntransmitted over unencrypted communications. If HTTP cookies are used for\\ntransmitting session tokens, then the secure flag should be set to prevent\\ntransmission over clear-text HTTP.\\n\\n\"], \"references\": [\"None\", \"\"], \"numerical_severity\": [\"None\", \"S1\"], \"date\": [\"None\", \"2016-08-26 00:00:00-05:00\"], \"out_of_scope\": [\"None\", \"False\"], \"last_reviewed_by\": [\"None\", \"admin\"], \"cwe\": [\"None\", \"0\"], \"active\": [\"None\", \"True\"], \"severity\": [\"None\", \"High\"]}",
       "object_repr": "Cleartext submission of password"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 30
   },
   {
@@ -2950,7 +2950,7 @@
       "changes": "{\"verified\": [\"False\", \"True\"], \"description\": [\"Some applications transmit passwords over unencrypted connections, making them\\nvulnerable to interception. To exploit this vulnerability, an attacker must be\\nsuitably positioned to eavesdrop on the victim's network traffic. This\\nscenario typically occurs when a client communicates with the server over an\\ninsecure connection such as public Wi-Fi, or a corporate or home network that\\nis shared with a compromised computer. Common defenses such as switched\\nnetworks are not sufficient to prevent this. An attacker situated in the\\nuser's ISP or the application's hosting infrastructure could also perform this\\nattack. Note that an advanced adversary could potentially target any\\nconnection made over the Internet's core infrastructure.\\n\\nVulnerabilities that result in the disclosure of users' passwords can result\\nin compromises that are extremely difficult to investigate due to obscured\\naudit trails. Even if the application itself only handles non-sensitive\\ninformation, exposing passwords puts users who have re-used their password\\nelsewhere at risk.\\n\\n\\n\\nThe page contains a form with the following action URL, which is submitted\\nover clear-text HTTP:\\n\\n  * http://localhost:8888/bodgeit/login.jsp\\n\\nThe form contains the following password field:\\n\\n  * password\\n\\n\", \"Some applications transmit passwords over unencrypted connections, making them\\r\\nvulnerable to interception. To exploit this vulnerability, an attacker must be\\r\\nsuitably positioned to eavesdrop on the victim's network traffic. This\\r\\nscenario typically occurs when a client communicates with the server over an\\r\\ninsecure connection such as public Wi-Fi, or a corporate or home network that\\r\\nis shared with a compromised computer. Common defenses such as switched\\r\\nnetworks are not sufficient to prevent this. An attacker situated in the\\r\\nuser's ISP or the application's hosting infrastructure could also perform this\\r\\nattack. Note that an advanced adversary could potentially target any\\r\\nconnection made over the Internet's core infrastructure.\\r\\n\\r\\nVulnerabilities that result in the disclosure of users' passwords can result\\r\\nin compromises that are extremely difficult to investigate due to obscured\\r\\naudit trails. Even if the application itself only handles non-sensitive\\r\\ninformation, exposing passwords puts users who have re-used their password\\r\\nelsewhere at risk.\\r\\n\\r\\n\\r\\n\\r\\nThe page contains a form with the following action URL, which is submitted\\r\\nover clear-text HTTP:\\r\\n\\r\\n  * http://localhost:8888/bodgeit/login.jsp\\r\\n\\r\\nThe form contains the following password field:\\r\\n\\r\\n  * password\\r\\n\\r\\n\"], \"url\": [\"None\", \"No url given\"], \"mitigation\": [\"Applications should use transport-level encryption (SSL or TLS) to protect all\\nsensitive communications passing between the client and the server.\\nCommunications that should be protected include the login mechanism and\\nrelated functionality, and any functions where sensitive data can be accessed\\nor privileged actions can be performed. These areas should employ their own\\nsession handling mechanism, and the session tokens used should never be\\ntransmitted over unencrypted communications. If HTTP cookies are used for\\ntransmitting session tokens, then the secure flag should be set to prevent\\ntransmission over clear-text HTTP.\\n\\n\", \"Applications should use transport-level encryption (SSL or TLS) to protect all\\r\\nsensitive communications passing between the client and the server.\\r\\nCommunications that should be protected include the login mechanism and\\r\\nrelated functionality, and any functions where sensitive data can be accessed\\r\\nor privileged actions can be performed. These areas should employ their own\\r\\nsession handling mechanism, and the session tokens used should never be\\r\\ntransmitted over unencrypted communications. If HTTP cookies are used for\\r\\ntransmitting session tokens, then the secure flag should be set to prevent\\r\\ntransmission over clear-text HTTP.\\r\\n\\r\\n\"], \"references\": [\"\", \"No references given\"], \"last_reviewed\": [\"2016-08-27 02:21:27.922449+00:00\", \"2016-08-26 21:21:53.556891-05:00\"]}",
       "object_repr": "Cleartext submission of password"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 31
   },
   {
@@ -2966,7 +2966,7 @@
       "changes": "{\"verified\": [\"False\", \"True\"], \"description\": [\"SQL injection vulnerabilities arise when user-controllable data is\\nincorporated into database SQL queries in an unsafe manner. An attacker can\\nsupply crafted input to break out of the data context in which their input\\nappears and interfere with the structure of the surrounding query.\\n\\nA wide range of damaging attacks can often be delivered via SQL injection,\\nincluding reading or modifying critical application data, interfering with\\napplication logic, escalating privileges within the database and taking\\ncontrol of the database server.\\n\\n\\n\\nThe **b_id** cookie appears to be vulnerable to SQL injection attacks. The\\npayload **'** was submitted in the b_id cookie, and a database error message\\nwas returned. You should review the contents of the error message, and the\\napplication's handling of other input, to confirm whether a vulnerability is\\npresent.  \\n  \\nThe database appears to be Microsoft SQL Server.\\n\\n\", \"SQL injection vulnerabilities arise when user-controllable data is\\r\\nincorporated into database SQL queries in an unsafe manner. An attacker can\\r\\nsupply crafted input to break out of the data context in which their input\\r\\nappears and interfere with the structure of the surrounding query.\\r\\n\\r\\nA wide range of damaging attacks can often be delivered via SQL injection,\\r\\nincluding reading or modifying critical application data, interfering with\\r\\napplication logic, escalating privileges within the database and taking\\r\\ncontrol of the database server.\\r\\n\\r\\n\\r\\n\\r\\nThe **b_id** cookie appears to be vulnerable to SQL injection attacks. The\\r\\npayload **'** was submitted in the b_id cookie, and a database error message\\r\\nwas returned. You should review the contents of the error message, and the\\r\\napplication's handling of other input, to confirm whether a vulnerability is\\r\\npresent.  \\r\\n  \\r\\nThe database appears to be Microsoft SQL Server.\\r\\n\\r\\n\"], \"url\": [\"None\", \"No url given\"], \"mitigation\": [\"The most effective way to prevent SQL injection attacks is to use\\nparameterized queries (also known as prepared statements) for all database\\naccess. This method uses two steps to incorporate potentially tainted data\\ninto SQL queries: first, the application specifies the structure of the query,\\nleaving placeholders for each item of user input; second, the application\\nspecifies the contents of each placeholder. Because the structure of the query\\nhas already been defined in the first step, it is not possible for malformed\\ndata in the second step to interfere with the query structure. You should\\nreview the documentation for your database and application platform to\\ndetermine the appropriate APIs which you can use to perform parameterized\\nqueries. It is strongly recommended that you parameterize _every_ variable\\ndata item that is incorporated into database queries, even if it is not\\nobviously tainted, to prevent oversights occurring and avoid vulnerabilities\\nbeing introduced by changes elsewhere within the code base of the application.\\n\\nYou should be aware that some commonly employed and recommended mitigations\\nfor SQL injection vulnerabilities are not always effective:\\n\\n  * One common defense is to double up any single quotation marks appearing within user input before incorporating that input into a SQL query. This defense is designed to prevent malformed data from terminating the string into which it is inserted. However, if the data being incorporated into queries is numeric, then the defense may fail, because numeric data may not be encapsulated within quotes, in which case only a space is required to break out of the data context and interfere with the query. Further, in second-order SQL injection attacks, data that has been safely escaped when initially inserted into the database is subsequently read from the database and then passed back to it again. Quotation marks that have been doubled up initially will return to their original form when the data is reused, allowing the defense to be bypassed.\\n  * Another often cited defense is to use stored procedures for database access. While stored procedures can provide security benefits, they are not guaranteed to prevent SQL injection attacks. The same kinds of vulnerabilities that arise within standard dynamic SQL queries can arise if any SQL is dynamically constructed within stored procedures. Further, even if the procedure is sound, SQL injection can arise if the procedure is invoked in an unsafe manner using user-controllable data.\\n\\n\", \"The most effective way to prevent SQL injection attacks is to use\\r\\nparameterized queries (also known as prepared statements) for all database\\r\\naccess. This method uses two steps to incorporate potentially tainted data\\r\\ninto SQL queries: first, the application specifies the structure of the query,\\r\\nleaving placeholders for each item of user input; second, the application\\r\\nspecifies the contents of each placeholder. Because the structure of the query\\r\\nhas already been defined in the first step, it is not possible for malformed\\r\\ndata in the second step to interfere with the query structure. You should\\r\\nreview the documentation for your database and application platform to\\r\\ndetermine the appropriate APIs which you can use to perform parameterized\\r\\nqueries. It is strongly recommended that you parameterize _every_ variable\\r\\ndata item that is incorporated into database queries, even if it is not\\r\\nobviously tainted, to prevent oversights occurring and avoid vulnerabilities\\r\\nbeing introduced by changes elsewhere within the code base of the application.\\r\\n\\r\\nYou should be aware that some commonly employed and recommended mitigations\\r\\nfor SQL injection vulnerabilities are not always effective:\\r\\n\\r\\n  * One common defense is to double up any single quotation marks appearing within user input before incorporating that input into a SQL query. This defense is designed to prevent malformed data from terminating the string into which it is inserted. However, if the data being incorporated into queries is numeric, then the defense may fail, because numeric data may not be encapsulated within quotes, in which case only a space is required to break out of the data context and interfere with the query. Further, in second-order SQL injection attacks, data that has been safely escaped when initially inserted into the database is subsequently read from the database and then passed back to it again. Quotation marks that have been doubled up initially will return to their original form when the data is reused, allowing the defense to be bypassed.\\r\\n  * Another often cited defense is to use stored procedures for database access. While stored procedures can provide security benefits, they are not guaranteed to prevent SQL injection attacks. The same kinds of vulnerabilities that arise within standard dynamic SQL queries can arise if any SQL is dynamically constructed within stored procedures. Further, even if the procedure is sound, SQL injection can arise if the procedure is invoked in an unsafe manner using user-controllable data.\\r\\n\\r\\n\"], \"references\": [\"  * [Using Burp to Test for Injection Flaws](https://support.portswigger.net/customer/portal/articles/1965677-using-burp-to-test-for-injection-flaws)\\n  * [SQL Injection Cheat Sheet](http://websec.ca/kb/sql_injection)\\n  * [SQL Injection Prevention Cheat Sheet](https://www.owasp.org/index.php/SQL_Injection_Prevention_Cheat_Sheet)\\n\\n\", \"  * [Using Burp to Test for Injection Flaws](https://support.portswigger.net/customer/portal/articles/1965677-using-burp-to-test-for-injection-flaws)\\r\\n  * [SQL Injection Cheat Sheet](http://websec.ca/kb/sql_injection)\\r\\n  * [SQL Injection Prevention Cheat Sheet](https://www.owasp.org/index.php/SQL_Injection_Prevention_Cheat_Sheet)\\r\\n\\r\\n\"], \"last_reviewed\": [\"2016-08-27 02:21:27.812889+00:00\", \"2016-08-26 21:22:21.054594-05:00\"]}",
       "object_repr": "SQL injection"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 32
   },
   {
@@ -2982,7 +2982,7 @@
       "changes": "{\"verified\": [\"False\", \"True\"], \"description\": [\"Reflected cross-site scripting vulnerabilities arise when data is copied from\\na request and echoed into the application's immediate response in an unsafe\\nway. An attacker can use the vulnerability to construct a request that, if\\nissued by another application user, will cause JavaScript code supplied by the\\nattacker to execute within the user's browser in the context of that user's\\nsession with the application.\\n\\nThe attacker-supplied code can perform a wide variety of actions, such as\\nstealing the victim's session token or login credentials, performing arbitrary\\nactions on the victim's behalf, and logging their keystrokes.\\n\\nUsers can be induced to issue the attacker's crafted request in various ways.\\nFor example, the attacker can send a victim a link containing a malicious URL\\nin an email or instant message. They can submit the link to popular web sites\\nthat allow content authoring, for example in blog comments. And they can\\ncreate an innocuous looking web site that causes anyone viewing it to make\\narbitrary cross-domain requests to the vulnerable application (using either\\nthe GET or the POST method).\\n\\nThe security impact of cross-site scripting vulnerabilities is dependent upon\\nthe nature of the vulnerable application, the kinds of data and functionality\\nthat it contains, and the other applications that belong to the same domain\\nand organization. If the application is used only to display non-sensitive\\npublic content, with no authentication or access control functionality, then a\\ncross-site scripting flaw may be considered low risk. However, if the same\\napplication resides on a domain that can access cookies for other more\\nsecurity-critical applications, then the vulnerability could be used to attack\\nthose other applications, and so may be considered high risk. Similarly, if\\nthe organization that owns the application is a likely target for phishing\\nattacks, then the vulnerability could be leveraged to lend credibility to such\\nattacks, by injecting Trojan functionality into the vulnerable application and\\nexploiting users' trust in the organization in order to capture credentials\\nfor other applications that it owns. In many kinds of application, such as\\nthose providing online banking functionality, cross-site scripting should\\nalways be considered high risk.\\n\\n\\n\\nThe value of the **username** request parameter is copied into the HTML\\ndocument as plain text between tags. The payload\\n**yf136&lt;script&gt;alert(1)&lt;/script&gt;jledu** was submitted in the\\nusername parameter. This input was echoed unmodified in the application's\\nresponse.  \\n  \\nThis proof-of-concept attack demonstrates that it is possible to inject\\narbitrary JavaScript into the application's response.\\n\\n\", \"Reflected cross-site scripting vulnerabilities arise when data is copied from\\r\\na request and echoed into the application's immediate response in an unsafe\\r\\nway. An attacker can use the vulnerability to construct a request that, if\\r\\nissued by another application user, will cause JavaScript code supplied by the\\r\\nattacker to execute within the user's browser in the context of that user's\\r\\nsession with the application.\\r\\n\\r\\nThe attacker-supplied code can perform a wide variety of actions, such as\\r\\nstealing the victim's session token or login credentials, performing arbitrary\\r\\nactions on the victim's behalf, and logging their keystrokes.\\r\\n\\r\\nUsers can be induced to issue the attacker's crafted request in various ways.\\r\\nFor example, the attacker can send a victim a link containing a malicious URL\\r\\nin an email or instant message. They can submit the link to popular web sites\\r\\nthat allow content authoring, for example in blog comments. And they can\\r\\ncreate an innocuous looking web site that causes anyone viewing it to make\\r\\narbitrary cross-domain requests to the vulnerable application (using either\\r\\nthe GET or the POST method).\\r\\n\\r\\nThe security impact of cross-site scripting vulnerabilities is dependent upon\\r\\nthe nature of the vulnerable application, the kinds of data and functionality\\r\\nthat it contains, and the other applications that belong to the same domain\\r\\nand organization. If the application is used only to display non-sensitive\\r\\npublic content, with no authentication or access control functionality, then a\\r\\ncross-site scripting flaw may be considered low risk. However, if the same\\r\\napplication resides on a domain that can access cookies for other more\\r\\nsecurity-critical applications, then the vulnerability could be used to attack\\r\\nthose other applications, and so may be considered high risk. Similarly, if\\r\\nthe organization that owns the application is a likely target for phishing\\r\\nattacks, then the vulnerability could be leveraged to lend credibility to such\\r\\nattacks, by injecting Trojan functionality into the vulnerable application and\\r\\nexploiting users' trust in the organization in order to capture credentials\\r\\nfor other applications that it owns. In many kinds of application, such as\\r\\nthose providing online banking functionality, cross-site scripting should\\r\\nalways be considered high risk.\\r\\n\\r\\n\\r\\n\\r\\nThe value of the **username** request parameter is copied into the HTML\\r\\ndocument as plain text between tags. The payload\\r\\n**yf136&lt;script&gt;alert(1)&lt;/script&gt;jledu** was submitted in the\\r\\nusername parameter. This input was echoed unmodified in the application's\\r\\nresponse.  \\r\\n  \\r\\nThis proof-of-concept attack demonstrates that it is possible to inject\\r\\narbitrary JavaScript into the application's response.\\r\\n\\r\\n\"], \"url\": [\"None\", \"No url given\"], \"mitigation\": [\"In most situations where user-controllable data is copied into application\\nresponses, cross-site scripting attacks can be prevented using two layers of\\ndefenses:\\n\\n  * Input should be validated as strictly as possible on arrival, given the kind of content that it is expected to contain. For example, personal names should consist of alphabetical and a small range of typographical characters, and be relatively short; a year of birth should consist of exactly four numerals; email addresses should match a well-defined regular expression. Input which fails the validation should be rejected, not sanitized.\\n  * User input should be HTML-encoded at any point where it is copied into application responses. All HTML metacharacters, including &lt; &gt; \\\" ' and =, should be replaced with the corresponding HTML entities (&amp;lt; &amp;gt; etc).\\n\\nIn cases where the application's functionality allows users to author content\\nusing a restricted subset of HTML tags and attributes (for example, blog\\ncomments which allow limited formatting and linking), it is necessary to parse\\nthe supplied HTML to validate that it does not use any dangerous syntax; this\\nis a non-trivial task.\\n\\n\", \"In most situations where user-controllable data is copied into application\\r\\nresponses, cross-site scripting attacks can be prevented using two layers of\\r\\ndefenses:\\r\\n\\r\\n  * Input should be validated as strictly as possible on arrival, given the kind of content that it is expected to contain. For example, personal names should consist of alphabetical and a small range of typographical characters, and be relatively short; a year of birth should consist of exactly four numerals; email addresses should match a well-defined regular expression. Input which fails the validation should be rejected, not sanitized.\\r\\n  * User input should be HTML-encoded at any point where it is copied into application responses. All HTML metacharacters, including &lt; &gt; \\\" ' and =, should be replaced with the corresponding HTML entities (&amp;lt; &amp;gt; etc).\\r\\n\\r\\nIn cases where the application's functionality allows users to author content\\r\\nusing a restricted subset of HTML tags and attributes (for example, blog\\r\\ncomments which allow limited formatting and linking), it is necessary to parse\\r\\nthe supplied HTML to validate that it does not use any dangerous syntax; this\\r\\nis a non-trivial task.\\r\\n\\r\\n\"], \"references\": [\"  * [Using Burp to Find XSS issues](https://support.portswigger.net/customer/portal/articles/1965737-Methodology_XSS.html)\\n\\n\", \"  * [Using Burp to Find XSS issues](https://support.portswigger.net/customer/portal/articles/1965737-Methodology_XSS.html)\\r\\n\\r\\n\"], \"last_reviewed\": [\"2016-08-27 02:21:27.690856+00:00\", \"2016-08-26 21:22:58.503064-05:00\"]}",
       "object_repr": "Cross-site scripting (reflected)"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 33
   },
   {
@@ -2998,7 +2998,7 @@
       "changes": "{\"verified\": [\"False\", \"True\"], \"description\": [\"The application allows users to connect to it over unencrypted connections. An\\nattacker suitably positioned to view a legitimate user's network traffic could\\nrecord and monitor their interactions with the application and obtain any\\ninformation the user supplies. Furthermore, an attacker able to modify traffic\\ncould use the application as a platform for attacks against its users and\\nthird-party websites. Unencrypted connections have been exploited by ISPs and\\ngovernments to track users, and to inject adverts and malicious JavaScript.\\nDue to these concerns, web browser vendors are planning to visually flag\\nunencrypted connections as hazardous.\\n\\nTo exploit this vulnerability, an attacker must be suitably positioned to\\neavesdrop on the victim's network traffic. This scenario typically occurs when\\na client communicates with the server over an insecure connection such as\\npublic Wi-Fi, or a corporate or home network that is shared with a compromised\\ncomputer. Common defenses such as switched networks are not sufficient to\\nprevent this. An attacker situated in the user's ISP or the application's\\nhosting infrastructure could also perform this attack. Note that an advanced\\nadversary could potentially target any connection made over the Internet's\\ncore infrastructure.\\n\\nPlease note that using a mixture of encrypted and unencrypted communications\\nis an ineffective defense against active attackers, because they can easily\\nremove references to encrypted resources when these references are transmitted\\nover an unencrypted connection.\\n\\n\\n\\n\", \"The application allows users to connect to it over unencrypted connections. An\\r\\nattacker suitably positioned to view a legitimate user's network traffic could\\r\\nrecord and monitor their interactions with the application and obtain any\\r\\ninformation the user supplies. Furthermore, an attacker able to modify traffic\\r\\ncould use the application as a platform for attacks against its users and\\r\\nthird-party websites. Unencrypted connections have been exploited by ISPs and\\r\\ngovernments to track users, and to inject adverts and malicious JavaScript.\\r\\nDue to these concerns, web browser vendors are planning to visually flag\\r\\nunencrypted connections as hazardous.\\r\\n\\r\\nTo exploit this vulnerability, an attacker must be suitably positioned to\\r\\neavesdrop on the victim's network traffic. This scenario typically occurs when\\r\\na client communicates with the server over an insecure connection such as\\r\\npublic Wi-Fi, or a corporate or home network that is shared with a compromised\\r\\ncomputer. Common defenses such as switched networks are not sufficient to\\r\\nprevent this. An attacker situated in the user's ISP or the application's\\r\\nhosting infrastructure could also perform this attack. Note that an advanced\\r\\nadversary could potentially target any connection made over the Internet's\\r\\ncore infrastructure.\\r\\n\\r\\nPlease note that using a mixture of encrypted and unencrypted communications\\r\\nis an ineffective defense against active attackers, because they can easily\\r\\nremove references to encrypted resources when these references are transmitted\\r\\nover an unencrypted connection.\\r\\n\\r\\n\\r\\n\\r\\n\"], \"url\": [\"None\", \"No url given\"], \"mitigation\": [\"Applications should use transport-level encryption (SSL/TLS) to protect all\\ncommunications passing between the client and the server. The Strict-\\nTransport-Security HTTP header should be used to ensure that clients refuse to\\naccess the server over an insecure connection.\\n\\n\", \"Applications should use transport-level encryption (SSL/TLS) to protect all\\r\\ncommunications passing between the client and the server. The Strict-\\r\\nTransport-Security HTTP header should be used to ensure that clients refuse to\\r\\naccess the server over an insecure connection.\\r\\n\\r\\n\"], \"references\": [\"  * [Marking HTTP as non-secure](https://www.chromium.org/Home/chromium-security/marking-http-as-non-secure)\\n  * [Configuring Server-Side SSL/TLS](https://wiki.mozilla.org/Security/Server_Side_TLS)\\n  * [HTTP Strict Transport Security](https://developer.mozilla.org/en-US/docs/Web/Security/HTTP_strict_transport_security)\\n\\n\", \"  * [Marking HTTP as non-secure](https://www.chromium.org/Home/chromium-security/marking-http-as-non-secure)\\r\\n  * [Configuring Server-Side SSL/TLS](https://wiki.mozilla.org/Security/Server_Side_TLS)\\r\\n  * [HTTP Strict Transport Security](https://developer.mozilla.org/en-US/docs/Web/Security/HTTP_strict_transport_security)\\r\\n\\r\\n\"], \"last_reviewed\": [\"2016-08-27 02:21:27.711032+00:00\", \"2016-08-26 21:23:17.800977-05:00\"]}",
       "object_repr": "Unencrypted communications"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 34
   },
   {
@@ -3014,7 +3014,7 @@
       "changes": "{\"verified\": [\"False\", \"True\"], \"description\": [\"Most browsers have a facility to remember user credentials that are entered\\ninto HTML forms. This function can be configured by the user and also by\\napplications that employ user credentials. If the function is enabled, then\\ncredentials entered by the user are stored on their local computer and\\nretrieved by the browser on future visits to the same application.\\n\\nThe stored credentials can be captured by an attacker who gains control over\\nthe user's computer. Further, an attacker who finds a separate application\\nvulnerability such as cross-site scripting may be able to exploit this to\\nretrieve a user's browser-stored credentials.\\n\\n\\n\\nThe page contains a form with the following action URL:\\n\\n  * http://localhost:8888/bodgeit/login.jsp\\n\\nThe form contains the following password field with autocomplete enabled:\\n\\n  * password\\n\\n\", \"Most browsers have a facility to remember user credentials that are entered\\r\\ninto HTML forms. This function can be configured by the user and also by\\r\\napplications that employ user credentials. If the function is enabled, then\\r\\ncredentials entered by the user are stored on their local computer and\\r\\nretrieved by the browser on future visits to the same application.\\r\\n\\r\\nThe stored credentials can be captured by an attacker who gains control over\\r\\nthe user's computer. Further, an attacker who finds a separate application\\r\\nvulnerability such as cross-site scripting may be able to exploit this to\\r\\nretrieve a user's browser-stored credentials.\\r\\n\\r\\n\\r\\n\\r\\nThe page contains a form with the following action URL:\\r\\n\\r\\n  * http://localhost:8888/bodgeit/login.jsp\\r\\n\\r\\nThe form contains the following password field with autocomplete enabled:\\r\\n\\r\\n  * password\\r\\n\\r\\n\"], \"url\": [\"None\", \"No url given\"], \"mitigation\": [\"To prevent browsers from storing credentials entered into HTML forms, include\\nthe attribute **autocomplete=\\\"off\\\"** within the FORM tag (to protect all form\\nfields) or within the relevant INPUT tags (to protect specific individual\\nfields).\\n\\nPlease note that modern web browsers may ignore this directive. In spite of\\nthis there is a chance that not disabling autocomplete may cause problems\\nobtaining PCI compliance.\\n\\n\", \"To prevent browsers from storing credentials entered into HTML forms, include\\r\\nthe attribute **autocomplete=\\\"off\\\"** within the FORM tag (to protect all form\\r\\nfields) or within the relevant INPUT tags (to protect specific individual\\r\\nfields).\\r\\n\\r\\nPlease note that modern web browsers may ignore this directive. In spite of\\r\\nthis there is a chance that not disabling autocomplete may cause problems\\r\\nobtaining PCI compliance.\\r\\n\\r\\n\"], \"references\": [\"\", \"No references given\"], \"last_reviewed\": [\"2016-08-27 02:21:27.523491+00:00\", \"2016-08-26 21:23:45.331394-05:00\"]}",
       "object_repr": "Password field with autocomplete enabled"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 35
   },
   {
@@ -3030,7 +3030,7 @@
       "changes": "{\"verified\": [\"False\", \"True\"], \"severity\": [\"Info\", \"Low\"], \"url\": [\"None\", \"No url given\"], \"mitigation\": [\"Consider removing any email addresses that are unnecessary, or replacing\\npersonal addresses with anonymous mailbox addresses (such as\\nhelpdesk@example.com).\\n\\nTo reduce the quantity of spam sent to anonymous mailbox addresses, consider\\nhiding the email address and instead providing a form that generates the email\\nserver-side, protected by a CAPTCHA if necessary.\\n\\n\", \"Consider removing any email addresses that are unnecessary, or replacing\\r\\npersonal addresses with anonymous mailbox addresses (such as\\r\\nhelpdesk@example.com).\\r\\n\\r\\nTo reduce the quantity of spam sent to anonymous mailbox addresses, consider\\r\\nhiding the email address and instead providing a form that generates the email\\r\\nserver-side, protected by a CAPTCHA if necessary.\\r\\n\\r\\n\"], \"references\": [\"\", \"No references given\"], \"numerical_severity\": [\"S4\", \"S3\"], \"last_reviewed\": [\"2016-08-27 02:21:27.742212+00:00\", \"2016-08-26 21:24:20.451037-05:00\"], \"description\": [\"The presence of email addresses within application responses does not\\nnecessarily constitute a security vulnerability. Email addresses may appear\\nintentionally within contact information, and many applications (such as web\\nmail) include arbitrary third-party email addresses within their core content.\\n\\nHowever, email addresses of developers and other individuals (whether\\nappearing on-screen or hidden within page source) may disclose information\\nthat is useful to an attacker; for example, they may represent usernames that\\ncan be used at the application's login, and they may be used in social\\nengineering attacks against the organization's personnel. Unnecessary or\\nexcessive disclosure of email addresses may also lead to an increase in the\\nvolume of spam email received.\\n\\n\\n\\nThe following email address was disclosed in the response:\\n\\n  * test@test.com\\n\\n\", \"The presence of email addresses within application responses does not\\r\\nnecessarily constitute a security vulnerability. Email addresses may appear\\r\\nintentionally within contact information, and many applications (such as web\\r\\nmail) include arbitrary third-party email addresses within their core content.\\r\\n\\r\\nHowever, email addresses of developers and other individuals (whether\\r\\nappearing on-screen or hidden within page source) may disclose information\\r\\nthat is useful to an attacker; for example, they may represent usernames that\\r\\ncan be used at the application's login, and they may be used in social\\r\\nengineering attacks against the organization's personnel. Unnecessary or\\r\\nexcessive disclosure of email addresses may also lead to an increase in the\\r\\nvolume of spam email received.\\r\\n\\r\\n\\r\\n\\r\\nThe following email address was disclosed in the response:\\r\\n\\r\\n  * test@test.com\\r\\n\\r\\n\"]}",
       "object_repr": "Email addresses disclosed"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 36
   },
   {
@@ -3046,7 +3046,7 @@
       "changes": "{\"name\": [\"Test\", \"Initial Application Scan\"]}",
       "object_repr": "Engagement: Initial Application Scan (Aug 24, 2016)"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 37
   },
   {
@@ -3062,7 +3062,7 @@
       "changes": "{\"prod_type\": [\"None\", \"Research and Development\"], \"description\": [\"None\", \"Vulnerable Application written by Google\"], \"manager\": [\"None\", \"0\"], \"tech_contact\": [\"None\", \"0\"], \"tid\": [\"None\", \"0\"], \"prod_manager\": [\"None\", \"0\"], \"id\": [\"None\", \"2\"], \"name\": [\"None\", \"Gruyere\"]}",
       "object_repr": "Gruyere"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 38
   },
   {
@@ -3078,7 +3078,7 @@
       "changes": "{\"pen_test\": [\"None\", \"True\"], \"status\": [\"None\", \"In Progress\"], \"product\": [\"None\", \"Gruyere\"], \"name\": [\"None\", \"V2 Upgrade\"], \"lead\": [\"None\", \"admin\"], \"check_list\": [\"None\", \"False\"], \"test_strategy\": [\"None\", \"\"], \"id\": [\"None\", \"2\"], \"active\": [\"None\", \"True\"], \"target_start\": [\"None\", \"2016-09-19\"], \"tmodel_path\": [\"None\", \"none\"], \"eng_for_check\": [\"None\", \"dojo.Check_List.None\"], \"api_test\": [\"None\", \"False\"], \"risk_path\": [\"None\", \"none\"], \"progress\": [\"None\", \"threat_model\"], \"threat_model\": [\"None\", \"True\"], \"done_testing\": [\"None\", \"False\"], \"target_end\": [\"None\", \"2016-09-30\"]}",
       "object_repr": "Engagement: V2 Upgrade (Sep 19, 2016)"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 39
   },
   {
@@ -3094,7 +3094,7 @@
       "changes": "{\"last_reviewed\": [\"2016-08-27 02:23:45.331394+00:00\", \"2016-08-27 02:23:45.331000+00:00\"]}",
       "object_repr": "Password field with autocomplete enabled"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 40
   },
   {
@@ -3110,7 +3110,7 @@
       "changes": "{\"last_reviewed\": [\"2016-08-27 02:21:27.567481+00:00\", \"2016-08-27 02:21:27.567000+00:00\"]}",
       "object_repr": "Frameable response (potential Clickjacking)"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 41
   },
   {
@@ -3126,7 +3126,7 @@
       "changes": "{\"last_reviewed\": [\"2016-08-27 02:22:58.503064+00:00\", \"2016-08-27 02:22:58.503000+00:00\"]}",
       "object_repr": "Cross-site scripting (reflected)"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 42
   },
   {
@@ -3142,7 +3142,7 @@
       "changes": "{\"last_reviewed\": [\"2016-08-27 02:23:17.800977+00:00\", \"2016-08-27 02:23:17.800000+00:00\"]}",
       "object_repr": "Unencrypted communications"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 43
   },
   {
@@ -3158,7 +3158,7 @@
       "changes": "{\"last_reviewed\": [\"2016-08-27 02:21:27.727214+00:00\", \"2016-08-27 02:21:27.727000+00:00\"]}",
       "object_repr": "Password returned in later response"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 44
   },
   {
@@ -3174,7 +3174,7 @@
       "changes": "{\"last_reviewed\": [\"2016-08-27 02:24:20.451037+00:00\", \"2016-08-27 02:24:20.451000+00:00\"]}",
       "object_repr": "Email addresses disclosed"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 45
   },
   {
@@ -3190,7 +3190,7 @@
       "changes": "{\"last_reviewed\": [\"2016-08-27 02:21:27.793097+00:00\", \"2016-08-27 02:21:27.793000+00:00\"]}",
       "object_repr": "Cross-site request forgery"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 46
   },
   {
@@ -3206,7 +3206,7 @@
       "changes": "{\"last_reviewed\": [\"2016-08-27 02:22:21.054594+00:00\", \"2016-08-27 02:22:21.054000+00:00\"]}",
       "object_repr": "SQL injection"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 47
   },
   {
@@ -3222,7 +3222,7 @@
       "changes": "{\"last_reviewed\": [\"2016-08-27 02:21:27.840903+00:00\", \"2016-08-27 02:21:27.840000+00:00\"]}",
       "object_repr": "Path-relative style sheet import"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 48
   },
   {
@@ -3238,7 +3238,7 @@
       "changes": "{\"last_reviewed\": [\"2016-08-27 02:21:53.556891+00:00\", \"2016-08-27 02:21:53.556000+00:00\"]}",
       "object_repr": "Cleartext submission of password"
     },
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 49
   },
   {

@@ -171,7 +171,7 @@
     }
   },
   {
-    "model": "auditlog.logentry",
+    "model": "dojo.logentry",
     "pk": 803,
     "fields": {
       "content_type": 28,
@@ -187,7 +187,7 @@
       }
     },
     {
-      "model": "auditlog.logentry",
+      "model": "dojo.logentry",
       "pk": 804,
       "fields": {
         "content_type": 28,
@@ -203,7 +203,7 @@
       }
     },
     {
-      "model": "auditlog.logentry",
+      "model": "dojo.logentry",
       "pk": 805,
       "fields": {
         "content_type": 28,

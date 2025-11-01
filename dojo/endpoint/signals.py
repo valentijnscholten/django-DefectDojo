@@ -1,6 +1,5 @@
 import contextlib
 
-from auditlog.models import LogEntry
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
@@ -9,6 +8,7 @@ from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.translation import gettext as _
 
+from dojo.legacy_auditlog import LogEntry
 from dojo.models import Endpoint
 from dojo.notifications.helper import create_notification
 from dojo.pghistory_models import DojoEvents

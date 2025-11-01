@@ -1,6 +1,5 @@
 import contextlib
 
-from auditlog.models import LogEntry
 from crum import get_current_user
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -11,6 +10,7 @@ from django.urls import reverse
 from django.utils.translation import gettext as _
 
 from dojo.labels import get_labels
+from dojo.legacy_auditlog import LogEntry
 from dojo.models import Product_Type
 from dojo.notifications.helper import create_notification
 from dojo.pghistory_models import DojoEvents

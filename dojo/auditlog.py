@@ -7,13 +7,16 @@ django-auditlog support has been removed.
 import logging
 import os
 import sys
+import warnings
 
 import pghistory
 from dateutil.relativedelta import relativedelta
 from django.apps import apps
 from django.conf import settings
 from django.core.management import call_command
-from django.db import models
+from django.db import connection, models
+from django.db.migrations.recorder import MigrationRecorder
+from django.db.utils import DatabaseError, OperationalError
 from django.utils import timezone
 
 logger = logging.getLogger(__name__)
@@ -419,6 +422,11 @@ def configure_audit_system():
     # Only log during actual application startup, not during shell commands
     log_enabled = "shell" not in sys.argv
 
+    # Detect if we're in a database connectivity check (dbshell command)
+    # In this case, we should defer the migration check to avoid retry loops
+    # The check will happen when actual Django commands are run
+    is_connectivity_check = "dbshell" in sys.argv
+
     # Fail if DD_AUDITLOG_TYPE is still configured (removed setting)
     auditlog_type_env = os.environ.get("DD_AUDITLOG_TYPE")
     if auditlog_type_env:
@@ -441,6 +449,71 @@ def configure_audit_system():
         )
         logger.error(error_msg)
         raise ValueError(error_msg)
+
+    # Check if django-auditlog migration 0017_add_actor_email has been applied
+    # This migration was introduced in django-auditlog 3.2.0 (2025-01-30)
+    # and was included in DefectDojo 2.48.0+
+    # Users upgrading from very old versions need to upgrade to 2.48.0+ first
+    # to ensure this migration is applied before removing django-auditlog
+
+    try:
+        # Suppress RuntimeWarning about database access during app initialization
+        # This check is intentional and necessary to prevent upgrades from old versions
+        with warnings.catch_warnings():
+            warnings.filterwarnings(
+                "ignore",
+                category=RuntimeWarning,
+                message="Accessing the database during app initialization",
+            )
+            recorder = MigrationRecorder(connection)
+            applied_migrations = recorder.applied_migrations()
+            auditlog_migrations = {
+                migration for app, migration in applied_migrations if app == "auditlog"
+            }
+
+            # Check if auditlog_logentry table exists (indicating django-auditlog was used before)
+            # If it exists, we need to ensure migration 0017 was applied
+            # Use Django's introspection API instead of raw SQL for better portability
+            introspection = connection.introspection
+            with connection.cursor() as cursor:
+                table_names = introspection.table_names(cursor)
+                auditlog_table_exists = "auditlog_logentry" in table_names
+
+        if auditlog_table_exists and "0017_add_actor_email" not in auditlog_migrations:
+            error_msg = (
+                "Missing django-auditlog migration '0017_add_actor_email'. "
+                "This migration was introduced in django-auditlog 3.2.0 and DefectDojo 2.48.0. "
+                "You must upgrade to DefectDojo 2.48.0 or later before upgrading to 2.53.0. "
+                "Please upgrade to DefectDojo 2.48.0 first, start defect dojo to let the migrations run,"
+                "then upgrade to 2.53.0. "
+                "This ensures the auditlog_logentry table has the actor_email field required "
+                "for backward compatibility with the legacy audit log viewer."
+            )
+            # During database connectivity checks (dbshell), defer the error to avoid retry loops
+            # The error will be caught when actual Django commands are run
+            if is_connectivity_check:
+                if log_enabled:
+                    logger.warning(
+                        "Migration check deferred during connectivity check. "
+                        "Error will be raised when Django commands are executed: %s",
+                        error_msg,
+                    )
+                # Don't raise during connectivity check - let the actual command fail later
+                return
+            logger.error(error_msg)
+            raise ValueError(error_msg)
+    except (DatabaseError, OperationalError) as e:
+        # If we can't check migrations (e.g., database not ready), log a warning but don't fail
+        # This allows the application to start during migrations or in restricted environments
+        if log_enabled:
+            logger.warning(
+                "Could not verify django-auditlog migration status: %s. "
+                "This is expected during database migrations.",
+                e,
+            )
+    except ValueError:
+        # Re-raise ValueError - these are intentional failures that should stop startup
+        raise
 
     if not settings.ENABLE_AUDITLOG:
         if log_enabled:
