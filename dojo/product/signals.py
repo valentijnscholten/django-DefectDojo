@@ -2,14 +2,12 @@ import contextlib
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.contrib.contenttypes.models import ContentType
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.translation import gettext as _
 
 from dojo.labels import get_labels
-from dojo.legacy_auditlog import LogEntry
 from dojo.models import Product
 from dojo.notifications.helper import create_notification
 from dojo.pghistory_models import DojoEvents
@@ -37,7 +35,7 @@ def product_post_delete(sender, instance, **kwargs):
         user = None
 
         if settings.ENABLE_AUDITLOG:
-            # First try to find deletion author in pghistory events
+            # Find deletion author in pghistory events
             # Look for delete events for this specific product instance
             pghistory_delete_events = DojoEvents.objects.filter(
                 pgh_obj_model="dojo.Product",
@@ -53,15 +51,7 @@ def product_post_delete(sender, instance, **kwargs):
                     with contextlib.suppress(User.DoesNotExist):
                         user = User.objects.get(id=latest_delete.user)
 
-            # Fall back to django-auditlog if no user found in pghistory
-            if not user:
-                if le := LogEntry.objects.filter(
-                    action=LogEntry.Action.DELETE,
-                    content_type=ContentType.objects.get(app_label="dojo", model="product"),
-                    object_id=instance.id,
-                ).order_by("-id").first():
-                    user = le.actor
-
+            # Fallback to the current user of the request (Which might be not available for ASYNC_OBJECT_DELETE scenario's)
             if not user:
                 current_user = get_current_user()
                 user = current_user
