@@ -426,7 +426,7 @@ def configure_audit_system():
     # Detect if we're in a database connectivity check (dbshell command)
     # In this case, we should defer the migration check to avoid retry loops
     # The check will happen when actual Django commands are run
-    is_connectivity_check = "dbshell" in sys.argv
+    is_dbshell = "dbshell" in sys.argv
 
     # Fail if DD_AUDITLOG_TYPE is still configured (removed setting)
     auditlog_type_env = os.environ.get("DD_AUDITLOG_TYPE")
@@ -492,7 +492,7 @@ def configure_audit_system():
             )
             # During database connectivity checks (dbshell), defer the error to avoid retry loops
             # The error will be caught when actual Django commands are run
-            if is_connectivity_check:
+            if is_dbshell:
                 if log_enabled:
                     logger.warning(
                         "Migration check deferred during connectivity check. "
