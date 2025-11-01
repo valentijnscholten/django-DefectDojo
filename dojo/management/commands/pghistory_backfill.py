@@ -220,23 +220,23 @@ class Command(BaseCommand):
                     )
                     continue
 
-                # Get IDs of records that already have initial_import events
-                existing_initial_import_ids = set(
-                    EventModel.objects.filter(pgh_label="initial_import").values_list("pgh_obj_id", flat=True),
+                # Get IDs of records that already have initial_backfill events
+                existing_initial_backfill_ids = set(
+                    EventModel.objects.filter(pgh_label="initial_backfill").values_list("pgh_obj_id", flat=True),
                 )
 
-                # Filter to only get records that don't have initial_import events
-                records_needing_backfill = Model.objects.exclude(id__in=existing_initial_import_ids)
+                # Filter to only get records that don't have initial_backfill events
+                records_needing_backfill = Model.objects.exclude(id__in=existing_initial_backfill_ids)
                 backfill_count = records_needing_backfill.count()
-                existing_count = len(existing_initial_import_ids)
+                existing_count = len(existing_initial_backfill_ids)
 
                 # Log the breakdown
-                self.stdout.write(f"  Records with initial_import events: {existing_count:,}")
-                self.stdout.write(f"  Records needing initial_import events: {backfill_count:,}")
+                self.stdout.write(f"  Records with initial_backfill events: {existing_count:,}")
+                self.stdout.write(f"  Records needing initial_backfill events: {backfill_count:,}")
 
                 if backfill_count == 0:
                     self.stdout.write(
-                        self.style.SUCCESS(f"  ✓ All {total_count:,} records already have initial_import events"),
+                        self.style.SUCCESS(f"  ✓ All {total_count:,} records already have initial_backfill events"),
                     )
                     processed = total_count
                     continue
@@ -284,7 +284,7 @@ class Command(BaseCommand):
 
                         # Add pghistory-specific fields
                         event_data.update({
-                            "pgh_label": "initial_import",
+                            "pgh_label": "initial_backfill",
                             "pgh_obj": instance,  # ForeignKey to the original object
                             "pgh_context": None,  # No context for backfilled events
                         })

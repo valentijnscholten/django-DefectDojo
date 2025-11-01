@@ -39,12 +39,7 @@ class Command(BaseCommand):
         parser.add_argument(
             "--log-queries",
             action="store_true",
-            help="Enable database query logging (default: enabled)",
-        )
-        parser.add_argument(
-            "--no-log-queries",
-            action="store_true",
-            help="Disable database query logging",
+            help="Enable database query logging (default: disabled)",
         )
 
     def get_excluded_fields(self, model_name):
@@ -84,6 +79,10 @@ class Command(BaseCommand):
             elif model_name == "Notification_Webhooks":
                 table_name = "dojo_notification_webhooks"
                 event_table_name = "dojo_notification_webhooksevent"
+            elif model_name == "FindingReviewers":
+                # M2M through table: Django creates dojo_finding_reviewers for Finding.reviewers
+                table_name = "dojo_finding_reviewers"
+                event_table_name = "dojo_finding_reviewersevent"
             else:
                 table_name = f"dojo_{model_name.lower()}"
                 event_table_name = f"dojo_{model_name.lower()}event"
@@ -133,9 +132,9 @@ class Command(BaseCommand):
             # Get excluded fields
             excluded_fields = self.get_excluded_fields(model_name)
 
-            # Check if records already have initial_import events using raw SQL
+            # Check if records already have initial_backfill events using raw SQL
             with connection.cursor() as cursor:
-                cursor.execute(f"SELECT COUNT(*) FROM {event_table_name} WHERE pgh_label = 'initial_import'")
+                cursor.execute(f"SELECT COUNT(*) FROM {event_table_name} WHERE pgh_label = 'initial_backfill'")
                 existing_count = cursor.fetchone()[0]
 
             # Get records that need backfill using raw SQL
@@ -144,18 +143,18 @@ class Command(BaseCommand):
                     SELECT COUNT(*) FROM {table_name} t
                     WHERE NOT EXISTS (
                         SELECT 1 FROM {event_table_name} e
-                        WHERE e.pgh_obj_id = t.id AND e.pgh_label = 'initial_import'
+                        WHERE e.pgh_obj_id = t.id AND e.pgh_label = 'initial_backfill'
                     )
                 """)
                 backfill_count = cursor.fetchone()[0]
 
             # Log the breakdown
-            self.stdout.write(f"  Records with initial_import events: {existing_count:,}")
-            self.stdout.write(f"  Records needing initial_import events: {backfill_count:,}")
+            self.stdout.write(f"  Records with initial_backfill events: {existing_count:,}")
+            self.stdout.write(f"  Records needing initial_backfill events: {backfill_count:,}")
 
             if backfill_count == 0:
                 self.stdout.write(
-                    self.style.SUCCESS(f"  ✓ All {total_count:,} records already have initial_import events"),
+                    self.style.SUCCESS(f"  ✓ All {total_count:,} records already have initial_backfill events"),
                 )
                 return total_count, 0.0
 
@@ -179,7 +178,7 @@ class Command(BaseCommand):
                     SELECT t.id FROM {table_name} t
                     WHERE NOT EXISTS (
                         SELECT 1 FROM {event_table_name} e
-                        WHERE e.pgh_obj_id = t.id AND e.pgh_label = 'initial_import'
+                        WHERE e.pgh_obj_id = t.id AND e.pgh_label = 'initial_backfill'
                     )
                     ORDER BY t.id
                 """)
@@ -206,6 +205,16 @@ class Command(BaseCommand):
 
             # Filter out excluded fields from source columns
             source_columns = [col for col in source_columns if col not in excluded_fields]
+
+            # Find the index of the 'id' column for pgh_obj_id mapping
+            try:
+                id_column_index = source_columns.index("id")
+            except ValueError:
+                # If id is excluded (shouldn't happen), fall back to first column
+                id_column_index = 0
+                self.stdout.write(
+                    self.style.WARNING("  Warning: 'id' column not found in source columns, using first column"),
+                )
 
             # Process in batches
             consecutive_failures = 0
@@ -284,9 +293,11 @@ class Command(BaseCommand):
                             if col == "pgh_created_at":
                                 row_data.append(timezone.now().isoformat())
                             elif col == "pgh_label":
-                                row_data.append("initial_import")
+                                row_data.append("initial_backfill")
                             elif col == "pgh_obj_id":
-                                row_data.append(str(row[0]) if row[0] is not None else "")  # Assuming first column is id
+                                # Use the id column index instead of assuming position
+                                id_value = row[id_column_index] if id_column_index < len(row) else None
+                                row_data.append(str(id_value) if id_value is not None else "")
                             elif col == "pgh_context_id":
                                 row_data.append("")  # Empty for backfilled events
                             elif col in source_values:
@@ -327,9 +338,10 @@ class Command(BaseCommand):
                                     if col == "pgh_created_at":
                                         row_data.append(timezone.now())
                                     elif col == "pgh_label":
-                                        row_data.append("initial_import")
+                                        row_data.append("initial_backfill")
                                     elif col == "pgh_obj_id":
-                                        row_data.append(row[0])  # Assuming first column is id
+                                        # Use the id column index instead of assuming position
+                                        row_data.append(row[id_column_index] if row[id_column_index] is not None else None)
                                     elif col == "pgh_context_id":
                                         row_data.append(None)  # Empty for backfilled events
                                     elif col in source_values:
@@ -349,7 +361,7 @@ class Command(BaseCommand):
                             raw_cursor.connection.commit()
 
                             # Debug: Check if data was inserted
-                            raw_cursor.execute(f"SELECT COUNT(*) FROM {event_table_name} WHERE pgh_label = 'initial_import'")
+                            raw_cursor.execute(f"SELECT COUNT(*) FROM {event_table_name} WHERE pgh_label = 'initial_backfill'")
                             count = raw_cursor.fetchone()[0]
                             self.stdout.write(f"  Records in event table after batch: {count}")
 
@@ -476,7 +488,7 @@ class Command(BaseCommand):
             return
 
         # Enable database query logging based on options
-        enable_query_logging = not options.get("no_log_queries")
+        enable_query_logging = options.get("log_queries")
 
         if enable_query_logging:
             self.enable_db_logging()

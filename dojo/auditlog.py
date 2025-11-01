@@ -174,7 +174,7 @@ def register_django_pghistory_models():
         pghistory.InsertEvent(),
         pghistory.UpdateEvent(condition=pghistory.AnyChange(exclude_auto=True)),
         pghistory.DeleteEvent(),
-        pghistory.ManualEvent(label="initial_import"),
+        pghistory.ManualEvent(label="initial_backfill"),
         exclude=["password"],
         # add some indexes manually so we don't have to define a customer phistory Event model with overridden fields.
         meta={
@@ -190,7 +190,7 @@ def register_django_pghistory_models():
         pghistory.InsertEvent(),
         pghistory.UpdateEvent(condition=pghistory.AnyChange(exclude_auto=True)),
         pghistory.DeleteEvent(),
-        pghistory.ManualEvent(label="initial_import"),
+        pghistory.ManualEvent(label="initial_backfill"),
         meta={
             "indexes": [
                 models.Index(fields=["pgh_created_at"]),
@@ -204,7 +204,7 @@ def register_django_pghistory_models():
         pghistory.InsertEvent(),
         pghistory.UpdateEvent(condition=pghistory.AnyChange(exclude_auto=True)),
         pghistory.DeleteEvent(),
-        pghistory.ManualEvent(label="initial_import"),
+        pghistory.ManualEvent(label="initial_backfill"),
         meta={
             "indexes": [
                 models.Index(fields=["pgh_created_at"]),
@@ -218,7 +218,7 @@ def register_django_pghistory_models():
         pghistory.InsertEvent(),
         pghistory.UpdateEvent(condition=pghistory.AnyChange(exclude_auto=True)),
         pghistory.DeleteEvent(),
-        pghistory.ManualEvent(label="initial_import"),
+        pghistory.ManualEvent(label="initial_backfill"),
         meta={
             "indexes": [
                 models.Index(fields=["pgh_created_at"]),
@@ -232,7 +232,7 @@ def register_django_pghistory_models():
         pghistory.InsertEvent(),
         pghistory.UpdateEvent(condition=pghistory.AnyChange(exclude_auto=True)),
         pghistory.DeleteEvent(),
-        pghistory.ManualEvent(label="initial_import"),
+        pghistory.ManualEvent(label="initial_backfill"),
         meta={
             "indexes": [
                 models.Index(fields=["pgh_created_at"]),
@@ -246,7 +246,7 @@ def register_django_pghistory_models():
         pghistory.InsertEvent(),
         pghistory.UpdateEvent(condition=pghistory.AnyChange(exclude_auto=True)),
         pghistory.DeleteEvent(),
-        pghistory.ManualEvent(label="initial_import"),
+        pghistory.ManualEvent(label="initial_backfill"),
         meta={
             "indexes": [
                 models.Index(fields=["pgh_created_at"]),
@@ -260,7 +260,7 @@ def register_django_pghistory_models():
         pghistory.InsertEvent(),
         pghistory.UpdateEvent(condition=pghistory.AnyChange(exclude_auto=True)),
         pghistory.DeleteEvent(),
-        pghistory.ManualEvent(label="initial_import"),
+        pghistory.ManualEvent(label="initial_backfill"),
         meta={
             "indexes": [
                 models.Index(fields=["pgh_created_at"]),
@@ -274,7 +274,7 @@ def register_django_pghistory_models():
         pghistory.InsertEvent(),
         pghistory.UpdateEvent(condition=pghistory.AnyChange(exclude_auto=True)),
         pghistory.DeleteEvent(),
-        pghistory.ManualEvent(label="initial_import"),
+        pghistory.ManualEvent(label="initial_backfill"),
         meta={
             "indexes": [
                 models.Index(fields=["pgh_created_at"]),
@@ -288,7 +288,7 @@ def register_django_pghistory_models():
         pghistory.InsertEvent(),
         pghistory.UpdateEvent(condition=pghistory.AnyChange(exclude_auto=True)),
         pghistory.DeleteEvent(),
-        pghistory.ManualEvent(label="initial_import"),
+        pghistory.ManualEvent(label="initial_backfill"),
         meta={
             "indexes": [
                 models.Index(fields=["pgh_created_at"]),
@@ -302,7 +302,7 @@ def register_django_pghistory_models():
         pghistory.InsertEvent(),
         pghistory.UpdateEvent(condition=pghistory.AnyChange(exclude_auto=True)),
         pghistory.DeleteEvent(),
-        pghistory.ManualEvent(label="initial_import"),
+        pghistory.ManualEvent(label="initial_backfill"),
         meta={
             "indexes": [
                 models.Index(fields=["pgh_created_at"]),
@@ -316,7 +316,7 @@ def register_django_pghistory_models():
         pghistory.InsertEvent(),
         pghistory.UpdateEvent(condition=pghistory.AnyChange(exclude_auto=True)),
         pghistory.DeleteEvent(),
-        pghistory.ManualEvent(label="initial_import"),
+        pghistory.ManualEvent(label="initial_backfill"),
         exclude=["password"],
         meta={
             "indexes": [
@@ -331,7 +331,7 @@ def register_django_pghistory_models():
         pghistory.InsertEvent(),
         pghistory.UpdateEvent(condition=pghistory.AnyChange(exclude_auto=True)),
         pghistory.DeleteEvent(),
-        pghistory.ManualEvent(label="initial_import"),
+        pghistory.ManualEvent(label="initial_backfill"),
         exclude=["header_name", "header_value"],
         meta={
             "indexes": [
@@ -372,7 +372,7 @@ def register_django_pghistory_models():
         pghistory.track(
             pghistory.InsertEvent(),
             pghistory.DeleteEvent(),
-            pghistory.ManualEvent(label="initial_import"),
+            pghistory.ManualEvent(label="initial_backfill"),
             meta={
                 "db_table": "dojo_finding_reviewersevent",
                 "indexes": [
