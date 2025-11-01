@@ -37,12 +37,7 @@ class Command(BaseCommand):
         parser.add_argument(
             "--log-queries",
             action="store_true",
-            help="Enable database query logging (default: enabled)",
-        )
-        parser.add_argument(
-            "--no-log-queries",
-            action="store_true",
-            help="Disable database query logging",
+            help="Enable database query logging (default: disabled)",
         )
 
     def get_excluded_fields(self, model_name):
@@ -149,15 +144,11 @@ class Command(BaseCommand):
             return
 
         # Enable database query logging based on options
-        # Default to enabled unless explicitly disabled
-        enable_query_logging = not options.get("no_log_queries")
+        # Default to disabled unless explicitly enabled
+        enable_query_logging = options.get("log_queries", False)
 
         if enable_query_logging:
             self.enable_db_logging()
-        else:
-            self.stdout.write(
-                self.style.WARNING("Database query logging disabled"),
-            )
 
         # Models that are tracked by pghistory
         tracked_models = [
