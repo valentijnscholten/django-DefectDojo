@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.contrib.admin.sites import NotRegistered
 from polymorphic.admin import PolymorphicChildModelAdmin, PolymorphicParentModelAdmin
 
 from dojo.models import (
@@ -14,13 +13,8 @@ from dojo.models import (
     TextQuestion,
 )
 
-# Conditionally unregister LogEntry from auditlog if it's registered
-try:
-    from auditlog.models import LogEntry
-    admin.site.unregister(LogEntry)
-except (ImportError, NotRegistered):
-    # auditlog not available or LogEntry not registered
-    pass
+# LogEntry is now defined in dojo.legacy_auditlog and should not be registered in admin
+# (it's read-only for backward compatibility)
 
 # ==============================
 # Defect Dojo Engaegment Surveys

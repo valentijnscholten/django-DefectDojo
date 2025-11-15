@@ -2,7 +2,6 @@ import logging
 from contextlib import suppress
 from pathlib import Path
 
-from auditlog.models import LogEntry
 from django.apps import apps
 from django.conf import settings
 from django.contrib import messages
@@ -21,6 +20,7 @@ from dojo.authorization.authorization import (
 from dojo.authorization.roles_permissions import Permissions
 from dojo.filters import LogEntryFilter, PgHistoryFilter
 from dojo.forms import ManageFileFormSet
+from dojo.legacy_auditlog import LogEntry
 from dojo.models import Endpoint, Engagement, FileUpload, Finding, Product, Test
 from dojo.pghistory_models import DojoEvents
 from dojo.product_announcements import ErrorPageProductAnnouncement
@@ -140,11 +140,16 @@ def action_history(request, cid, oid):
     pghistory_history = []
 
     # Try to get django-auditlog entries
-    auditlog_queryset = LogEntry.objects.filter(
-        content_type=ct,
-        object_pk=obj.id,
-    ).order_by("-timestamp")
-    auditlog_history = auditlog_queryset
+    # LogEntryManager handles missing table gracefully, but add try/except for extra safety
+    try:
+        auditlog_queryset = LogEntry.objects.filter(
+            content_type=ct,
+            object_pk=obj.id,
+        ).order_by("-timestamp")
+        auditlog_history = auditlog_queryset
+    except Exception as e:
+        logger.debug(f"Could not retrieve legacy auditlog entries (table may not exist): {e}")
+        auditlog_history = []
 
     # Use custom DojoEvents proxy model - provides proper diff calculation and context fields
     # Filter by the specific object using tracks() method

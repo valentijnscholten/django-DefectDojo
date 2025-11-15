@@ -921,7 +921,6 @@ INSTALLED_APPS = (
     "tagulous",
     "fontawesomefree",
     "django_filters",
-    "auditlog",
     "pgtrigger",
     "pghistory",
     "single_session",

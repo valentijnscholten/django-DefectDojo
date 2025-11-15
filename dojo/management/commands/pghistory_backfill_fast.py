@@ -133,10 +133,6 @@ class Command(BaseCommand):
 
         if enable_query_logging:
             self.enable_db_logging()
-        else:
-            self.stdout.write(
-                self.style.WARNING("Database query logging disabled"),
-            )
 
         # Models that are tracked by pghistory
         tracked_models = get_tracked_models()
